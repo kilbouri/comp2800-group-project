@@ -4,4 +4,4 @@ Asif, when you have time, please fill this in :)
 
 # Build & Run
 
-Simple: `./gradle run` from the repository root.
+Simple: `./gradlew run` from the repository root.
