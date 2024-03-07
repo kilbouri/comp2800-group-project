@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public abstract class GameLoop extends Canvas implements Runnable {
 
-    private static final Font debugFont = new Font(Font.MONOSPACED, Font.BOLD, 18);
+    private static final Font DEBUG_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     private static final double AVERAGE_FPS_SAMPLE_WINDOW = 100;
     private static final double SECONDS_TO_NANOS = 1e9;
     private static final double SECONDS_TO_MILLIS = 1e3;
@@ -102,12 +102,15 @@ public abstract class GameLoop extends Canvas implements Runnable {
      * @return the same object passed in, for chaining
      */
     public <T extends GameObject> T addGameObject(T object) {
-        this.gameObjects.add(object);
+        object.setGameLoop(this);
+        gameObjects.add(object);
+
         return object;
     }
 
     public void removeGameObject(GameObject object) {
-        this.gameObjects.remove(object);
+        object.setGameLoop(null);
+        gameObjects.remove(object);
     }
 
     private void doUpdate(final double deltaTime) {
@@ -116,10 +119,9 @@ public abstract class GameLoop extends Canvas implements Runnable {
         // Run the concrete update implementation first, then objects
         update(deltaTime);
 
-        // We create a copy for two reasons:
-        // 1. We need to sort the elements according to their natural order
-        // 2. We need to ensure that the objects may freely delete themselves without
-        // risking concurrent modification issues.
+        // We create an array as we need to sort on the game object's layer. This
+        // also protects us from the application's possibility of destroying a
+        // game object within the update.
         GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
         Arrays.sort(currentObjects);
 
@@ -148,7 +150,15 @@ public abstract class GameLoop extends Canvas implements Runnable {
         try {
             render(drawGraphics);
 
-            gameObjects.forEach((obj) -> obj.render(drawGraphics));
+            // We create an array as we need to sort on the game object's layer. This
+            // also protects us from the application's possibility of destroying a
+            // game object within the render (please, don't do that!).
+            GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
+            Arrays.sort(currentObjects);
+
+            for (int i = 0; i < currentObjects.length; i++) {
+                currentObjects[i].render(drawGraphics);
+            }
         } finally {
             drawGraphics.dispose();
             bufferStrategy.show();
@@ -172,7 +182,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
         };
 
         Font original = graphics.getFont();
-        graphics.setFont(debugFont);
+        graphics.setFont(DEBUG_FONT);
 
         int lineHeight = graphics.getFontMetrics().getHeight();
         for (int i = 0; i < debugLines.length; i++) {
@@ -183,7 +193,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
     }
 
     /**
-     * Runs once per frame.
+     * Runs once per frame. Game objects are updated from the lowest (back-most)
+     * layer to the highest (front-most) layer. No intra-layer order is guaranteed.
      *
      * @param deltaTime the time that has elapsed since the last update.
      */
@@ -191,6 +202,9 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
     /**
      * Draw the game. Runs once and only once after each `update`.
+     * Game objects are rendered from the lowest (back-most) layer to
+     * the highest (front-most layer). No intra-layer order is
+     * guaranteed.
      *
      * @param graphics a graphics object to draw the game with
      */
