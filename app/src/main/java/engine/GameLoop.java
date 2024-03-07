@@ -5,7 +5,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferStrategy;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Vector;
 
 public abstract class GameLoop extends Canvas implements Runnable {
 
@@ -26,13 +28,17 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private long lastFpsUpdateFrameNumber = 0;
     private LinkedList<Double> lastFpsCounts = new LinkedList<Double>();
 
-    protected GameLoop() {
+    private Vector<GameObject> gameObjects;
+
+    protected GameLoop(int gameObjectCapacity) {
         // Make sure this canvas can actually hecking have focus
         // (its definitely not 01:47 right now and I haven't been fighting
         // Swing for focus for the past hour... NOPE!)
         addKeyListener(Keyboard.getKeyAdapter());
         addFocusListener(Keyboard.getFocusAdapter());
         setFocusable(true);
+
+        gameObjects = new Vector<>(gameObjectCapacity);
     }
 
     /**
@@ -87,11 +93,39 @@ public abstract class GameLoop extends Canvas implements Runnable {
         }
     }
 
+    /**
+     * Add a GameObject to the loop. All GameObjects will be automatically
+     * updated and rendered each frame
+     *
+     * @param <T>    the type of GameObject being added
+     * @param object the object to add
+     * @return the same object passed in, for chaining
+     */
+    public <T extends GameObject> T addGameObject(T object) {
+        this.gameObjects.add(object);
+        return object;
+    }
+
+    public void removeGameObject(GameObject object) {
+        this.gameObjects.remove(object);
+    }
+
     private void doUpdate(final double deltaTime) {
         double startNanos = System.nanoTime();
 
-        // Run the concrete update implementation
+        // Run the concrete update implementation first, then objects
         update(deltaTime);
+
+        // We create a copy for two reasons:
+        // 1. We need to sort the elements according to their natural order
+        // 2. We need to ensure that the objects may freely delete themselves without
+        // risking concurrent modification issues.
+        GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
+        Arrays.sort(currentObjects);
+
+        for (int i = 0; i < currentObjects.length; i++) {
+            currentObjects[i].update(deltaTime);
+        }
 
         lastUpdateTime = (System.nanoTime() - startNanos) / SECONDS_TO_NANOS;
     }
@@ -113,6 +147,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
         // Run the concrete render implementation, then show results
         try {
             render(drawGraphics);
+
+            gameObjects.forEach((obj) -> obj.render(drawGraphics));
         } finally {
             drawGraphics.dispose();
             bufferStrategy.show();
@@ -123,7 +159,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
     /**
      * Draws some engine metrics on the screen in the top right corner.
-     * 
+     *
      * @param graphics the graphics object to draw the metrics with.
      */
     protected void renderEngineMetrics(Graphics2D graphics) {
@@ -148,14 +184,14 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
     /**
      * Runs once per frame.
-     * 
+     *
      * @param deltaTime the time that has elapsed since the last update.
      */
     public abstract void update(final double deltaTime);
 
     /**
      * Draw the game. Runs once and only once after each `update`.
-     * 
+     *
      * @param graphics a graphics object to draw the game with
      */
     public abstract void render(Graphics2D graphics);
