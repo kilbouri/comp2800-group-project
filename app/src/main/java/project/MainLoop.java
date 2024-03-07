@@ -15,11 +15,8 @@ public class MainLoop extends GameLoop {
         super(20);
         setSize(900, 600);
 
-        red.setColor(Color.red);
-        blue.setColor(Color.blue);
-
-        addGameObject(red);
-        addGameObject(blue);
+        addGameObject(red).setColor(Color.red);
+        addGameObject(blue).setColor(Color.blue);
     }
 
     @Override

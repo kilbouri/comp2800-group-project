@@ -95,7 +95,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
     /**
      * Add a GameObject to the loop. All GameObjects will be automatically
-     * updated and rendered each frame
+     * updated and rendered each frame.
      *
      * @param <T>    the type of GameObject being added
      * @param object the object to add
@@ -108,6 +108,14 @@ public abstract class GameLoop extends Canvas implements Runnable {
         return object;
     }
 
+    /**
+     * Remove the specified object from the loop. The object will no longer receive
+     * updates or be rendered. Note that, in general, the application should release
+     * any further references to the removed object to allow it to be garbage
+     * collected.
+     *
+     * @param object the object to remove
+     */
     public void removeGameObject(GameObject object) {
         object.setGameLoop(null);
         gameObjects.remove(object);
