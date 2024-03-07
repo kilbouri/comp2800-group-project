@@ -14,6 +14,9 @@ public class Soundboard {
      * An enumeration of all sounds this application may use.
      * An application should ideally prime this enum using
      * {@code Sound.values()} during startup.
+     * 
+     * todo: a better implementation of this, because consumers have no way to
+     * control the sound
      */
     public enum Sound {
         ;
