@@ -1,4 +1,4 @@
-package assignment2.engine;
+package engine;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

@@ -1,6 +1,10 @@
-package assignment2.engine;
+package engine;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+
 import javax.sound.sampled.*;
 import javax.sound.sampled.LineEvent.Type;
 
@@ -27,7 +31,8 @@ public class Soundboard {
                 // We have to read into the byte[] anyway, so we should do that immediately.
                 // Also this allows us to create a ByteArray InputStream for the mark/seek
                 // as required by AudioInputStream.
-                resourceBytes = getClass().getClassLoader().getResourceAsStream(resourceId).readAllBytes();
+                URL resourceURL = getClass().getClassLoader().getResource(resourceId);
+                byte[] resourceBytes = Files.readAllBytes(new File(resourceURL.toURI()).toPath());
                 ByteArrayInputStream audioBytesIn = new ByteArrayInputStream(resourceBytes);
 
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(audioBytesIn);
@@ -41,7 +46,7 @@ public class Soundboard {
 
                 resourceBytes = new byte[bufferSize];
                 audioIn.read(resourceBytes);
-            } catch (UnsupportedAudioFileException | IOException e) {
+            } catch (UnsupportedAudioFileException | IOException | URISyntaxException e) {
                 resourceBytes = null;
                 e.printStackTrace();
             }

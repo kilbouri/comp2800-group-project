@@ -1,4 +1,4 @@
-package assignment2.engine;
+package engine;
 
 import java.awt.image.BufferedImage;
 
@@ -6,7 +6,7 @@ public abstract class SpriteSheet {
 
     class TileIdOutOfBoundsException extends IndexOutOfBoundsException {
         public TileIdOutOfBoundsException(int tileId) {
-            super(tileId);
+            super(String.valueOf(tileId));
         }
     }
 
