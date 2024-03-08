@@ -5,11 +5,13 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferStrategy;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Vector;
 
 public abstract class GameLoop extends Canvas implements Runnable {
 
-    private static final Font debugFont = new Font(Font.MONOSPACED, Font.BOLD, 18);
+    private static final Font DEBUG_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     private static final double AVERAGE_FPS_SAMPLE_WINDOW = 100;
     private static final double SECONDS_TO_NANOS = 1e9;
     private static final double SECONDS_TO_MILLIS = 1e3;
@@ -26,13 +28,17 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private long lastFpsUpdateFrameNumber = 0;
     private LinkedList<Double> lastFpsCounts = new LinkedList<Double>();
 
-    protected GameLoop() {
+    private Vector<GameObject> gameObjects;
+
+    protected GameLoop(int gameObjectCapacity) {
         // Make sure this canvas can actually hecking have focus
         // (its definitely not 01:47 right now and I haven't been fighting
         // Swing for focus for the past hour... NOPE!)
         addKeyListener(Keyboard.getKeyAdapter());
         addFocusListener(Keyboard.getFocusAdapter());
         setFocusable(true);
+
+        gameObjects = new Vector<>(gameObjectCapacity);
     }
 
     /**
@@ -87,11 +93,49 @@ public abstract class GameLoop extends Canvas implements Runnable {
         }
     }
 
+    /**
+     * Add a GameObject to the loop. All GameObjects will be automatically
+     * updated and rendered each frame.
+     *
+     * @param <T>    the type of GameObject being added
+     * @param object the object to add
+     * @return the same object passed in, for chaining
+     */
+    public <T extends GameObject> T addGameObject(T object) {
+        object.setGameLoop(this);
+        gameObjects.add(object);
+
+        return object;
+    }
+
+    /**
+     * Remove the specified object from the loop. The object will no longer receive
+     * updates or be rendered. Note that, in general, the application should release
+     * any further references to the removed object to allow it to be garbage
+     * collected.
+     *
+     * @param object the object to remove
+     */
+    public void removeGameObject(GameObject object) {
+        object.setGameLoop(null);
+        gameObjects.remove(object);
+    }
+
     private void doUpdate(final double deltaTime) {
         double startNanos = System.nanoTime();
 
-        // Run the concrete update implementation
+        // Run the concrete update implementation first, then objects
         update(deltaTime);
+
+        // We create an array as we need to sort on the game object's layer. This
+        // also protects us from the application's possibility of destroying a
+        // game object within the update.
+        GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
+        Arrays.sort(currentObjects);
+
+        for (int i = 0; i < currentObjects.length; i++) {
+            currentObjects[i].update(deltaTime);
+        }
 
         lastUpdateTime = (System.nanoTime() - startNanos) / SECONDS_TO_NANOS;
     }
@@ -113,6 +157,16 @@ public abstract class GameLoop extends Canvas implements Runnable {
         // Run the concrete render implementation, then show results
         try {
             render(drawGraphics);
+
+            // We create an array as we need to sort on the game object's layer. This
+            // also protects us from the application's possibility of destroying a
+            // game object within the render (please, don't do that!).
+            GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
+            Arrays.sort(currentObjects);
+
+            for (int i = 0; i < currentObjects.length; i++) {
+                currentObjects[i].render(drawGraphics);
+            }
         } finally {
             drawGraphics.dispose();
             bufferStrategy.show();
@@ -123,7 +177,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
     /**
      * Draws some engine metrics on the screen in the top right corner.
-     * 
+     *
      * @param graphics the graphics object to draw the metrics with.
      */
     protected void renderEngineMetrics(Graphics2D graphics) {
@@ -136,7 +190,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
         };
 
         Font original = graphics.getFont();
-        graphics.setFont(debugFont);
+        graphics.setFont(DEBUG_FONT);
 
         int lineHeight = graphics.getFontMetrics().getHeight();
         for (int i = 0; i < debugLines.length; i++) {
@@ -147,15 +201,19 @@ public abstract class GameLoop extends Canvas implements Runnable {
     }
 
     /**
-     * Runs once per frame.
-     * 
+     * Runs once per frame. Game objects are updated from the lowest (back-most)
+     * layer to the highest (front-most) layer. No intra-layer order is guaranteed.
+     *
      * @param deltaTime the time that has elapsed since the last update.
      */
     public abstract void update(final double deltaTime);
 
     /**
      * Draw the game. Runs once and only once after each `update`.
-     * 
+     * Game objects are rendered from the lowest (back-most) layer to
+     * the highest (front-most layer). No intra-layer order is
+     * guaranteed.
+     *
      * @param graphics a graphics object to draw the game with
      */
     public abstract void render(Graphics2D graphics);

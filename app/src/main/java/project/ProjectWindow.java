@@ -1,24 +1,25 @@
 package project;
 
 import javax.swing.*;
-import java.awt.event.WindowEvent;
 
 public class ProjectWindow extends JFrame {
+
+    MainLoop loop = new MainLoop();
+
     public ProjectWindow() {
         super("COMP 2800 Project");
 
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        add(new JLabel("<html><b>TODO: implement this window<b>"));
+        add(loop);
 
-        JButton quit = new JButton("Exit");
-        quit.addActionListener((e) -> {
-            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-        });
-
-        add(quit);
+        pack();
+        setResizable(false);
+        setLocationRelativeTo(null);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        pack();
         setVisible(true);
+
+        // Must be after the window is set visible
+        loop.setAntialiased(true);
+        loop.start();
     }
 }
