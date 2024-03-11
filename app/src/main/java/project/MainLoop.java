@@ -1,48 +1,53 @@
 package project;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 
 import engine.GameLoop;
+import engine.GameObject;
+import engine.TiledSprite;
 
 public class MainLoop extends GameLoop {
 
-    private int layerSign = 1;
-    private MovingSquare red = new MovingSquare(100, 800, 300.0 - 50, 100);
-    private MovingSquare blue = new MovingSquare(100, 800, 300.0 - 50, 100);
+    private static final Dimension SCREEN_SIZE = new Dimension(900, 600);
+
+    GameObject ground = new TiledSprite(
+            new Point2D.Double(0, 500),
+            PlaceholderSpriteSheet.getInstance().getTile(0),
+            200,
+            (SCREEN_SIZE.height - 500) / PlaceholderSpriteSheet.getInstance().getTileHeight() + 1);
+
+    Player player = new Player(
+            PlaceholderSpriteSheet.getInstance().getTile(3),
+            100,
+            500 - PlaceholderSpriteSheet.getInstance().getTileHeight());
 
     public MainLoop() {
         super(20);
-        setSize(900, 600);
+        setSize(SCREEN_SIZE);
 
-        addGameObject(red).setColor(Color.red);
-        addGameObject(blue).setColor(Color.blue);
+        addGameObject(ground);
+        addGameObject(player);
     }
 
     @Override
     public void update(double deltaTime) {
-        layerSign *= -1;
-
-        red.setLayer(-layerSign);
-        blue.setLayer(layerSign);
+        if (player.getCollider().getBounds2D().getMaxY() >= 500) {
+            player.setGrounded(true);
+        }
     }
 
     @Override
-    public void render(Graphics2D graphics) {
+    public void beforeRender(Graphics2D graphics) {
         graphics.setBackground(Color.BLACK);
         graphics.clearRect(0, 0, getWidth(), getHeight());
+    }
 
-        if (layerSign == 1) {
-            // blue should be on top
-            graphics.setColor(Color.blue);
-        } else {
-            // red should be on top
-            graphics.setColor(Color.red);
-        }
-
-        graphics.fillRect(10, 10, 25, 25);
-
-        graphics.setColor(Color.green);
+    @Override
+    public void afterRender(Graphics2D graphics) {
+        graphics.setColor(Color.CYAN);
         renderEngineMetrics(graphics);
     }
 }

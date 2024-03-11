@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public abstract class GameLoop extends Canvas implements Runnable {
 
-    private static final Font DEBUG_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
+    private static final Font DEBUG_FONT = new Font(Font.MONOSPACED, Font.BOLD, 14);
     private static final double AVERAGE_FPS_SAMPLE_WINDOW = 100;
     private static final double SECONDS_TO_NANOS = 1e9;
     private static final double SECONDS_TO_MILLIS = 1e3;
@@ -156,7 +156,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
         // Run the concrete render implementation, then show results
         try {
-            render(drawGraphics);
+            beforeRender(drawGraphics);
 
             // We create an array as we need to sort on the game object's layer. This
             // also protects us from the application's possibility of destroying a
@@ -167,6 +167,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
             for (int i = 0; i < currentObjects.length; i++) {
                 currentObjects[i].render(drawGraphics);
             }
+
+            afterRender(drawGraphics);
         } finally {
             drawGraphics.dispose();
             bufferStrategy.show();
@@ -209,14 +211,24 @@ public abstract class GameLoop extends Canvas implements Runnable {
     public abstract void update(final double deltaTime);
 
     /**
-     * Draw the game. Runs once and only once after each `update`.
-     * Game objects are rendered from the lowest (back-most) layer to
-     * the highest (front-most layer). No intra-layer order is
+     * Runs after after each `update`, but before the game objects
+     * are rendered.
+     *
+     * Game objects are then rendered from the lowest (back-most) layer
+     * to the highest (front-most layer). No intra-layer order is
      * guaranteed.
      *
      * @param graphics a graphics object to draw the game with
      */
-    public abstract void render(Graphics2D graphics);
+    public abstract void beforeRender(Graphics2D graphics);
+
+    /**
+     * Runs after `update`, `beforeRender`, and all game objects
+     * have been rendered.
+     *
+     * @param graphics
+     */
+    public abstract void afterRender(Graphics2D graphics);
 
     public void setAntialiased(boolean aa) {
         this.aaEnabled = aa;

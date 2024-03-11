@@ -13,7 +13,7 @@ public abstract class GameObject implements Comparable<GameObject> {
      *
      * @param layer the new layer
      */
-    public void setLayer(int layer) {
+    public final void setLayer(int layer) {
         this.layer = layer;
     }
 
@@ -40,8 +40,18 @@ public abstract class GameObject implements Comparable<GameObject> {
      * a part of. The caller should release any references to the object
      * to allow the object to be disposed of.
      */
-    public void destroy() {
+    public final void destroy() {
         associatedLoop.removeGameObject(this);
+    }
+
+    /**
+     * Allows a GameObject to access the loop it is
+     * a part of.
+     *
+     * @return the game loop associated with this object
+     */
+    public final GameLoop getGameLoop() {
+        return associatedLoop;
     }
 
     /**
@@ -59,7 +69,7 @@ public abstract class GameObject implements Comparable<GameObject> {
     public abstract void render(Graphics2D graphics);
 
     @Override
-    public int compareTo(GameObject o) {
+    public final int compareTo(GameObject o) {
         return Integer.compare(layer, o.layer);
     }
 }
