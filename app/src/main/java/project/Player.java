@@ -1,11 +1,11 @@
 package project;
 
-import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+
+import engine.BoxCollider;
 import engine.Keyboard;
 import engine.Sprite;
 
@@ -15,17 +15,22 @@ public class Player extends Sprite {
     private int midairJumps = 0;
 
     protected double vSpeed = 0;
-    protected double hSpeed = 100;
+    protected double hSpeed = 150;
 
     private boolean isGrounded = true;
     private boolean spaceReleasedSinceLastJump = true;
 
+    BoxCollider boxCollider = new BoxCollider(0, 0, 0, 0);
+
     public Player(BufferedImage sprite) {
         super(sprite);
+        boxCollider = new BoxCollider((float) position.x, (float) position.y, displayImage.getWidth(), displayImage.getHeight());
+
     }
 
     public Player(BufferedImage sprite, double x, double y) {
         super(new Point2D.Double(x, y), sprite);
+        boxCollider = new BoxCollider((float) x, (float) y, displayImage.getWidth(), displayImage.getHeight());
     }
 
     @Override
@@ -64,6 +69,8 @@ public class Player extends Sprite {
 
         position.x += hSpeed * deltaTime * dx;
         position.y -= vSpeed * deltaTime;
+        // Update the collider position to match the player's position
+        boxCollider.setPosition(position.x, position.y);
     }
 
     public void setGrounded(boolean grounded) {
@@ -71,9 +78,7 @@ public class Player extends Sprite {
         midairJumps = 0;
     }
 
-    public Shape getCollider() {
-        return new Rectangle2D.Double(
-                position.x, position.y,
-                displayImage.getWidth(), displayImage.getHeight());
+    public BoxCollider getCollider() {
+        return boxCollider;
     }
 }

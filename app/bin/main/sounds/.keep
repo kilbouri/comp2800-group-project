@@ -1,0 +1,2 @@
+Put .wav files in this directory and add them to the Sounds enum. The applicable resource id is
+`sounds/file.wav`
