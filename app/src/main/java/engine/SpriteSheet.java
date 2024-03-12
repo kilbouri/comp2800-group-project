@@ -38,10 +38,10 @@ public abstract class SpriteSheet {
 
     /**
      * Retrieve a given tile from this sprite sheet.
-     * 
+     *
      * The caller is warned that the BufferedImage that is returned
      * is cached and shared. Hence, it should not make modifications.
-     * 
+     *
      * @param tileX the X index of the sprite tile
      * @param tileY the Y index of the sprite tile
      * @return a shared BufferedImage reference representing the tile.
@@ -56,10 +56,10 @@ public abstract class SpriteSheet {
      * easily create their own classes which require sequential access to the tiles.
      * However, in most other cases, {@link SpriteSheet#getTile(int, int)} is
      * preferred.
-     * 
+     *
      * The caller is warned that the BufferedImage that is returned
      * is cached and shared. Hence, it should not make modifications.
-     * 
+     *
      * @param tileIndex the index of the tile to fetch
      * @return a shared BufferedImage reference representing the tile.
      */
@@ -85,7 +85,7 @@ public abstract class SpriteSheet {
 
     /**
      * Computes the index of the tile at (X, Y) in the sprite sheet.
-     * 
+     *
      * @param tileX the X index of the tile
      * @param tileY the Y index of the tile
      * @return the index of the tile in the sprite sheet
@@ -96,7 +96,7 @@ public abstract class SpriteSheet {
 
     /**
      * Computes the X index of the tile at the given index.
-     * 
+     *
      * @param tileIndex the index of the tile
      * @return the corresponding X index of the tile
      */
@@ -106,11 +106,49 @@ public abstract class SpriteSheet {
 
     /**
      * Computes the Y index of the tile at the given index.
-     * 
+     *
      * @param tileIndex the index of the tile
      * @return the corresponding Y index of the tile
      */
     public int getTileY(int tileIndex) {
         return tileIndex / numTilesX;
+    }
+
+    /**
+     * Get the number of tiles in the horizontal
+     * direction of the sprite sheet.
+     *
+     * @return the number of tiles in the X direction
+     */
+    public int getNumTilesX() {
+        return numTilesX;
+    }
+
+    /**
+     * Get the number of tiles in the vertical
+     * direction of the sprite sheet.
+     *
+     * @return the number of tiles in the Y direction
+     */
+    public int getNumTilesY() {
+        return numTilesY;
+    }
+
+    /**
+     * Get the width in pixels of a single tile in the sprite sheet.
+     *
+     * @return the width of a single tile in pixels
+     */
+    public int getTileWidth() {
+        return tileWidth;
+    }
+
+    /**
+     * Get the height in pixels of a single tile in the sprite sheet.
+     *
+     * @return the height of a single tile in pixels
+     */
+    public int getTileHeight() {
+        return tileHeight;
     }
 }

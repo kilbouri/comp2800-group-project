@@ -15,27 +15,27 @@ public class Keyboard {
 
     // most people have 2 hands, and its very difficult to press
     // more than 3 keys at once with every finger
-    private static final HashSet<Integer> pressedKeys = new HashSet<>(NUM_FINGERS_PER_HAND * 2 * 3);
+    private static final HashSet<Integer> heldKeys = new HashSet<>(NUM_FINGERS_PER_HAND * 2 * 3);
 
     /**
      * Get a KeyAdapter which should be added to a (usually focused)
      * GUI element. Key presses will be tracked and key state can be queried
      * with other static methods of this class.
-     * 
+     *
      * @return a KeyAdapter to add to a GUI element
-     * 
-     * @see Keyboard#isPressed(int)
+     *
+     * @see Keyboard#held(int)
      */
     public static KeyAdapter getKeyAdapter() {
         return new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                pressedKeys.add(e.getKeyCode());
+            public synchronized void keyPressed(KeyEvent e) {
+                heldKeys.add(e.getKeyCode());
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
-                pressedKeys.remove(e.getKeyCode());
+            public synchronized void keyReleased(KeyEvent e) {
+                heldKeys.remove(e.getKeyCode());
             }
         };
     }
@@ -45,14 +45,14 @@ public class Keyboard {
      * as the key adapter from {@link Keyboard#getKeyAdapter()}. The
      * adapter clears the list of pressed keys when focus is lost in order
      * to prevent strange movement.
-     * 
+     *
      * @return a FocusAdapter to add to a GUI element
      */
     public static FocusAdapter getFocusAdapter() {
         return new FocusAdapter() {
             @Override
-            public void focusLost(FocusEvent e) {
-                pressedKeys.clear();
+            public synchronized void focusLost(FocusEvent e) {
+                heldKeys.clear();
             }
         };
     }
@@ -60,13 +60,13 @@ public class Keyboard {
     /**
      * Determines whether or not the given key code, as outlined in
      * KeyEvent, is pressed or not.
-     * 
+     *
      * @param keyCode the key code, as specified in KeyEvent
      * @return true if the key is pressed, otherwise false
-     * 
+     *
      * @see KeyEvent
      */
-    public static boolean isPressed(int keyCode) {
-        return pressedKeys.contains(keyCode);
+    public synchronized static boolean held(int keyCode) {
+        return heldKeys.contains(keyCode);
     }
 }
