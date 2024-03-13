@@ -54,6 +54,8 @@ public class BackgroundImage extends GameObject {
         }
     }
 
+    @Override public void onCollision(GameObject other) {}
+
     private void scaleImage() {
         double rescaling = 1.0 * getGameLoop().getHeight() / image.getHeight();
         int scaledImageWidth = (int) (image.getWidth() * rescaling);

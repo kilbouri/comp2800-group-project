@@ -1,6 +1,9 @@
 package project;
 
 import engine.GameLoop;
+import project.GameObjects.Ground;
+import project.GameObjects.Player;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -13,7 +16,7 @@ public class MainLoop extends GameLoop {
     0,
     500,
     PlaceholderSpriteSheet.getInstance().getTile(0),
-    28,
+    29,
     1
   );
 
@@ -29,13 +32,12 @@ public class MainLoop extends GameLoop {
 
     addGameObject(ground);
     addGameObject(player);
+
   }
 
   @Override
   public void update(double deltaTime) {
-    if (player.getCollider().isColliding(ground.getCollider())) {
-      player.setGrounded(true);
-    }
+
   }
 
   @Override

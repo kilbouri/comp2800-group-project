@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 import engine.BoxCollider;
 import engine.Keyboard;
-import engine.Sprite;
+import engine.components.Sprite;
 
 public class Player extends Sprite {
 
