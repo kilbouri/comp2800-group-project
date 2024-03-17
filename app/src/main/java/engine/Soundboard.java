@@ -14,7 +14,7 @@ public class Soundboard {
      * An enumeration of all sounds this application may use.
      * An application should ideally prime this enum using
      * {@code Sound.values()} during startup.
-     * 
+     *
      * todo: a better implementation of this, because consumers have no way to
      * control the sound
      */
@@ -67,7 +67,7 @@ public class Soundboard {
 
     /**
      * Play the specified sound asynchronously.
-     * 
+     *
      * @param key the sound to play
      */
     public static void playSound(Sound key) {

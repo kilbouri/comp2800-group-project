@@ -1,104 +1,103 @@
 package project.GameObjects;
 
+import engine.BoxCollider;
 import engine.GameObject;
 import engine.Keyboard;
-import engine.components.BoxCollider;
-import engine.components.Sprite;
-import engine.components.Transform;
+import engine.Sprite;
+
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class Player extends GameObject {
 
-  private static final int MAX_MIDAIR_JUMPS = 1;
-  private int midairJumps = 0;
+    private static final int MAX_MIDAIR_JUMPS = 1;
+    private int midairJumps = 0;
 
-  protected double vSpeed = 0;
-  protected double hSpeed = 150;
+    protected double vSpeed = 0;
+    protected double hSpeed = 150;
+    protected double hSprintingSpeed = 2;
 
-  private boolean isGrounded = true;
-  private boolean spaceReleasedSinceLastJump = true;
+    private boolean isGrounded = true;
+    private boolean spaceReleasedSinceLastJump = true;
 
-  protected Transform transformComponent;
-  protected BoxCollider boxCollider;
-  protected Sprite sprite;
+    protected BoxCollider boxCollider;
+    protected Sprite sprite;
 
-  public Player(BufferedImage sprite) {
-    this.sprite = new Sprite(this, sprite);
-  }
 
-  public Player(BufferedImage sprite, double x, double y) {
-    this.sprite = new Sprite(this, new Point2D.Double(x, y), sprite);
-    boxCollider =
-      new BoxCollider(
-        this.sprite.getDisplayImage().getWidth(),
-        this.sprite.getDisplayImage().getHeight()
-      );
-    transformComponent = new Transform(x, y);
-    this.addComponent(boxCollider);
-    this.addComponent(transformComponent);
-    this.addComponent(this.sprite);
-  }
-
-  @Override
-  public void update(double deltaTime) {
-    if (isGrounded) {
-      vSpeed = 0;
-    } else {
-      // fake increased gravity when falling so it looks right
-      double gravityStrength = (vSpeed > 0) ? 0.8 : 1;
-      vSpeed -= 98.1 * 10 * deltaTime * gravityStrength;
+    public Player(BufferedImage sprite) {
+        this.sprite = new Sprite(sprite);
     }
 
-    boolean canJump = isGrounded || midairJumps < MAX_MIDAIR_JUMPS;
-    if (
-      canJump && spaceReleasedSinceLastJump && Keyboard.held(KeyEvent.VK_SPACE)
-    ) {
-      vSpeed = 500;
+    public Player(BufferedImage sprite, double x, double y) {
+        this.sprite = new Sprite(new Point2D.Double(x, y), sprite);
+        boxCollider = new BoxCollider();
+        this.transform = new Rectangle2D.Double(x, y, this.sprite.getDisplayImage().getWidth(),
+                this.sprite.getDisplayImage().getHeight());
 
-      if (!isGrounded) {
-        midairJumps += 1;
-      }
-
-      isGrounded = false;
-      spaceReleasedSinceLastJump = false;
+        this.addComponent(boxCollider);
     }
 
-    if (!Keyboard.held(KeyEvent.VK_SPACE)) {
-      spaceReleasedSinceLastJump = true;
-    }
+    @Override
+    public void update(double deltaTime) {
+        if (isGrounded) {
+            vSpeed = 0;
+        } else {
+            // fake increased gravity when falling so it looks right
+            double gravityStrength = (vSpeed > 0) ? 1.98 : 1;
+            vSpeed -= 98.1 * 10 * gravityStrength * deltaTime;
+        }
 
-    // @formatter:off
+        boolean canJump = isGrounded || midairJumps < MAX_MIDAIR_JUMPS;
+        if (canJump && spaceReleasedSinceLastJump && Keyboard.held(KeyEvent.VK_SPACE)) {
+            vSpeed = 500;
+            if (!isGrounded) {
+                midairJumps += 1;
+            }
+
+            isGrounded = false;
+            spaceReleasedSinceLastJump = false;
+        }
+
+        if (!Keyboard.held(KeyEvent.VK_SPACE)) {
+            spaceReleasedSinceLastJump = true;
+        }
+
+        // @formatter:off
         int dx = 0;
-    if (Keyboard.held(KeyEvent.VK_A)) { dx -= 1; }
-    if (Keyboard.held(KeyEvent.VK_D)) { dx += 1; }
-    // @formatter:on
+        if (Keyboard.held(KeyEvent.VK_A)) { dx -= 1; }
+        if (Keyboard.held(KeyEvent.VK_D)) { dx += 1; }
+        if (Keyboard.held(KeyEvent.VK_SHIFT)) { hSprintingSpeed = 2; }
+        else { hSprintingSpeed = 1; }
+        // @formatter:on
 
-    sprite.setPosition(transformComponent.x, transformComponent.y);
-    transformComponent.x += dx * hSpeed * deltaTime;
-    transformComponent.y -= vSpeed * deltaTime;
-  }
-
-  @Override
-  public void render(Graphics2D g) {
-    sprite.render(g);
-  }
-
-  public void setGrounded(boolean grounded) {
-    isGrounded = grounded;
-    if (isGrounded) {
-      // Reset vertical movement to prevent falling
-      vSpeed = 0;
+        this.transform.x += dx * hSpeed * hSprintingSpeed * deltaTime;
+        this.transform.y -= vSpeed * deltaTime;
+        sprite.setPosition(this.transform.x, this.transform.y);
     }
-    midairJumps = 0;
-  }
 
-  @Override
-  public void onCollision(GameObject other) {
-    if (other instanceof Ground) {
-      setGrounded(true);
+    @Override
+    public void render(Graphics2D g) {
+        sprite.render(g);
     }
-  }
+
+    public void setGrounded(boolean grounded) {
+        isGrounded = grounded;
+        if (isGrounded) {
+            // Reset vertical movement to prevent falling
+            vSpeed = 0;
+        }
+        midairJumps = 0;
+    }
+
+    @Override
+    public void onCollision(GameObject other) {
+        if (other instanceof Block) {
+
+            setGrounded(true);
+
+        }
+    }
 }

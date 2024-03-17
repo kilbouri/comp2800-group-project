@@ -16,12 +16,12 @@ public class Animation {
      * indices [startIndex, endIndex] in the given SpriteSheet. All SpriteSheets
      * provide a helper method to compute the index of the sprite in tile
      * (X, Y) in the sheet.
-     * 
+     *
      * @param sourceSheet the sprite sheet from which the animation should read
      * @param fps         the playback framerate of the animation
      * @param startIndex  the index of the first frame in the animation
      * @param endIndex    the index of the last frame in the animation (inclusive)
-     * 
+     *
      * @see SpriteSheet#getTileIndex(int, int)
      */
     public Animation(SpriteSheet sourceSheet, double fps, int startIndex, int endIndex) {
@@ -37,7 +37,7 @@ public class Animation {
 
     /**
      * Advances the Animation by the specified number of seconds.
-     * 
+     *
      * @param deltaTime the number of seconds
      */
     public void update(double deltaTime) {
@@ -51,7 +51,7 @@ public class Animation {
 
     /**
      * Retrieves the current sprite being shown in the animation
-     * 
+     *
      * @return the current animation frame
      */
     public BufferedImage getSprite() {

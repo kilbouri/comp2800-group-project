@@ -5,7 +5,7 @@ package engine;
  * It provides a base class for all components in the game engine.
  */
 public abstract class Component {
-    protected GameObject ParentObject;
+    protected GameObject parentObject;
 
     /**
      * Sets the game object that this component is attached to.
@@ -13,7 +13,7 @@ public abstract class Component {
      * @param gameObject The game object to set as the parent object.
      */
     public void setGameObject(GameObject gameObject) {
-        this.ParentObject = gameObject;
+        this.parentObject = gameObject;
     }
 
     /**
@@ -22,5 +22,5 @@ public abstract class Component {
      * However, it doesn't need to be called afterwards, as it is called automatically by the game loop.
      * @param deltaTime The time elapsed since the last update, in seconds.
      */
-    public abstract void update(final double deltaTime);
+    public abstract void update(double deltaTime);
 }

@@ -1,16 +1,11 @@
-package engine.components;
+package engine;
 
-import engine.Component;
-import engine.GameObject;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-/**
- * The Sprite class represents a graphical sprite component that can be attached to a game object.
- * It provides methods for rendering the sprite and manipulating its position and display image.
- */
-public class Sprite extends Component {
+
+public class Sprite {
 
   protected Point2D.Double position;
   protected BufferedImage displayImage;
@@ -18,18 +13,16 @@ public class Sprite extends Component {
   /**
    * Constructs a Sprite object with the specified parent game object, position, and sprite image.
    *
-   * @param ParentObject The parent game object to which this sprite belongs.
+   * @param parentObject The parent game object to which this sprite belongs.
    * @param position The initial position of the sprite.
    * @param sprite The image to be displayed as the sprite.
    */
   public Sprite(
-    GameObject ParentObject,
     Point2D.Double position,
     BufferedImage sprite
   ) {
     this.position = position;
     this.displayImage = sprite;
-    this.setGameObject(ParentObject);
   }
 
   /**
@@ -39,17 +32,10 @@ public class Sprite extends Component {
    * @param ParentObject The parent game object to which this sprite belongs.
    * @param sprite The image to be displayed as the sprite.
    */
-  public Sprite(GameObject ParentObject, BufferedImage sprite) {
-    this(ParentObject, new Point2D.Double(0, 0), sprite);
+  public Sprite(BufferedImage sprite) {
+    this(new Point2D.Double(0, 0), sprite);
   }
 
-  /**
-   * Updates the sprite's state based on the elapsed time since the last update.
-   *
-   * @param deltaTime The time elapsed since the last update, in seconds.
-   */
-  @Override
-  public void update(double deltaTime) {}
 
   /**
    * Renders the sprite on the specified graphics context.
