@@ -1,8 +1,9 @@
 package project;
 
 import engine.GameLoop;
-import project.GameObjects.Block;
-import project.GameObjects.Player;
+import engine.collision.BoxCollider;
+import project.gameObjects.Block;
+import project.gameObjects.Player;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,11 +14,11 @@ public class MainLoop extends GameLoop {
     private static final Dimension SCREEN_SIZE = new Dimension(900, 600);
 
     Block ground = new Block(
-        PlaceholderSpriteSheet.getInstance().getTile(0),
-        0,
-        600-100,
-        900,
-        60);
+            PlaceholderSpriteSheet.getInstance().getTile(0),
+            0,
+            600 - 100,
+            900,
+            60);
 
     Player player = new Player(
             PlaceholderSpriteSheet.getInstance().getTile(3),
@@ -27,16 +28,47 @@ public class MainLoop extends GameLoop {
     Block wall = new Block(
             PlaceholderSpriteSheet.getInstance().getTile(1),
             300,
-            600-100-60,
+            600 - 100 - 100,
             60,
-            60);
+            100);
+    Block wall2 = new Block(
+            PlaceholderSpriteSheet.getInstance().getTile(1),
+            20,
+            600 - 100 - 100,
+            60,
+            100);
+
+    Block floatingBlock = new Block(
+            PlaceholderSpriteSheet.getInstance().getTile(2),
+            180,
+            600 - 100 - 200 - 32,
+            60,
+            200);
+    Block floatingBlock2 = new Block(
+            PlaceholderSpriteSheet.getInstance().getTile(2),
+            300,
+            600 - 100 - 200 - 32,
+            300,
+            30);
+    Block floatingBlock3 = new Block(
+            PlaceholderSpriteSheet.getInstance().getTile(2),
+            600,
+            600 - 100 - 200 - 32,
+            60,
+            200);
     public MainLoop() {
         super(20);
         setSize(SCREEN_SIZE);
-
-        addGameObject(wall);
-        addGameObject(ground);
+        // The player always has to be added to the game loop first before any other
+        // object
+        ground.getComponent(BoxCollider.class).setCollisionLayer(engine.collision.CollisionLayer.GROUND);
         addGameObject(player);
+        addGameObject(ground);
+        addGameObject(wall);
+        addGameObject(wall2);
+        addGameObject(floatingBlock);
+        addGameObject(floatingBlock2);
+        addGameObject(floatingBlock3);
     }
 
     @Override

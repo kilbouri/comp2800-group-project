@@ -5,6 +5,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import engine.collision.CollisionEvent;
+
 /**
  * The base class for all game objects in the game engine.
  * It provides common functionality and methods that can be
@@ -34,14 +36,12 @@ public abstract class GameObject implements Comparable<GameObject> {
      * @throws UnsupportedOperationException if this object already belongs to
      *                                       another loop
      */
-    protected final void setGameLoop(GameLoop loop)
-            throws UnsupportedOperationException {
+    protected final void setGameLoop(GameLoop loop) throws UnsupportedOperationException {
         boolean isLeavingLoop = loop == null;
         boolean isChangingLoops = (this.associatedLoop != null) && (this.associatedLoop != loop);
 
         if (!isLeavingLoop && isChangingLoops) {
-            throw new UnsupportedOperationException(
-                    "GameObject already belongs to a GameLoop");
+            throw new UnsupportedOperationException("GameObject already belongs to a GameLoop");
         }
 
         this.associatedLoop = loop;
@@ -85,7 +85,21 @@ public abstract class GameObject implements Comparable<GameObject> {
      *
      * @param other the other GameObject involved in the collision
      */
-    public void onCollision(GameObject other) {
+    public void onCollisionEnter(CollisionEvent event) {
+    }
+
+    /**
+     * Called when a collision between this game object and another game object
+     * ends.
+     *
+     * @param event The collision event containing information about the collision.
+     */
+    public void onCollisionExit(CollisionEvent event) {
+    }
+
+    public void setPosition(double x, double y) {
+        transform.x = x;
+        transform.y = y;
     }
 
     /**
@@ -94,6 +108,12 @@ public abstract class GameObject implements Comparable<GameObject> {
      * @param component the component to add
      */
     public void addComponent(Component component) {
+        if (component.getParentObject() != null) {
+            throw new UnsupportedOperationException("Component already belongs to another GameObject");
+        }
+        if (components.contains(component)) {
+            throw new UnsupportedOperationException("Component already added to GameObject");
+        }
         components.add(component);
         component.setGameObject(this);
     }
@@ -127,6 +147,11 @@ public abstract class GameObject implements Comparable<GameObject> {
         }
     }
 
+    /**
+     * Returns the transform of this GameObject.
+     *
+     * @return the transform of this GameObject
+     */
     public Rectangle2D.Double getTransform() {
         return transform;
     }
@@ -135,5 +160,4 @@ public abstract class GameObject implements Comparable<GameObject> {
     public final int compareTo(GameObject o) {
         return Integer.compare(layer, o.layer);
     }
-
 }

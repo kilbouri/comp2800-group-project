@@ -9,12 +9,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import engine.collision.PhysicsWorld;
+
 public abstract class GameLoop extends Canvas implements Runnable {
 
-    private static final Font DEBUG_FONT = new Font(
-            Font.MONOSPACED,
-            Font.BOLD,
-            14);
+    private static final Font DEBUG_FONT = new Font(Font.MONOSPACED, Font.BOLD, 14);
     private static final double AVERAGE_FPS_SAMPLE_WINDOW = 100;
     private static final double SECONDS_TO_NANOS = 1e9;
     private static final double SECONDS_TO_MILLIS = 1e3;
@@ -32,6 +31,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private LinkedList<Double> lastFpsCounts = new LinkedList<Double>();
 
     private Vector<GameObject> gameObjects;
+    private PhysicsWorld physicsWorld = new PhysicsWorld();
 
     protected GameLoop(int gameObjectCapacity) {
         // Make sure this canvas can actually hecking have focus
@@ -101,16 +101,13 @@ public abstract class GameLoop extends Canvas implements Runnable {
      * Add a GameObject to the loop. All GameObjects will be automatically
      * updated and rendered each frame.
      *
-     * @param <T>
-     *               the type of GameObject being added
-     * @param object
-     *               the object to add
+     * @param <T>    the type of GameObject being added
+     * @param object the object to add
      * @return the same object passed in, for chaining
      */
     public <T extends GameObject> T addGameObject(T object) {
         object.setGameLoop(this);
         gameObjects.add(object);
-
         return object;
     }
 
@@ -142,13 +139,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
         for (int i = 0; i < currentObjects.length; i++) {
             currentObjects[i].update(deltaTime);
             currentObjects[i].updateComponents(deltaTime);
-
-            BoxCollider collision = currentObjects[i].getComponent(BoxCollider.class);
-            if (collision != null) {
-                collision.checkCollisions(gameObjects);
-
-            }
         }
+        physicsWorld.update(currentObjects);
 
         lastUpdateTime = (System.nanoTime() - startNanos) / SECONDS_TO_NANOS;
     }
@@ -220,8 +212,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
      * Runs once per frame. Game objects are updated from the lowest (back-most)
      * layer to the highest (front-most) layer. No intra-layer order is guaranteed.
      *
-     * @param deltaTime
-     *                  the time that has elapsed since the last update.
+     * @param deltaTime the time that has elapsed since the last update.
      */
     public abstract void update(final double deltaTime);
 
@@ -233,8 +224,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
      * to the highest (front-most layer). No intra-layer order is
      * guaranteed.
      *
-     * @param graphics
-     *                 a graphics object to draw the game with
+     * @param graphics a graphics object to draw the game with
      */
     public abstract void beforeRender(Graphics2D graphics);
 

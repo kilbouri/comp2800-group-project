@@ -19,14 +19,10 @@ public class TiledSprite extends Sprite {
      * The sprite is created using the given position and sprite image, and then
      * tiled based on the specified number of tiles.
      *
-     * @param position
-     *                 the position of the sprite
-     * @param sprite
-     *                 the sprite image
-     * @param tilesX
-     *                 the number of tiles in the x direction
-     * @param tilesY
-     *                 the number of tiles in the y direction
+     * @param position the position of the sprite
+     * @param sprite   the sprite image
+     * @param tilesX   the number of tiles in the x direction
+     * @param tilesY   the number of tiles in the y direction
      */
     public TiledSprite(
             Point2D.Double position,
@@ -46,10 +42,8 @@ public class TiledSprite extends Sprite {
      * The sprite is created using the default position (0, 0) and the given sprite
      * image.
      *
-     * @param ParentObject
-     *                     the parent game object
-     * @param sprite
-     *                     the sprite image
+     * @param ParentObject the parent game object
+     * @param sprite       the sprite image
      */
     public TiledSprite(GameObject ParentObject, BufferedImage sprite) {
         this(new Point2D.Double(0, 0), sprite, 1, 1);
@@ -58,8 +52,7 @@ public class TiledSprite extends Sprite {
     /**
      * Renders the sprite using the specified graphics object.
      *
-     * @param graphics
-     *                 the graphics object used for rendering
+     * @param graphics the graphics object used for rendering
      */
     public void render(java.awt.Graphics2D graphics) {
         super.render(graphics);

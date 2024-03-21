@@ -1,9 +1,12 @@
-package project.GameObjects;
+package project.gameObjects;
 
-import engine.BoxCollider;
 import engine.GameObject;
 import engine.Keyboard;
 import engine.Sprite;
+import engine.collision.BoxCollider;
+import engine.collision.CollisionEvent;
+import engine.collision.CollisionLayer;
+import engine.collision.CollisionType;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -16,6 +19,9 @@ public class Player extends GameObject {
     private static final int MAX_MIDAIR_JUMPS = 1;
     private int midairJumps = 0;
 
+    private CollisionType lastCollisionType = CollisionType.NONE;
+    private boolean isLeftRightCollided = false;
+
     protected double vSpeed = 0;
     protected double hSpeed = 150;
     protected double hSprintingSpeed = 2;
@@ -26,7 +32,6 @@ public class Player extends GameObject {
     protected BoxCollider boxCollider;
     protected Sprite sprite;
 
-
     public Player(BufferedImage sprite) {
         this.sprite = new Sprite(sprite);
     }
@@ -34,6 +39,8 @@ public class Player extends GameObject {
     public Player(BufferedImage sprite, double x, double y) {
         this.sprite = new Sprite(new Point2D.Double(x, y), sprite);
         boxCollider = new BoxCollider();
+        boxCollider.setMoveable(true);
+        boxCollider.setCollisionLayer(CollisionLayer.PLAYER);
         this.transform = new Rectangle2D.Double(x, y, this.sprite.getDisplayImage().getWidth(),
                 this.sprite.getDisplayImage().getHeight());
 
@@ -46,7 +53,7 @@ public class Player extends GameObject {
             vSpeed = 0;
         } else {
             // fake increased gravity when falling so it looks right
-            double gravityStrength = (vSpeed > 0) ? 1.98 : 1;
+            double gravityStrength = (vSpeed > 0) ? 1.5 : 1;
             vSpeed -= 98.1 * 10 * gravityStrength * deltaTime;
         }
 
@@ -75,6 +82,7 @@ public class Player extends GameObject {
 
         this.transform.x += dx * hSpeed * hSprintingSpeed * deltaTime;
         this.transform.y -= vSpeed * deltaTime;
+
         sprite.setPosition(this.transform.x, this.transform.y);
     }
 
@@ -89,15 +97,29 @@ public class Player extends GameObject {
             // Reset vertical movement to prevent falling
             vSpeed = 0;
         }
-        midairJumps = 0;
+        midairJumps = lastCollisionType == CollisionType.TOP ? midairJumps : 0;
     }
 
     @Override
-    public void onCollision(GameObject other) {
-        if (other instanceof Block) {
+    public void onCollisionEnter(CollisionEvent event) {
+        if (event.getOther() instanceof Block) {
+            if (event.getCollisionType() != CollisionType.TOP) {
+                setGrounded(true);
+            }
 
-            setGrounded(true);
+            if (event.getCollisionType() == CollisionType.LEFT || event.getCollisionType() == CollisionType.RIGHT) {
+            }
+            lastCollisionType = event.getCollisionType();
+        }
+    }
 
+    @Override
+    public void onCollisionExit(CollisionEvent event) {
+        if (event.getOther() instanceof Block) {
+            if (event.getCollisionType() != CollisionType.BOTTOM) {
+
+                setGrounded(false);
+            }
         }
     }
 }

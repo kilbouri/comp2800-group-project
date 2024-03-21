@@ -1,8 +1,8 @@
-package project.GameObjects;
+package project.gameObjects;
 
-import engine.BoxCollider;
 import engine.GameObject;
 import engine.SpriteUtils;
+import engine.collision.BoxCollider;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -31,6 +31,7 @@ public class Block extends GameObject {
     public Block(BufferedImage image, int x, int y, int width, int height) {
         clippedImage = SpriteUtils.tileToSize(image, width, height);
         boxCollider = new BoxCollider();
+        boxCollider.setCollisionLayer(engine.collision.CollisionLayer.DEFAULT);
         this.transform = new Rectangle2D.Double(x, y, width, height);
 
         this.addComponent(boxCollider);
