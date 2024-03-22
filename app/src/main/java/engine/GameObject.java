@@ -67,11 +67,13 @@ public abstract class GameObject implements Comparable<GameObject> {
     }
 
     /**
-     * Runs once per frame.
+     * Runs once per frame. Implementors must call super.update().
      *
      * @param deltaTime the time that has elapsed since the last update.
      */
-    public abstract void update(final double deltaTime);
+    public void update(final double deltaTime) {
+        updateComponents(deltaTime);
+    }
 
     /**
      * Draw the object. Runs once and only once after each `update`.

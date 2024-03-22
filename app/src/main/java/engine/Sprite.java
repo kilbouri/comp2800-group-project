@@ -4,9 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-public class Sprite {
+public class Sprite extends Component {
 
-    protected Point2D.Double position;
+    protected Point2D.Double offset;
     protected BufferedImage displayImage;
 
     /**
@@ -14,13 +14,11 @@ public class Sprite {
      * and sprite image.
      *
      * @param parentObject The parent game object to which this sprite belongs.
-     * @param position     The initial position of the sprite.
+     * @param offset       The initial position of the sprite.
      * @param sprite       The image to be displayed as the sprite.
      */
-    public Sprite(
-            Point2D.Double position,
-            BufferedImage sprite) {
-        this.position = position;
+    public Sprite(Point2D.Double offset, BufferedImage sprite) {
+        this.offset = offset;
         this.displayImage = sprite;
     }
 
@@ -42,7 +40,21 @@ public class Sprite {
      * @param graphics The graphics context on which to render the sprite.
      */
     public void render(Graphics2D graphics) {
-        graphics.drawImage(displayImage, (int) position.x, (int) position.y, null);
+        double posX = offset.x + getParentObject().getTransform().x;
+        double posY = offset.y + getParentObject().getTransform().y;
+
+        graphics.drawImage(displayImage, (int) posX, (int) posY, null);
+    }
+
+    /**
+     * Sets the position of the sprite to the specified coordinates.
+     *
+     * @param x The x-coordinate of the new position.
+     * @param y The y-coordinate of the new position.
+     */
+    public void setOffset(double x, double y) {
+        this.offset.x = x;
+        this.offset.y = y;
     }
 
     /**
@@ -55,22 +67,15 @@ public class Sprite {
     }
 
     /**
-     * Sets the position of the sprite to the specified coordinates.
-     *
-     * @param x The x-coordinate of the new position.
-     * @param y The y-coordinate of the new position.
-     */
-    public void setPosition(double x, double y) {
-        this.position.x = x;
-        this.position.y = y;
-    }
-
-    /**
      * Sets the display image of the sprite to the specified image.
      *
      * @param displayImage The new display image of the sprite.
      */
     public void setDisplayImage(BufferedImage displayImage) {
         this.displayImage = displayImage;
+    }
+
+    @Override
+    public void update(double deltaTime) {
     }
 }

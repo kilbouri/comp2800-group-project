@@ -127,20 +127,20 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private void doUpdate(final double deltaTime) {
         double startNanos = System.nanoTime();
 
-        // Run the concrete update implementation first, then objects
-        update(deltaTime);
-
         // We create an array as we need to sort on the game object's layer. This
         // also protects us from the application's possibility of destroying a
         // game object within the update.
         GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
         Arrays.sort(currentObjects);
 
+        physicsWorld.update(currentObjects);
+
+        // Run the concrete update implementation first, then objects
+        update(deltaTime);
+
         for (int i = 0; i < currentObjects.length; i++) {
             currentObjects[i].update(deltaTime);
-            currentObjects[i].updateComponents(deltaTime);
         }
-        physicsWorld.update(currentObjects);
 
         lastUpdateTime = (System.nanoTime() - startNanos) / SECONDS_TO_NANOS;
     }

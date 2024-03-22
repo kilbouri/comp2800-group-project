@@ -1,7 +1,6 @@
 package project;
 
 import engine.GameLoop;
-import engine.collision.BoxCollider;
 import project.gameobjects.Block;
 import project.gameobjects.Player;
 
@@ -56,14 +55,14 @@ public class MainLoop extends GameLoop {
             600 - 100 - 200 - 32,
             60,
             200);
+
     public MainLoop() {
         super(20);
         setSize(SCREEN_SIZE);
         // The player always has to be added to the game loop first before any other
         // object
-        ground.getComponent(BoxCollider.class).setCollisionLayer(engine.collision.CollisionLayer.GROUND);
-        addGameObject(player);
         addGameObject(ground);
+        addGameObject(player);
         addGameObject(wall);
         addGameObject(wall2);
         addGameObject(floatingBlock);
