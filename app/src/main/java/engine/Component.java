@@ -15,7 +15,7 @@ public abstract class Component {
      *
      * @param gameObject The game object to set as the parent object.
      */
-    public void setGameObject(GameObject gameObject) {
+    protected void setGameObject(GameObject gameObject) {
         this.parentObject = gameObject;
     }
 

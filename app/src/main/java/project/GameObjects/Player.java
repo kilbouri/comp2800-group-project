@@ -20,7 +20,6 @@ public class Player extends GameObject {
     private int midairJumps = 0;
 
     private CollisionType lastCollisionType = CollisionType.NONE;
-    private boolean isLeftRightCollided = false;
 
     protected double vSpeed = 0;
     protected double hSpeed = 150;

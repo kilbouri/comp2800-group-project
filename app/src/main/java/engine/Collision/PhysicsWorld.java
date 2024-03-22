@@ -71,15 +71,4 @@ public class PhysicsWorld {
         lastCollisions.addAll(currentCollisions);
     }
 
-    /**
-     * Calculates the hash code for the PhysicsWorld object based on its
-     * currentCollisions and lastCollisions sets.
-     *
-     * @return The hash code value for the PhysicsWorld object.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(currentCollisions, lastCollisions);
-
-    }
 }

@@ -1,15 +1,34 @@
 package engine.collision;
 
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RectangularShape;
+
 import engine.Component;
 import java.util.Objects;
 
+/**
+ * The BoxCollider class represents a collider component that can be attached to
+ * a game object.
+ * It defines a rectangular area that can be used to detect collisions with
+ * other colliders.
+ */
 public class BoxCollider extends Component {
 
     boolean moveable = false;
-
     private CollisionLayer collisionLayer;
 
+    /**
+     * Using the built in Rectangle2D.Double class to represent the collider's area,
+     * this function checks whether the
+     * game object that this Box Collider is attached to is colliding with another
+     * BoxCollider.
+     *
+     * @param other the other BoxCollider to check for collision with
+     * @return true if the game object is colliding with the other BoxCollider,
+     *         false otherwise
+     * @see RectangularShape#intersects(Rectangle2D)
+     *
+     */
     public boolean collidesWith(BoxCollider other) {
         return parentObject.getTransform().intersects(other.parentObject.getTransform());
     }
@@ -23,6 +42,12 @@ public class BoxCollider extends Component {
     public void update(double deltaTime) {
     }
 
+    /**
+     * Responds to a collision event by resolving the collision between the parent
+     * object and the other object.
+     *
+     * @param event the collision event to respond to
+     */
     public void respondToCollision(CollisionEvent event) {
         if (!this.moveable)
             return;
