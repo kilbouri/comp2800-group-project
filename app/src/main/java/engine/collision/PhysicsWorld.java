@@ -14,7 +14,7 @@ public class PhysicsWorld {
     /**
      * The global gravity constant.
      */
-    public static final double GRAVITY = 981;
+    public static final double GRAVITY = 981 * 0.5;
 
     private Set<CollisionEvent> currentCollisions = new HashSet<>();
     private Set<CollisionEvent> lastCollisions = new HashSet<>();

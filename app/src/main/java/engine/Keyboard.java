@@ -69,4 +69,33 @@ public class Keyboard {
     public synchronized static boolean held(int keyCode) {
         return heldKeys.contains(keyCode);
     }
+
+    /**
+     * Returns the average input on the specified axis. The result is:
+     *
+     * <ul>
+     * <li>0 if none or both of negative and positive are pressed</li>
+     * <li>1 if positive is pressed</li>
+     * <li>-1 if negative is pressed</li>
+     * </ul>
+     *
+     * @param negativeKeyCode the negative keycode, which returns -1 if pressed in
+     *                        isolation
+     * @param positiveKeyCode the positive keycode, which returns 1 if pressed in
+     *                        isolation
+     * @return 0 if none or both are pressed, else 1 or -1
+     */
+    public static int getAxis(int negativeKeyCode, int positiveKeyCode) {
+        int result = 0;
+
+        if (held(negativeKeyCode)) {
+            result -= 1;
+        }
+
+        if (held(positiveKeyCode)) {
+            result += 1;
+        }
+
+        return result;
+    }
 }

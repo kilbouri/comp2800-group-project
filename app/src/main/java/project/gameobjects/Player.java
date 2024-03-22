@@ -14,10 +14,13 @@ import java.awt.image.BufferedImage;
 
 public class Player extends GameObject {
 
+    private static final double JUMP_STRENGTH = 350;
+    private BoxCollider collider;
     private Sprite sprite;
 
     protected double vSpeed = 0;
-    protected double hSpeed = 150;
+    protected double walkSpeed = 150;
+    protected double sprintSpeed = 225;
 
     private boolean grounded = true;
 
@@ -26,7 +29,7 @@ public class Player extends GameObject {
     }
 
     public Player(BufferedImage sprite, double x, double y) {
-        this.addComponent(new BoxCollider());
+        this.addComponent(collider = new BoxCollider());
         this.addComponent(this.sprite = new Sprite(sprite));
 
         double w = sprite.getWidth();
@@ -37,20 +40,26 @@ public class Player extends GameObject {
 
     @Override
     public void update(double deltaTime) {
-        super.update(deltaTime);
-
         if (grounded) {
             vSpeed = 0;
         } else {
+            // Remember, acceleration is per second per second, so we actually DO want
+            // this "double application" of deltaTime.
             vSpeed -= PhysicsWorld.GRAVITY * deltaTime;
         }
 
         if (grounded && Keyboard.held(KeyEvent.VK_SPACE)) {
             grounded = false;
-            vSpeed = 100;
+            vSpeed = JUMP_STRENGTH;
         }
 
-        getTransform().y -= vSpeed * deltaTime;
+        int dx = Keyboard.getAxis(KeyEvent.VK_A, KeyEvent.VK_D);
+        double speed = (Keyboard.held(KeyEvent.VK_SHIFT)) ? sprintSpeed : walkSpeed;
+
+        transform.x += dx * speed * deltaTime;
+        transform.y -= vSpeed * deltaTime;
+
+        super.update(deltaTime);
     }
 
     @Override
@@ -65,5 +74,13 @@ public class Player extends GameObject {
         if (otherCollider.getBox().getMinY() <= this.transform.getMaxY()) {
             grounded = true;
         }
+
+        collider.resolveCollisionWith(otherCollider);
+    }
+
+    @Override
+    public void onCollisionExit(CollisionEvent event) {
+        // This probably is going to cause bugs, we might need to do checks on this
+        grounded = false;
     }
 }

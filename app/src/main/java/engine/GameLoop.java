@@ -133,14 +133,14 @@ public abstract class GameLoop extends Canvas implements Runnable {
         GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
         Arrays.sort(currentObjects);
 
-        physicsWorld.update(currentObjects);
-
         // Run the concrete update implementation first, then objects
         update(deltaTime);
 
         for (int i = 0; i < currentObjects.length; i++) {
             currentObjects[i].update(deltaTime);
         }
+
+        physicsWorld.update(currentObjects);
 
         lastUpdateTime = (System.nanoTime() - startNanos) / SECONDS_TO_NANOS;
     }
