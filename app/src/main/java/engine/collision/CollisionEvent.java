@@ -1,7 +1,5 @@
 package engine.collision;
-
 import engine.GameObject;
-import java.util.Objects;
 
 /**
  * Represents a collision event between two game objects.
@@ -93,24 +91,5 @@ public class CollisionEvent {
      */
     public CollisionLayer getOtherCollisionLayer() {
         return otherCollisionLayer;
-    }
-
-    /**
-     * Checks if this CollisionEvent is equal to another object.
-     *
-     * @param o The object to compare.
-     * @return true if the objects are equal, false otherwise.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        CollisionEvent that = (CollisionEvent) o;
-        return Objects.equals(collider, that.collider) &&
-                Objects.equals(other, that.other)
-                &&
-                collisionType == that.collisionType;
     }
 }

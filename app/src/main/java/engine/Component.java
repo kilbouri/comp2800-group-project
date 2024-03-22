@@ -1,5 +1,4 @@
 package engine;
-import java.util.Objects;
 
 /**
  * The base class for all components in the game engine.
