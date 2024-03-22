@@ -1,4 +1,4 @@
-package project.gameObjects;
+package project.gameobjects;
 
 import engine.GameObject;
 import engine.SpriteUtils;

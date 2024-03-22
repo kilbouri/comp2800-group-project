@@ -2,8 +2,8 @@ package project;
 
 import engine.GameLoop;
 import engine.collision.BoxCollider;
-import project.gameObjects.Block;
-import project.gameObjects.Player;
+import project.gameobjects.Block;
+import project.gameobjects.Player;
 
 import java.awt.Color;
 import java.awt.Dimension;
