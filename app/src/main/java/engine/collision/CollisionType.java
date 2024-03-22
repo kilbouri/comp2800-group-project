@@ -1,4 +1,4 @@
-package engine.collisions;
+package engine.collision;
 
 /**
  * Represents the type of collision that can occur between game objects.

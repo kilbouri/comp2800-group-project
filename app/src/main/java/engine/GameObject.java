@@ -5,7 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import engine.collisions.CollisionEvent;
+import engine.collision.CollisionEvent;
 
 /**
  * The base class for all game objects in the game engine.

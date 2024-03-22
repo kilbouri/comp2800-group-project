@@ -1,4 +1,4 @@
-package engine.collisions;
+package engine.collision;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;

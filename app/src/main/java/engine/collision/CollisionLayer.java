@@ -1,4 +1,4 @@
-package engine.collisions;
+package engine.collision;
 
 /**
  * The CollisionLayer enum represents different collision layers in the game.

@@ -1,4 +1,4 @@
-package engine.collisions;
+package engine.collision;
 
 import engine.GameObject;
 import java.util.Objects;

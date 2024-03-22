@@ -3,10 +3,10 @@ package project.gameobjects;
 import engine.GameObject;
 import engine.Keyboard;
 import engine.Sprite;
-import engine.collisions.BoxCollider;
-import engine.collisions.CollisionEvent;
-import engine.collisions.CollisionLayer;
-import engine.collisions.CollisionType;
+import engine.collision.BoxCollider;
+import engine.collision.CollisionEvent;
+import engine.collision.CollisionLayer;
+import engine.collision.CollisionType;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
