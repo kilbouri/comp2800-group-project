@@ -136,10 +136,4 @@ public class BoxCollider extends Component {
     public CollisionLayer getCollisionLayer() {
         return collisionLayer;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(moveable, collisionLayer);
-
-    }
 }

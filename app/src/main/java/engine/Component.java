@@ -38,14 +38,4 @@ public abstract class Component {
     public GameObject getParentObject() {
         return parentObject;
     }
-
-    /**
-     * Generates a hash code for this component.
-     *
-     * @return The hash code value.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(parentObject);
-    }
 }
