@@ -1,7 +1,7 @@
 package project;
 
 import engine.GameLoop;
-import engine.collision.BoxCollider;
+import engine.collisions.BoxCollider;
 import project.gameobjects.Block;
 import project.gameobjects.Player;
 
@@ -61,7 +61,7 @@ public class MainLoop extends GameLoop {
         setSize(SCREEN_SIZE);
         // The player always has to be added to the game loop first before any other
         // object
-        ground.getComponent(BoxCollider.class).setCollisionLayer(engine.collision.CollisionLayer.GROUND);
+        ground.getComponent(BoxCollider.class).setCollisionLayer(engine.collisions.CollisionLayer.GROUND);
         addGameObject(player);
         addGameObject(ground);
         addGameObject(wall);

@@ -1,4 +1,4 @@
-package engine.collision;
+package engine.collisions;
 
 import java.util.HashSet;
 import java.util.Set;

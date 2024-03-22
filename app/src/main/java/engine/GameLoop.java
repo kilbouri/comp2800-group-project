@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import engine.collision.PhysicsWorld;
+import engine.collisions.PhysicsWorld;
 
 public abstract class GameLoop extends Canvas implements Runnable {
 
