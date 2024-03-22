@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import engine.collision.PhysicsWorld;
+
 public abstract class GameLoop extends Canvas implements Runnable {
 
     private static final Font DEBUG_FONT = new Font(Font.MONOSPACED, Font.BOLD, 14);
@@ -29,6 +31,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private LinkedList<Double> lastFpsCounts = new LinkedList<Double>();
 
     private Vector<GameObject> gameObjects;
+    private PhysicsWorld physicsWorld = new PhysicsWorld();
 
     protected GameLoop(int gameObjectCapacity) {
         // Make sure this canvas can actually hecking have focus
@@ -50,6 +53,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
         bufferStrategy = getBufferStrategy();
 
         gameThread = new Thread(this, "Game Thread");
+
         gameThread.start();
     }
 
@@ -104,7 +108,6 @@ public abstract class GameLoop extends Canvas implements Runnable {
     public <T extends GameObject> T addGameObject(T object) {
         object.setGameLoop(this);
         gameObjects.add(object);
-
         return object;
     }
 
@@ -135,7 +138,9 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
         for (int i = 0; i < currentObjects.length; i++) {
             currentObjects[i].update(deltaTime);
+            currentObjects[i].updateComponents(deltaTime);
         }
+        physicsWorld.update(currentObjects);
 
         lastUpdateTime = (System.nanoTime() - startNanos) / SECONDS_TO_NANOS;
     }
@@ -180,7 +185,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
     /**
      * Draws some engine metrics on the screen in the top right corner.
      *
-     * @param graphics the graphics object to draw the metrics with.
+     * @param graphics
+     *                 the graphics object to draw the metrics with.
      */
     protected void renderEngineMetrics(Graphics2D graphics) {
         double averageFps = lastFpsCounts.stream().reduce(0.0, Double::sum) / lastFpsCounts.size();

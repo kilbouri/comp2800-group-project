@@ -1,11 +1,23 @@
 package engine;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
+import engine.collision.CollisionEvent;
+
+/**
+ * The base class for all game objects in the game engine.
+ * It provides common functionality and methods that can be
+ * overridden by subclasses.
+ */
 public abstract class GameObject implements Comparable<GameObject> {
 
     private int layer;
     private GameLoop associatedLoop;
+    private List<Component> components = new ArrayList<>();
+    protected Rectangle2D.Double transform;
 
     /**
      * Sets the layer of this GameObject. Higher layers
@@ -67,6 +79,82 @@ public abstract class GameObject implements Comparable<GameObject> {
      * @param graphics a graphics object to draw the object with
      */
     public abstract void render(Graphics2D graphics);
+
+    /**
+     * Called when this GameObject collides with another GameObject.
+     *
+     * @param other the other GameObject involved in the collision
+     */
+    public void onCollisionEnter(CollisionEvent event) {
+    }
+
+    /**
+     * Called when a collision between this game object and another game object
+     * ends.
+     *
+     * @param event The collision event containing information about the collision.
+     */
+    public void onCollisionExit(CollisionEvent event) {
+    }
+
+    public void setPosition(double x, double y) {
+        transform.x = x;
+        transform.y = y;
+    }
+
+    /**
+     * Adds a component to this GameObject.
+     *
+     * @param component the component to add
+     */
+    public void addComponent(Component component) {
+        if (component.getParentObject() != null) {
+            throw new UnsupportedOperationException("Component already belongs to another GameObject");
+        }
+        if (components.contains(component)) {
+            throw new UnsupportedOperationException("Component already added to GameObject");
+        }
+        components.add(component);
+        component.setGameObject(this);
+    }
+
+    /**
+     * Returns the component of the specified type if it exists in the GameObject.
+     *
+     * @param <T>            the type of the component to retrieve
+     * @param componentClass the class object representing the type of the component
+     * @return the component of the specified type if found, otherwise null
+     */
+    public <T extends Component> T getComponent(Class<T> componentClass) {
+        for (Component component : components) {
+            if (componentClass.isInstance(component)) {
+                return componentClass.cast(component); // Cast the component to the correct type
+            }
+        }
+        return null; // Return null if the component is not found
+    }
+
+    /**
+     * Updates all the components attached to this GameObject.
+     * Note: this method is called in the Game loop and should not be called
+     * manually.
+     *
+     * @param deltaTime the time that has elapsed since the last update.
+     */
+    public void updateComponents(final double deltaTime) {
+        for (Component component : components) {
+            component.update(deltaTime);
+        }
+    }
+
+    /**
+     * Returns the transform of this GameObject.
+     *
+     * @return the transform of this GameObject
+     */
+    public Rectangle2D.Double getTransform() {
+        return transform;
+    }
 
     @Override
     public final int compareTo(GameObject o) {
