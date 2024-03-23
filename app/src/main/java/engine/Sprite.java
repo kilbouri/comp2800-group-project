@@ -43,7 +43,7 @@ public class Sprite extends Component {
         double posX = offset.x + getParentObject().getTransform().x;
         double posY = offset.y + getParentObject().getTransform().y;
 
-        graphics.drawImage(displayImage, (int) Math.round(posX), (int) Math.round(posY), null);
+        graphics.drawImage(displayImage, (int) posX, (int) posY, null);
     }
 
     /**

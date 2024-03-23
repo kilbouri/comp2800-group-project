@@ -35,9 +35,6 @@ public class Block extends GameObject {
         this.addComponent(boxCollider = new BoxCollider());
     }
 
-    public void update(double deltaTime) {
-    }
-
     @Override
     public void render(Graphics2D graphics) {
         sprite.render(graphics);
