@@ -1,7 +1,5 @@
 package project;
 
-import project.levels.Level;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 
@@ -15,7 +13,6 @@ public class MainLoop extends GameLoop {
     public MainLoop() {
         super(20);
         setSize(SCREEN_W, SCREEN_H);
-        loadLevel(Level.Developer.getLoader());
     }
 
     @Override

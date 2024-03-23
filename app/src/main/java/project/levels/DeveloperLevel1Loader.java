@@ -7,7 +7,7 @@ import project.gameobjects.Block;
 import project.gameobjects.LevelSwitchTrigger;
 import project.gameobjects.Player;
 
-public class DeveloperLevelLoader implements LevelLoader {
+public class DeveloperLevel1Loader implements LevelLoader {
 
     @Override
     public void load(GameLoop loop) {
@@ -18,6 +18,7 @@ public class DeveloperLevelLoader implements LevelLoader {
                 100, 500 - placeholders.getTileHeight());
         loop.addGameObject(player);
 
+        // Ground
         loop.addGameObject(new Block(
                 placeholders.getTile(0),
                 0, 600 - 100,
@@ -50,8 +51,9 @@ public class DeveloperLevelLoader implements LevelLoader {
 
         LevelSwitchTrigger trigger = new LevelSwitchTrigger(
                 player,
-                300, 300,
-                150, 150);
+                Level.Developer2,
+                800, 600 - 100 - 400,
+                50, 400);
         trigger.setDebug(true);
         loop.addGameObject(trigger);
     }

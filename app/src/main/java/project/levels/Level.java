@@ -3,7 +3,8 @@ package project.levels;
 import engine.core.LevelLoader;
 
 public enum Level {
-    Developer(DeveloperLevelLoader.class);
+    Developer1(DeveloperLevel1Loader.class),
+    Developer2(DeveloperLevel2Loader.class);
 
     private LevelLoader loader;
 
