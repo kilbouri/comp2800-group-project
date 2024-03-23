@@ -1,9 +1,11 @@
 package engine;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -127,19 +129,19 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private void doUpdate(final double deltaTime) {
         double startNanos = System.nanoTime();
 
-        // Run the concrete update implementation first, then objects
-        update(deltaTime);
-
         // We create an array as we need to sort on the game object's layer. This
         // also protects us from the application's possibility of destroying a
         // game object within the update.
         GameObject[] currentObjects = gameObjects.toArray(new GameObject[gameObjects.size()]);
         Arrays.sort(currentObjects);
 
+        // Run the concrete update implementation first, then objects
+        update(deltaTime);
+
         for (int i = 0; i < currentObjects.length; i++) {
             currentObjects[i].update(deltaTime);
-            currentObjects[i].updateComponents(deltaTime);
         }
+
         physicsWorld.update(currentObjects);
 
         lastUpdateTime = (System.nanoTime() - startNanos) / SECONDS_TO_NANOS;
@@ -206,6 +208,69 @@ public abstract class GameLoop extends Canvas implements Runnable {
         }
 
         graphics.setFont(original);
+    }
+
+    protected void renderWASD(Graphics2D graphics) {
+        char[][] keyDisplayActive = {
+                new char[] { ' ', ' ', ' ', ' ', ' ' },
+                new char[] { ' ', ' ', ' ', ' ', ' ' },
+                new char[] { ' ', ' ', ' ', ' ', ' ' }
+        };
+
+        char[][] keyDisplayInactive = {
+                new char[] { ' ', ' ', ' ', ' ', ' ' },
+                new char[] { ' ', ' ', ' ', ' ', ' ' },
+                new char[] { ' ', ' ', ' ', ' ', ' ' }
+        };
+
+        if (Keyboard.held(KeyEvent.VK_W)) {
+            keyDisplayActive[0][2] = 'W';
+        } else {
+            keyDisplayInactive[0][2] = 'W';
+        }
+
+        if (Keyboard.held(KeyEvent.VK_S)) {
+            keyDisplayActive[1][2] = 'S';
+        } else {
+            keyDisplayInactive[1][2] = 'S';
+        }
+
+        if (Keyboard.held(KeyEvent.VK_A)) {
+            keyDisplayActive[1][0] = 'A';
+        } else {
+            keyDisplayInactive[1][0] = 'A';
+        }
+
+        if (Keyboard.held(KeyEvent.VK_D)) {
+            keyDisplayActive[1][4] = 'D';
+        } else {
+            keyDisplayInactive[1][4] = 'D';
+        }
+
+        if (Keyboard.held(KeyEvent.VK_SPACE)) {
+            keyDisplayActive[2] = "SPACE".toCharArray();
+        } else {
+            keyDisplayInactive[2] = "SPACE".toCharArray();
+        }
+
+        Font originalFont = graphics.getFont();
+        graphics.setFont(DEBUG_FONT);
+
+        Color originalColor = graphics.getColor();
+        graphics.setColor(Color.GRAY);
+
+        int lineHeight = graphics.getFontMetrics().getHeight();
+        for (int i = 0; i < keyDisplayInactive.length; i++) {
+            graphics.drawString(String.valueOf(keyDisplayInactive[i]), lineHeight, (i + 4) * lineHeight);
+        }
+
+        graphics.setColor(originalColor);
+
+        for (int i = 0; i < keyDisplayActive.length; i++) {
+            graphics.drawString(String.valueOf(keyDisplayActive[i]), lineHeight, (i + 4) * lineHeight);
+        }
+
+        graphics.setFont(originalFont);
     }
 
     /**

@@ -2,7 +2,6 @@ package engine.collision;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 import engine.GameObject;
 
 /**
@@ -12,6 +11,11 @@ import engine.GameObject;
  * updates their states accordingly.
  */
 public class PhysicsWorld {
+    /**
+     * The global gravity constant.
+     */
+    public static final double GRAVITY = 981 * 0.5;
+
     private Set<CollisionEvent> currentCollisions = new HashSet<>();
     private Set<CollisionEvent> lastCollisions = new HashSet<>();
 
@@ -25,50 +29,52 @@ public class PhysicsWorld {
         currentCollisions.clear();
 
         for (int i = 0; i < gameObjects.length - 1; i++) {
+            GameObject first = gameObjects[i];
+            BoxCollider firstCollider = first.getComponent(BoxCollider.class);
+
+            if (firstCollider == null) {
+                continue;
+            }
+
             for (int j = i + 1; j < gameObjects.length; j++) {
-                GameObject gameObject = gameObjects[i];
-                GameObject otherObject = gameObjects[j];
-                BoxCollider gameObjectCollider = gameObject.getComponent(BoxCollider.class);
-                BoxCollider otherObjectCollider = otherObject.getComponent(BoxCollider.class);
+                GameObject second = gameObjects[j];
+                if (first == second) {
+                    return;
+                }
 
-                if (gameObjectCollider != null && otherObjectCollider != null) {
-                    if (gameObject != otherObject && gameObjectCollider.collidesWith(otherObjectCollider)) {
-                        CollisionEvent event = new CollisionEvent(gameObject, otherObject);
-                        currentCollisions.add(event);
+                BoxCollider secondCollider = second.getComponent(BoxCollider.class);
+                if (secondCollider == null) {
+                    continue;
+                }
 
-                        if (!lastCollisions.contains(event)) {
-                            // New collision
-                            gameObject.onCollisionEnter(event);
-                            otherObject.onCollisionEnter(event);
-                        } else {
-                            // Collision stay
-                            // gameObject.onCollisionStay(event);
-                            // otherObject.onCollisionStay(event);
-                        }
+                if (firstCollider.getBox().intersects(secondCollider.getBox())) {
+                    // We cache the colliders in the event so that consumers don't need to enumerate
+                    // the components on the two game objects just to find the collider.
+                    CollisionEvent event = new CollisionEvent(first, firstCollider, second, secondCollider);
 
-                        // Respond to collision if the object is moveable
-                        if (gameObjectCollider.moveable) {
-                            gameObjectCollider.respondToCollision(event);
-                        }
-                        if (otherObjectCollider.moveable) {
-                            otherObjectCollider.respondToCollision(event);
-                        }
+                    currentCollisions.add(event); // CollisionEvent implements equals
+                    lastCollisions.remove(event); // and hashCode to enable this
+
+                    if (!lastCollisions.contains(event)) {
+                        // New collision
+                        first.onCollisionEnter(event);
+                        second.onCollisionEnter(event);
+                    } else {
+                        // Collision stay
+                        // gameObject.onCollisionStay(event);
+                        // otherObject.onCollisionStay(event);
                     }
                 }
             }
         }
 
-        // Check for collisions that have ended
-        for (CollisionEvent lastEvent : lastCollisions) {
-            if (!currentCollisions.contains(lastEvent)) {
-                // Collision ended
-                lastEvent.getCollider().onCollisionExit(lastEvent);
-                lastEvent.getOther().onCollisionExit(lastEvent);
-            }
+        // All continued collisions are removed already
+        for (CollisionEvent endedCollision : lastCollisions) {
+            endedCollision.getFirst().onCollisionExit(endedCollision);
+            endedCollision.getSecond().onCollisionExit(endedCollision);
         }
-        // Prepare for the next update
+
         lastCollisions.clear();
         lastCollisions.addAll(currentCollisions);
     }
-
 }

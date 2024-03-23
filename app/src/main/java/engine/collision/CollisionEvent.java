@@ -1,95 +1,112 @@
 package engine.collision;
+
+import java.util.Objects;
+
 import engine.GameObject;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Represents a collision event between two game objects.
  */
 public class CollisionEvent {
-    private GameObject collider;
-    private CollisionLayer colliderCollisionLayer;
-    private GameObject other;
-    private CollisionLayer otherCollisionLayer;
-    private CollisionType collisionType;
+
+    private GameObject first;
+    private BoxCollider firstCollider;
+
+    private GameObject second;
+    private BoxCollider secondCollider;
+
+    private Rectangle2D overlap = null;
 
     /**
-     * Constructs a CollisionEvent object with the specified collider and other game objects.
-     *
-     * @param collider The game object that caused the collision.
-     * @param other    The game object that collided with the collider.
+     * @param first          the first GameObject involved in the collision
+     * @param firstCollider  the collider of the first GameObject
+     * @param second         the second GameObject involved in the collision
+     * @param secondCollider the collider of the second GameObject
      */
-    public CollisionEvent(GameObject collider, GameObject other) {
-        this.collider = collider;
-        this.other = other;
-        this.collisionType = CollisionType.NONE;
+    public CollisionEvent(GameObject first, BoxCollider firstCollider, GameObject second, BoxCollider secondCollider) {
+        this.first = first;
+        this.firstCollider = firstCollider;
 
-        if (collider != null) {
-            this.colliderCollisionLayer = collider.getComponent(BoxCollider.class).getCollisionLayer() != null
-                    ? collider.getComponent(BoxCollider.class).getCollisionLayer()
-                    : CollisionLayer.DEFAULT;
+        this.second = second;
+        this.secondCollider = secondCollider;
+    }
+
+    /**
+     * @return the first GameObject involved in the collision
+     */
+    public GameObject getFirst() {
+        return first;
+    }
+
+    /**
+     * @return the collider of the first GameObject
+     * @see #getFirst()
+     */
+    public BoxCollider getFirstCollider() {
+        return firstCollider;
+    }
+
+    /**
+     * @return the second GameObject involved in the collision
+     */
+    public GameObject getSecond() {
+        return second;
+    }
+
+    /**
+     * @return the collider of the second GameObject
+     * @see #getSecond()
+     */
+    public BoxCollider getSecondCollider() {
+        return secondCollider;
+    }
+
+    /**
+     * Returns the other game object in the collision.
+     *
+     * @param self the known game object
+     * @return {@link #getFirst()} if self is not the same object, otherwise
+     *         {@link #getSecond()}
+     */
+    public GameObject getOther(GameObject self) {
+        return (first != self) ? first : second;
+    }
+
+    /**
+     * Returns the collider of the other game object in the collision.
+     *
+     * @param self the known game object
+     * @return {@link #getFirstCollider()} if self is not the same object, otherwise
+     *         {@link #getSecondCollider()}
+     */
+    public BoxCollider getOtherCollider(GameObject self) {
+        return (first != self) ? firstCollider : secondCollider;
+    }
+
+    public Rectangle2D getOverlap() {
+        if (overlap == null) {
+            overlap = firstCollider.getBox().createIntersection(secondCollider.getBox());
         }
-        if (other != null) {
-            this.otherCollisionLayer = other.getComponent(BoxCollider.class).getCollisionLayer() != null
-                    ? other.getComponent(BoxCollider.class).getCollisionLayer()
-                    : CollisionLayer.DEFAULT;
+
+        return overlap;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CollisionEvent)) {
+            return false;
         }
+
+        CollisionEvent other = (CollisionEvent) obj;
+
+        // Note the use of == rather than .equals. We are concerned with
+        // referential equality, to ensure that hashCode is correctly related.
+        return first == other.first && second == other.second;
     }
 
-    /**
-     * Returns the game object that caused the collision.
-     *
-     * @return The collider game object.
-     */
-    public GameObject getCollider() {
-        return collider;
-    }
-
-    /**
-     * Returns the game object that collided with the collider.
-     *
-     * @return The other game object.
-     * @see GameObject
-     */
-    public GameObject getOther() {
-        return other;
-    }
-
-    /**
-     * Returns the type of collision that occurred.
-     *
-     * @return The collision type.
-     * @see CollisionType
-     */
-    public CollisionType getCollisionType() {
-        return collisionType;
-    }
-
-    /**
-     * Sets the type of collision that occurred.
-     *
-     * @param collisionType The collision type to set.
-     * @see CollisionType
-     */
-    public void setCollisionType(CollisionType collisionType) {
-        this.collisionType = collisionType;
-    }
-
-    /**
-     * Returns the collision layer of the collider game object.
-     *
-     * @return The collider's collision layer.
-     * @see CollisionLayer
-     */
-    public CollisionLayer getColliderCollisionLayer() {
-        return colliderCollisionLayer;
-    }
-
-    /**
-     * Returns the collision layer of the other game object.
-     *
-     * @return The other game object's collision layer.
-     * @see CollisionLayer
-     */
-    public CollisionLayer getOtherCollisionLayer() {
-        return otherCollisionLayer;
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 }

@@ -1,33 +1,30 @@
 package engine.collision;
+
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.RectangularShape;
 import engine.Component;
 
 /**
  * The BoxCollider class represents a collider component that can be attached to
  * a game object.
- * It defines a rectangular area that can be used to detect collisions with
- * other colliders.
  */
 public class BoxCollider extends Component {
 
-    boolean moveable = false;
-    private CollisionLayer collisionLayer;
+    public static class OverlapFlags {
+        public static final int TOP_EDGE = 1 << 0;
+        public static final int LEFT_EDGE = 1 << 1;
+        public static final int RIGHT_EDGE = 1 << 2;
+        public static final int BOTTOM_EDGE = 1 << 3;
+
+        public static boolean checkEdge(int flags, int edge) {
+            return (flags & edge) != 0;
+        }
+    }
 
     /**
-     * Using the built in Rectangle2D.Double class to represent the collider's area,
-     * this function checks whether the
-     * game object that this Box Collider is attached to is colliding with another
-     * BoxCollider.
-     *
-     * @param other the other BoxCollider to check for collision with
-     * @return true if the game object is colliding with the other BoxCollider,
-     *         false otherwise
-     * @see RectangularShape#intersects(Rectangle2D)
-     *
+     * @return the Rectangle2D representing the bounds of the box collider
      */
-    public boolean collidesWith(BoxCollider other) {
-        return parentObject.getTransform().intersects(other.parentObject.getTransform());
+    public Rectangle2D getBox() {
+        return parentObject.getTransform();
     }
 
     /**
@@ -40,21 +37,19 @@ public class BoxCollider extends Component {
     }
 
     /**
-     * Responds to a collision event by resolving the collision between the parent
-     * object and the other object.
+     * Pushes this collider out of the provided box collider
      *
-     * @param event the collision event to respond to
+     * @param other the object to push
      */
-    public void respondToCollision(CollisionEvent event) {
-        if (!this.moveable)
-            return;
+    public void resolveCollisionWith(BoxCollider other) {
+        Rectangle2D.Double selfTrans = this.parentObject.getTransform();
+        Rectangle2D.Double otherTrans = other.parentObject.getTransform();
 
-        Rectangle2D.Double colliderTransform = this.parentObject.getTransform();
-        Rectangle2D.Double otherTransform = event.getOther().getTransform();
-        Rectangle2D intersection = colliderTransform.createIntersection(otherTransform);
+        Rectangle2D intersection = selfTrans.createIntersection(otherTrans);
 
-        if (intersection.isEmpty())
+        if (intersection.isEmpty()) {
             return; // No intersection, no collision to resolve
+        }
 
         // Create a temporary collider centered at the intersection's center
         // with a size small enough to fit inside the intersection
@@ -62,35 +57,29 @@ public class BoxCollider extends Component {
         Rectangle2D.Double tempCollider = new Rectangle2D.Double(
                 intersection.getCenterX() - tempSize / 2,
                 intersection.getCenterY() - tempSize / 2,
-                tempSize,
-                tempSize);
+                tempSize, tempSize);
 
         // Now determine the overlap between the temp collider and the original
         // colliderTransform
-        double colliderCenterX = colliderTransform.getCenterX();
-        double colliderCenterY = colliderTransform.getCenterY();
-        double tempCenterX = tempCollider.getCenterX();
-        double tempCenterY = tempCollider.getCenterY();
-
         double overlapX = 0;
         double overlapY = 0;
 
         // Horizontal overlap
-        if (tempCenterX < colliderCenterX) {
+        if (tempCollider.getCenterX() < selfTrans.getCenterX()) {
             // Collision from the left
-            overlapX = colliderTransform.getX() - (tempCollider.getX() + tempCollider.getWidth());
+            overlapX = selfTrans.getX() - tempCollider.getMaxX();
         } else {
             // Collision from the right
-            overlapX = (colliderTransform.getX() + colliderTransform.getWidth()) - tempCollider.getX();
+            overlapX = selfTrans.getMaxX() - tempCollider.getX();
         }
 
         // Vertical overlap
-        if (tempCenterY < colliderCenterY) {
+        if (tempCollider.getCenterY() < selfTrans.getCenterY()) {
             // Collision from the top
-            overlapY = colliderTransform.getY() - (tempCollider.getY() + tempCollider.getHeight());
+            overlapY = selfTrans.getY() - tempCollider.getMaxY();
         } else {
             // Collision from the bottom
-            overlapY = (colliderTransform.getY() + colliderTransform.getHeight()) - tempCollider.getY();
+            overlapY = selfTrans.getMaxY() - tempCollider.getY();
         }
 
         // Resolve the collision based on the direction with the smallest overlap
@@ -98,39 +87,73 @@ public class BoxCollider extends Component {
             // Resolve horizontally
             if (overlapX > 0) {
                 // Collision from the left
-                this.parentObject.getTransform().x = event.getOther().getTransform().x
-                        - this.parentObject.getTransform().width;
-                event.setCollisionType(CollisionType.LEFT);
+                selfTrans.x = otherTrans.x - selfTrans.width;
             } else {
                 // Collision from the right
-                this.parentObject.getTransform().x = event.getOther().getTransform().x
-                        + event.getOther().getTransform().width;
-                event.setCollisionType(CollisionType.RIGHT);
+                selfTrans.x = otherTrans.getMaxX();
             }
         } else {
             if (overlapY > 0) {
                 // Collision from the top
-                this.parentObject.getTransform().y = event.getOther().getTransform().y
-                        - this.parentObject.getTransform().height;
-                event.setCollisionType(CollisionType.TOP);
+                selfTrans.y = otherTrans.y - selfTrans.height;
             } else {
                 // Collision from the bottom
-                this.parentObject.getTransform().y = event.getOther().getTransform().y
-                        + event.getOther().getTransform().height;
-                event.setCollisionType(CollisionType.BOTTOM);
+                selfTrans.y = otherTrans.getMaxY();
             }
         }
     }
 
-    public void setMoveable(boolean moveable) {
-        this.moveable = moveable;
+    /**
+     * Computes the bitwise OR of the flags defined in {@link OverlapFlags}
+     * representing the set of edges of this collider which overlap with `other`.
+     *
+     * @param other the collider to check overlap with
+     * @return the bitwise OR of the overlapping edges, or 0 if no overlap.
+     */
+    public int overlapWith(BoxCollider other) {
+        int result = 0;
+
+        Rectangle2D box = getBox();
+        Rectangle2D otherBox = other.getBox();
+
+        final double boxMinX = box.getMinX();
+        final double boxMaxX = box.getMaxX();
+        final double boxMinY = box.getMinY();
+        final double boxMaxY = box.getMaxY();
+        final double otherMinX = otherBox.getMinX();
+        final double otherMaxX = otherBox.getMaxX();
+        final double otherMinY = otherBox.getMinY();
+        final double otherMaxY = otherBox.getMaxY();
+
+        final boolean top = between(boxMinY, otherMinY, otherMaxY);
+        final boolean bottom = between(boxMaxY, otherMinY, otherMaxY);
+        final boolean left = between(boxMinX, otherMinX, otherMaxX);
+        final boolean right = between(boxMaxX, otherMinX, otherMaxX);
+
+        if (top || bottom) {
+            if (left) {
+                result |= OverlapFlags.LEFT_EDGE;
+            }
+
+            if (right) {
+                result |= OverlapFlags.RIGHT_EDGE;
+            }
+        }
+
+        if (left || right) {
+            if (top) {
+                result |= OverlapFlags.TOP_EDGE;
+            }
+
+            if (bottom) {
+                result |= OverlapFlags.BOTTOM_EDGE;
+            }
+        }
+
+        return result;
     }
 
-    public void setCollisionLayer(CollisionLayer collisionLayer) {
-        this.collisionLayer = collisionLayer;
-    }
-
-    public CollisionLayer getCollisionLayer() {
-        return collisionLayer;
+    private static boolean between(double val, double min, double max) {
+        return min <= val && val <= max;
     }
 }

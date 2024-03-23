@@ -5,84 +5,63 @@ import engine.Keyboard;
 import engine.Sprite;
 import engine.collision.BoxCollider;
 import engine.collision.CollisionEvent;
-import engine.collision.CollisionLayer;
-import engine.collision.CollisionType;
+import engine.collision.PhysicsWorld;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import static engine.collision.BoxCollider.OverlapFlags;
+
 public class Player extends GameObject {
 
-    private static final int MAX_MIDAIR_JUMPS = 1;
-    private int midairJumps = 0;
-
-    private CollisionType lastCollisionType = CollisionType.NONE;
+    private static final double JUMP_STRENGTH = 400;
+    private BoxCollider collider;
+    private Sprite sprite;
 
     protected double vSpeed = 0;
-    protected double hSpeed = 150;
-    protected double hSprintingSpeed = 2;
+    protected double walkSpeed = 150;
+    protected double sprintSpeed = 225;
 
-    private boolean isGrounded = true;
-    private boolean spaceReleasedSinceLastJump = true;
-
-    protected BoxCollider boxCollider;
-    protected Sprite sprite;
+    private boolean grounded = true;
 
     public Player(BufferedImage sprite) {
         this.sprite = new Sprite(sprite);
     }
 
     public Player(BufferedImage sprite, double x, double y) {
-        this.sprite = new Sprite(new Point2D.Double(x, y), sprite);
-        boxCollider = new BoxCollider();
-        boxCollider.setMoveable(true);
-        boxCollider.setCollisionLayer(CollisionLayer.PLAYER);
-        this.transform = new Rectangle2D.Double(x, y, this.sprite.getDisplayImage().getWidth(),
-                this.sprite.getDisplayImage().getHeight());
+        this.addComponent(collider = new BoxCollider());
+        this.addComponent(this.sprite = new Sprite(sprite));
 
-        this.addComponent(boxCollider);
+        double w = sprite.getWidth();
+        double h = sprite.getHeight();
+
+        this.transform = new Rectangle2D.Double(x, y, w, h);
     }
 
     @Override
     public void update(double deltaTime) {
-        if (isGrounded) {
+        if (grounded) {
             vSpeed = 0;
         } else {
-            // fake increased gravity when falling so it looks right
-            double gravityStrength = (vSpeed > 0) ? 1.5 : 1;
-            vSpeed -= 98.1 * 10 * gravityStrength * deltaTime;
+            // Remember, acceleration is per second per second, so we actually DO want
+            // this "double application" of deltaTime.
+            vSpeed -= PhysicsWorld.GRAVITY * deltaTime;
         }
 
-        boolean canJump = isGrounded || midairJumps < MAX_MIDAIR_JUMPS;
-        if (canJump && spaceReleasedSinceLastJump && Keyboard.held(KeyEvent.VK_SPACE)) {
-            vSpeed = 500;
-            if (!isGrounded) {
-                midairJumps += 1;
-            }
-
-            isGrounded = false;
-            spaceReleasedSinceLastJump = false;
+        if (grounded && Keyboard.held(KeyEvent.VK_SPACE)) {
+            grounded = false;
+            vSpeed = JUMP_STRENGTH;
         }
 
-        if (!Keyboard.held(KeyEvent.VK_SPACE)) {
-            spaceReleasedSinceLastJump = true;
-        }
+        int dx = Keyboard.getAxis(KeyEvent.VK_A, KeyEvent.VK_D);
+        double speed = (Keyboard.held(KeyEvent.VK_SHIFT)) ? sprintSpeed : walkSpeed;
 
-        // @formatter:off
-        int dx = 0;
-        if (Keyboard.held(KeyEvent.VK_A)) { dx -= 1; }
-        if (Keyboard.held(KeyEvent.VK_D)) { dx += 1; }
-        if (Keyboard.held(KeyEvent.VK_SHIFT)) { hSprintingSpeed = 2; }
-        else { hSprintingSpeed = 1; }
-        // @formatter:on
+        transform.x += dx * speed * deltaTime;
+        transform.y -= vSpeed * deltaTime;
 
-        this.transform.x += dx * hSpeed * hSprintingSpeed * deltaTime;
-        this.transform.y -= vSpeed * deltaTime;
-
-        sprite.setPosition(this.transform.x, this.transform.y);
+        super.update(deltaTime);
     }
 
     @Override
@@ -90,35 +69,31 @@ public class Player extends GameObject {
         sprite.render(g);
     }
 
-    public void setGrounded(boolean grounded) {
-        isGrounded = grounded;
-        if (isGrounded) {
-            // Reset vertical movement to prevent falling
-            vSpeed = 0;
-        }
-        midairJumps = lastCollisionType == CollisionType.TOP ? midairJumps : 0;
-    }
-
     @Override
     public void onCollisionEnter(CollisionEvent event) {
-        if (event.getOther() instanceof Block) {
-            if (event.getCollisionType() != CollisionType.TOP) {
-                setGrounded(true);
-            }
+        BoxCollider otherCollider = event.getOtherCollider(this);
+        Rectangle2D overlap = event.getOverlap();
 
-            if (event.getCollisionType() == CollisionType.LEFT || event.getCollisionType() == CollisionType.RIGHT) {
-            }
-            lastCollisionType = event.getCollisionType();
+        int overlapFlags = this.collider.overlapWith(otherCollider);
+
+        collider.resolveCollisionWith(otherCollider);
+
+        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
+        boolean topInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.TOP_EDGE);
+        boolean bottomInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.BOTTOM_EDGE);
+
+        if (topInsideOther && !isWallCollision) {
+            vSpeed = 0;
+        }
+
+        if (bottomInsideOther && !isWallCollision) {
+            grounded = true;
         }
     }
 
     @Override
     public void onCollisionExit(CollisionEvent event) {
-        if (event.getOther() instanceof Block) {
-            if (event.getCollisionType() != CollisionType.BOTTOM) {
-
-                setGrounded(false);
-            }
-        }
+        // This probably is going to cause bugs, we might need to do checks on this
+        grounded = false;
     }
 }
