@@ -3,6 +3,7 @@ package engine.collision;
 import java.util.Objects;
 
 import engine.GameObject;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Represents a collision event between two game objects.
@@ -14,6 +15,8 @@ public class CollisionEvent {
 
     private GameObject second;
     private BoxCollider secondCollider;
+
+    private Rectangle2D overlap = null;
 
     /**
      * @param first          the first GameObject involved in the collision
@@ -79,6 +82,14 @@ public class CollisionEvent {
      */
     public BoxCollider getOtherCollider(GameObject self) {
         return (first != self) ? firstCollider : secondCollider;
+    }
+
+    public Rectangle2D getOverlap() {
+        if (overlap == null) {
+            overlap = firstCollider.getBox().createIntersection(secondCollider.getBox());
+        }
+
+        return overlap;
     }
 
     @Override

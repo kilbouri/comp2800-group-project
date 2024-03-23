@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import static engine.collision.BoxCollider.OverlapFlags;
+
 public class Player extends GameObject {
 
     private static final double JUMP_STRENGTH = 400;
@@ -70,19 +72,15 @@ public class Player extends GameObject {
     @Override
     public void onCollisionEnter(CollisionEvent event) {
         BoxCollider otherCollider = event.getOtherCollider(this);
+        Rectangle2D overlap = event.getOverlap();
 
-        Rectangle2D box = collider.getBox();
-        Rectangle2D otherBox = otherCollider.getBox();
-
-        Rectangle2D overlap = box.createIntersection(otherBox);
-
-        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
+        int overlapFlags = this.collider.overlapWith(otherCollider);
 
         collider.resolveCollisionWith(otherCollider);
 
-        // Todo: we can and should package this logic in the engine somehow
-        boolean topInsideOther = inRange(box.getMinY(), otherBox.getMinY(), otherBox.getMaxY());
-        boolean bottomInsideOther = inRange(box.getMaxY(), otherBox.getMinY(), otherBox.getMaxY());
+        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
+        boolean topInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.TOP_EDGE);
+        boolean bottomInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.BOTTOM_EDGE);
 
         if (topInsideOther && !isWallCollision) {
             vSpeed = 0;
@@ -97,9 +95,5 @@ public class Player extends GameObject {
     public void onCollisionExit(CollisionEvent event) {
         // This probably is going to cause bugs, we might need to do checks on this
         grounded = false;
-    }
-
-    private static boolean inRange(double a, double min, double max) {
-        return min <= a && a <= max;
     }
 }
