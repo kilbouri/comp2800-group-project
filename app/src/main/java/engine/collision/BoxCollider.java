@@ -135,7 +135,7 @@ public class BoxCollider extends Component {
                 result |= OverlapFlags.LEFT_EDGE;
             }
 
-            if (between(boxMaxX, otherMinX, otherMaxX)) {
+            if (right) {
                 result |= OverlapFlags.RIGHT_EDGE;
             }
         }
