@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 
 public class Player extends GameObject {
 
-    private static final double JUMP_STRENGTH = 350;
+    private static final double JUMP_STRENGTH = 400;
     private BoxCollider collider;
     private Sprite sprite;
 
@@ -71,16 +71,35 @@ public class Player extends GameObject {
     public void onCollisionEnter(CollisionEvent event) {
         BoxCollider otherCollider = event.getOtherCollider(this);
 
-        if (otherCollider.getBox().getMinY() <= this.transform.getMaxY()) {
-            grounded = true;
-        }
+        Rectangle2D box = collider.getBox();
+        Rectangle2D otherBox = otherCollider.getBox();
+
+        Rectangle2D overlap = box.createIntersection(otherBox);
+
+        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
 
         collider.resolveCollisionWith(otherCollider);
+
+        // Todo: we can and should package this logic in the engine somehow
+        boolean topInsideOther = inRange(box.getMinY(), otherBox.getMinY(), otherBox.getMaxY());
+        boolean bottomInsideOther = inRange(box.getMaxY(), otherBox.getMinY(), otherBox.getMaxY());
+
+        if (topInsideOther && !isWallCollision) {
+            vSpeed = 0;
+        }
+
+        if (bottomInsideOther && !isWallCollision) {
+            grounded = true;
+        }
     }
 
     @Override
     public void onCollisionExit(CollisionEvent event) {
         // This probably is going to cause bugs, we might need to do checks on this
         grounded = false;
+    }
+
+    private static boolean inRange(double a, double min, double max) {
+        return min <= a && a <= max;
     }
 }

@@ -61,8 +61,8 @@ public class MainLoop extends GameLoop {
         setSize(SCREEN_SIZE);
         // The player always has to be added to the game loop first before any other
         // object
-        addGameObject(ground);
         addGameObject(player);
+        addGameObject(ground);
         addGameObject(wall);
         addGameObject(wall2);
         addGameObject(floatingBlock);
@@ -85,5 +85,6 @@ public class MainLoop extends GameLoop {
     public void afterRender(Graphics2D graphics) {
         graphics.setColor(Color.CYAN);
         renderEngineMetrics(graphics);
+        renderWASD(graphics);
     }
 }
