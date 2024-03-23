@@ -1,8 +1,10 @@
-package engine;
+package engine.sprites;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+
+import engine.core.Component;
 
 public class Sprite extends Component {
 

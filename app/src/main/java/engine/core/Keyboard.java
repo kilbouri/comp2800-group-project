@@ -1,4 +1,4 @@
-package engine;
+package engine.core;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

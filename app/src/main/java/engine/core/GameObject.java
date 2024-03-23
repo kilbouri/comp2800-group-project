@@ -1,11 +1,11 @@
-package engine;
+package engine.core;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import engine.collision.CollisionEvent;
+import engine.physics.CollisionEvent;
 
 /**
  * The base class for all game objects in the game engine.

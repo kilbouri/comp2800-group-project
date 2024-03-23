@@ -1,8 +1,9 @@
-package engine.collision;
+package engine.physics;
 
 import java.util.HashSet;
 import java.util.Set;
-import engine.GameObject;
+
+import engine.core.GameObject;
 
 /**
  * The PhysicsWorld class represents a physics simulation environment where

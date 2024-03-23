@@ -1,9 +1,9 @@
 package project.gameobjects;
 
-import engine.GameObject;
-import engine.Sprite;
-import engine.SpriteUtils;
-import engine.collision.BoxCollider;
+import engine.core.GameObject;
+import engine.physics.BoxCollider;
+import engine.sprites.Sprite;
+import engine.sprites.SpriteUtils;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;

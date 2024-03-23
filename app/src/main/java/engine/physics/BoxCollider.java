@@ -1,7 +1,8 @@
-package engine.collision;
+package engine.physics;
 
 import java.awt.geom.Rectangle2D;
-import engine.Component;
+
+import engine.core.Component;
 
 /**
  * The BoxCollider class represents a collider component that can be attached to

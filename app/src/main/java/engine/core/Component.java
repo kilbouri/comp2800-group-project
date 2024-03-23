@@ -1,8 +1,9 @@
-package engine;
+package engine.core;
 
 /**
  * The base class for all components in the game engine.
- * A component represents a behavior or functionality that can be attached to a game object.
+ * A component represents a behavior or functionality that can be attached to a
+ * game object.
  */
 public abstract class Component {
     protected GameObject parentObject;
@@ -21,6 +22,7 @@ public abstract class Component {
     /**
      * Updates the component's state based on the elapsed time since the last
      * update.
+     *
      * Note: all components need to implement this method to define their behavior.
      * However, it doesn't need to be called afterwards, as it is called
      * automatically by the game loop.
