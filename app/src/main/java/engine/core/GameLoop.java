@@ -1,4 +1,4 @@
-package engine;
+package engine.core;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import engine.collision.PhysicsWorld;
+import engine.physics.PhysicsWorld;
 
 public abstract class GameLoop extends Canvas implements Runnable {
 
@@ -33,7 +33,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private LinkedList<Double> lastFpsCounts = new LinkedList<Double>();
 
     private Vector<GameObject> gameObjects;
-    private PhysicsWorld physicsWorld = new PhysicsWorld();
+    private PhysicsWorld physicsWorld;
 
     protected GameLoop(int gameObjectCapacity) {
         // Make sure this canvas can actually hecking have focus
@@ -44,6 +44,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
         setFocusable(true);
 
         gameObjects = new Vector<>(gameObjectCapacity);
+        physicsWorld = new PhysicsWorld();
     }
 
     /**
@@ -55,7 +56,6 @@ public abstract class GameLoop extends Canvas implements Runnable {
         bufferStrategy = getBufferStrategy();
 
         gameThread = new Thread(this, "Game Thread");
-
         gameThread.start();
     }
 
@@ -124,6 +124,13 @@ public abstract class GameLoop extends Canvas implements Runnable {
     public void removeGameObject(GameObject object) {
         object.setGameLoop(null);
         gameObjects.remove(object);
+    }
+
+    public void loadLevel(LevelLoader loader) {
+        gameObjects.clear();
+        physicsWorld = new PhysicsWorld();
+
+        loader.load(this);
     }
 
     private void doUpdate(final double deltaTime) {
@@ -279,7 +286,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
      *
      * @param deltaTime the time that has elapsed since the last update.
      */
-    public abstract void update(final double deltaTime);
+    public void update(final double deltaTime) {
+    }
 
     /**
      * Runs after after each `update`, but before the game objects
@@ -291,7 +299,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
      *
      * @param graphics a graphics object to draw the game with
      */
-    public abstract void beforeRender(Graphics2D graphics);
+    public void beforeRender(Graphics2D graphics) {
+    }
 
     /**
      * Runs after `update`, `beforeRender`, and all game objects
@@ -299,7 +308,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
      *
      * @param graphics
      */
-    public abstract void afterRender(Graphics2D graphics);
+    public void afterRender(Graphics2D graphics) {
+    }
 
     public void setAntialiased(boolean aa) {
         this.aaEnabled = aa;

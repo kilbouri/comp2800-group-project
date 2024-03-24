@@ -2,6 +2,8 @@ package project;
 
 import javax.swing.*;
 
+import project.levels.Level;
+
 public class ProjectWindow extends JFrame {
 
     MainLoop loop = new MainLoop();
@@ -19,6 +21,7 @@ public class ProjectWindow extends JFrame {
         setVisible(true);
 
         // Must be after the window is set visible
+        loop.loadLevel(Level.Developer2.getLoader());
         loop.setAntialiased(true);
         loop.start();
     }

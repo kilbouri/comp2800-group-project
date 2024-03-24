@@ -1,18 +1,19 @@
 package project.gameobjects;
 
-import engine.GameObject;
-import engine.Keyboard;
-import engine.Sprite;
-import engine.collision.BoxCollider;
-import engine.collision.CollisionEvent;
-import engine.collision.PhysicsWorld;
+import engine.core.GameObject;
+import engine.core.Keyboard;
+import engine.physics.BoxCollider;
+import engine.physics.CollisionEvent;
+import engine.physics.PhysicsWorld;
+import engine.physics.Trigger;
+import engine.sprites.Sprite;
+
+import static engine.physics.BoxCollider.OverlapFlags;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
-import static engine.collision.BoxCollider.OverlapFlags;
 
 public class Player extends GameObject {
 
@@ -71,6 +72,12 @@ public class Player extends GameObject {
 
     @Override
     public void onCollisionEnter(CollisionEvent event) {
+        GameObject other = event.getOther(this);
+        if (other instanceof Trigger) {
+            // ignore triggers
+            return;
+        }
+
         BoxCollider otherCollider = event.getOtherCollider(this);
         Rectangle2D overlap = event.getOverlap();
 

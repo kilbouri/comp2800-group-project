@@ -3,8 +3,8 @@ package project;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import engine.SpriteSheet;
-import engine.SpriteUtils;
+import engine.sprites.SpriteSheet;
+import engine.sprites.SpriteUtils;
 
 public class PlaceholderSpriteSheet extends SpriteSheet {
 

@@ -1,8 +1,9 @@
-package engine.collision;
+package engine.physics;
 
 import java.util.Objects;
 
-import engine.GameObject;
+import engine.core.GameObject;
+
 import java.awt.geom.Rectangle2D;
 
 /**

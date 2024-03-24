@@ -4,8 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import engine.GameObject;
-import engine.SpriteUtils;
+import engine.core.GameObject;
+import engine.sprites.SpriteUtils;
 
 public class BackgroundImage extends GameObject {
     private BufferedImage image;
