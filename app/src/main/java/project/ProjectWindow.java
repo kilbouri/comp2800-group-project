@@ -1,11 +1,6 @@
 package project;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import project.levels.Level;
 import project.menus.startMenu;
 
 
