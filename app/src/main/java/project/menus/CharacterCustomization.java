@@ -1,48 +1,45 @@
 package project.menus;
 
 import javax.swing.*;
+
+import project.ProjectWindow;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import project.menus.startMenu;
 
-public class characterCustomizerScreen extends JFrame {
+public class CharacterCustomization extends JPanel {
 
     ImageIcon background;
+    ProjectWindow projectWindow;
 
-    public characterCustomizerScreen() throws IOException {
-
-        setTitle("Character Customization");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900,600);
+    public CharacterCustomization(ProjectWindow projectWindow) {
+        this.projectWindow = projectWindow;
         setLayout(new BorderLayout());
-        setLocationRelativeTo(null);
 
-        //background image
+        // background image
         background = new ImageIcon("fancy pants.png");
 
-        //space of where our character will be
+        // space of where our character will be
         JLabel characterDisplay = new JLabel("Character display");
 
-
-        //change button initialized
+        // change button initialized
         JButton changeButton = new JButton("Change Sprite");
         changeButton.setFont(new Font("Futura", Font.ITALIC, 15));
         changeButton.setBackground(new Color(206, 237, 233));
 
-        //save button
+        // save button
         JButton saveButton = new JButton("Save Sprite");
         saveButton.setFont(new Font("Futura", Font.ITALIC, 15));
         saveButton.setForeground(Color.BLACK); // Set text color
         saveButton.setBackground(new Color(206, 237, 233));
 
-        //back button
+        // back button
         JButton backButton = new JButton("Back to start menu");
         backButton.setFont(new Font("Futura", Font.ITALIC, 15));
         backButton.setBackground(new Color(206, 237, 233));
 
-        //setting size of buttons
+        // setting size of buttons
         Dimension buttonSize = new Dimension(200, 50); // Width: 200, Height: 50
         changeButton.setPreferredSize(buttonSize);
         saveButton.setPreferredSize(buttonSize);
@@ -54,7 +51,7 @@ public class characterCustomizerScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Code to change character sprite
                 // You can implement this functionality as needed
-                JOptionPane.showMessageDialog(characterCustomizerScreen.this, "Sprite Changed");
+                JOptionPane.showMessageDialog(CharacterCustomization.this, "Sprite Changed");
             }
         });
 
@@ -63,25 +60,24 @@ public class characterCustomizerScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Code to save character sprite
                 // You can implement this functionality as needed
-                JOptionPane.showMessageDialog(characterCustomizerScreen.this, "Sprite Saved");
+                JOptionPane.showMessageDialog(CharacterCustomization.this, "Sprite Saved");
             }
         });
 
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new startMenu();
+                projectWindow.SwitchMenu("startMenu");
             }
         });
 
-
-        //creating panel for the character sprite to be placed in
+        // creating panel for the character sprite to be placed in
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
         leftPanel.add(characterDisplay);
         leftPanel.setBackground(Color.pink);
 
-        //creating panel for the buttons
+        // creating panel for the buttons
         // Set layout to center the buttons
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new GridBagLayout());
@@ -90,16 +86,14 @@ public class characterCustomizerScreen extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(10, 0, 10, 0);
 
-        rightPanel.add(changeButton,gbc);
-        rightPanel.add(saveButton,gbc);
-        rightPanel.add(backButton,gbc);
+        rightPanel.add(changeButton, gbc);
+        rightPanel.add(saveButton, gbc);
+        rightPanel.add(backButton, gbc);
         rightPanel.setBackground(Color.pink);
-        //add right panel to left
+        // add right panel to left
         leftPanel.add(rightPanel, BorderLayout.EAST);
-        //add left panel to frame
+        // add left panel to frame
         add(leftPanel);
-        setResizable(false);
-        setVisible(true);
     }
 
     @Override
@@ -108,6 +102,5 @@ public class characterCustomizerScreen extends JFrame {
         // Draw background image
         g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), null);
     }
-
 
 }

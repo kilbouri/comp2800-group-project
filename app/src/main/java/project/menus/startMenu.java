@@ -1,19 +1,19 @@
 package project.menus;
 
 import javax.swing.*;
+
+import project.ProjectWindow;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class startMenu extends JPanel {
 
-    //todo: add a way to attach/deattach this start menu, and all submenus from the JFrame instead of setting visibility off and on
-    //todo: I already was going to do that but I need some sleep so later aligator!
-    JFrame parentFrame;
+    ProjectWindow parentFrame;
 
-    public startMenu() {
-
+    public startMenu(ProjectWindow projectWindow) {
+        this.parentFrame = projectWindow;
         // fixing up the title
         JLabel title;
         title = new JLabel("Fancy Pants");
@@ -23,7 +23,6 @@ public class startMenu extends JPanel {
         // Create buttons
         JButton startGameButton = new JButton("Start Game");
         JButton continueButton = new JButton("Continue");
-        JButton settingsButton = new JButton("Settings");
         JButton quitButton = new JButton("Quit");
         JButton customizeButton = new JButton("Customize Character");
 
@@ -31,21 +30,18 @@ public class startMenu extends JPanel {
         Dimension buttonSize = new Dimension(200, 50); // Width: 200, Height: 50
         startGameButton.setPreferredSize(buttonSize);
         continueButton.setPreferredSize(buttonSize);
-        settingsButton.setPreferredSize(buttonSize);
         quitButton.setPreferredSize(buttonSize);
         customizeButton.setPreferredSize(buttonSize);
 
         // fixing up button text size
         startGameButton.setFont(new Font("Futura", Font.ITALIC, 15));
         continueButton.setFont(new Font("Futura", Font.ITALIC, 15));
-        settingsButton.setFont(new Font("Futura", Font.ITALIC, 15));
         quitButton.setFont(new Font("Futura", Font.ITALIC, 15));
         customizeButton.setFont(new Font("Futura", Font.ITALIC, 15));
 
         // button colours
         startGameButton.setBackground(new Color(206, 237, 233));
         continueButton.setBackground(new Color(206, 237, 233));
-        settingsButton.setBackground(new Color(206, 237, 233));
         quitButton.setBackground(new Color(206, 237, 233));
         customizeButton.setBackground(new Color(206, 237, 233));
 
@@ -60,7 +56,6 @@ public class startMenu extends JPanel {
         add(title, gbc);
         add(startGameButton, gbc);
         add(continueButton, gbc);
-        add(settingsButton, gbc);
         add(customizeButton, gbc);
         add(quitButton, gbc);
 
@@ -75,29 +70,14 @@ public class startMenu extends JPanel {
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                new continueScreen();
-            }
-        });
 
-        settingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                new settingsScreen();
             }
         });
 
         customizeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                try {
-                    new characterCustomizerScreen();
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+                projectWindow.SwitchMenu("characterCustomization");
             }
         });
 
@@ -118,11 +98,5 @@ public class startMenu extends JPanel {
 
         // continue will open the continue class
 
-    }
-
-    public void setParentFrame(JFrame frame) {
-        if (parentFrame == null) {
-            parentFrame = frame;
-        }
     }
 }
