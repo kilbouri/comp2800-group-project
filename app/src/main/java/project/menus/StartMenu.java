@@ -78,6 +78,10 @@ public class StartMenu extends JPanel {
         add(customizeButton, gbc);
         add(quitButton, gbc);
 
+        if (levelsCompleted == 1) {
+            continueButton.setEnabled(false);
+        }
+
         // creating the button listeners here
         startGameButton.addActionListener(new ActionListener() {
             @Override
