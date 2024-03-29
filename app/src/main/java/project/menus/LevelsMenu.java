@@ -6,8 +6,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import project.ProjectWindow;
-import project.user_interface.FancyButton;
-import project.user_interface.UIConstants;
+import project.ui.FancyButton;
+import project.ui.UIConstants;
 
 public class LevelsMenu extends JPanel {
     private int totalLevels;

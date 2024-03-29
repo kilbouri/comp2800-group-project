@@ -3,9 +3,9 @@ package project.menus;
 import javax.swing.*;
 import engine.sprites.SpriteUtils;
 import project.ProjectWindow;
-import project.user_interface.FancyButton;
-import project.user_interface.FancyLabel;
-import project.user_interface.UIConstants;
+import project.ui.FancyButton;
+import project.ui.FancyLabel;
+import project.ui.UIConstants;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

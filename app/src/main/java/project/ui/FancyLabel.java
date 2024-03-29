@@ -1,4 +1,4 @@
-package project.user_interface;
+package project.ui;
 import javax.swing.*;
 import java.awt.*;
 
