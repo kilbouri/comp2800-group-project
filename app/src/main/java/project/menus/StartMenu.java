@@ -3,8 +3,9 @@ package project.menus;
 import javax.swing.*;
 import engine.sprites.SpriteUtils;
 import project.ProjectWindow;
-import project.UI.FancyButton;
-import project.UI.FancyLabel;
+import project.user_interface.FancyButton;
+import project.user_interface.FancyLabel;
+import project.user_interface.UIConstants;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,40 +30,40 @@ public class StartMenu extends JPanel {
         FancyButton customizeButton = new FancyButton("Customize Character");
 
         // Set preferred size for buttons
-        Dimension buttonSize = new Dimension(200, 50); // Width: 200, Height: 50
-        startGameButton.setPreferredSize(buttonSize);
-        continueButton.setPreferredSize(buttonSize);
-        quitButton.setPreferredSize(buttonSize);
-        customizeButton.setPreferredSize(buttonSize);
+        startGameButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
+        continueButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
+        quitButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
+        customizeButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
 
         // fixing up button text size
-        startGameButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
-        continueButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
-        quitButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
-        customizeButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
+        startGameButton.setFont(UIConstants.FONT_MEDIUM);
+        continueButton.setFont(UIConstants.FONT_MEDIUM);
+        quitButton.setFont(UIConstants.FONT_MEDIUM);
+        customizeButton.setFont(UIConstants.FONT_MEDIUM);
         // button colours
-        startGameButton.setBackground(new Color(247, 183, 7));
-        continueButton.setBackground(new Color(247, 183, 7));
-        quitButton.setBackground(new Color(247, 183, 7));
-        customizeButton.setBackground(new Color(247, 183, 7));
+        startGameButton.setBackground(UIConstants.PRIMARY_COLOR);
+        continueButton.setBackground(UIConstants.PRIMARY_COLOR);
+        quitButton.setBackground(UIConstants.PRIMARY_COLOR);
+        customizeButton.setBackground(UIConstants.PRIMARY_COLOR);
 
-        startGameButton.setHoverColor(new Color(250, 211, 105));
-        continueButton.setHoverColor(new Color(250, 211, 105));
-        quitButton.setHoverColor(new Color(250, 211, 105));
-        customizeButton.setHoverColor(new Color(250, 211, 105));
+        startGameButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
+        continueButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
+        quitButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
+        customizeButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
 
         // Set border radius for buttons
-        startGameButton.setBorderRadius(10);
-        continueButton.setBorderRadius(10);
-        quitButton.setBorderRadius(10);
-        customizeButton.setBorderRadius(10);
+        startGameButton.setBorderRadius(UIConstants.BORDER_RADIUS);
+        continueButton.setBorderRadius(UIConstants.BORDER_RADIUS);
+        quitButton.setBorderRadius(UIConstants.BORDER_RADIUS);
+        customizeButton.setBorderRadius(UIConstants.BORDER_RADIUS);
+
 
         // Set layout to center the buttons
         setLayout(new GridBagLayout());
         FancyLabel title = new FancyLabel("Fancy Pants");
         title.setFont(new Font(Font.DIALOG, Font.BOLD, 100));
-        title.setForeground(new Color(95, 36, 219));
-        title.setStrokeColor(new Color(255, 255, 255));
+        title.setForeground(UIConstants.SECONDARY_COLOR);
+        title.setStrokeColor(Color.white);
 
         // Adjust constraints for the buttons
         GridBagConstraints gbc = new GridBagConstraints();

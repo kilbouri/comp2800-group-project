@@ -1,4 +1,4 @@
-package project.UI;
+package project.user_interface;
 
 import javax.swing.JButton;
 import java.awt.Color;

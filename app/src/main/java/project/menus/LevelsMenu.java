@@ -6,7 +6,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import project.ProjectWindow;
-import project.UI.FancyButton;
+import project.user_interface.FancyButton;
+import project.user_interface.UIConstants;
 
 public class LevelsMenu extends JPanel {
     private int totalLevels;
@@ -25,11 +26,11 @@ public class LevelsMenu extends JPanel {
         // Back button panel
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         FancyButton backButton = new FancyButton("<");
-        backButton.setPreferredSize(new Dimension(50, 50));
-        backButton.setBackground(new Color(247, 183, 7));
-        backButton.setHoverColor(new Color(250, 211, 105));
+        backButton.setPreferredSize(UIConstants.BUTTON_SQUARE);
+        backButton.setBackground(UIConstants.PRIMARY_COLOR);
+        backButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
         backButton.setBorderRadius(10);
-        backButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
+        backButton.setFont(UIConstants.FONT_MEDIUM);
         backButton.addActionListener(e -> {
             projectWindow.switchMenu("startMenu");
         });
@@ -48,7 +49,7 @@ public class LevelsMenu extends JPanel {
 
         // Create title label
         JLabel titleLabel = new JLabel("Choose a Level");
-        titleLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 24));
+        titleLabel.setFont(UIConstants.FONT_LARGE);
         centerPanel.add(titleLabel, gbc);
 
         // Reset for level buttons
@@ -61,11 +62,11 @@ public class LevelsMenu extends JPanel {
             gbc.gridx = i % 3; // Positions the button in the correct column
             gbc.gridy = row + 1; // Positions the button in the correct row, below the title
             FancyButton levelButton = new FancyButton("Level " + (i + 1));
-            levelButton.setPreferredSize(new Dimension(200, 50));
-            levelButton.setBackground(new Color(247, 183, 7));
-            levelButton.setHoverColor(new Color(250, 211, 105));
+            levelButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
+            levelButton.setBackground(UIConstants.PRIMARY_COLOR);
+            levelButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
             levelButton.setBorderRadius(10);
-            levelButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
+            levelButton.setFont(UIConstants.FONT_MEDIUM);
             if (i >= levelsCompleted) {
                 levelButton.setEnabled(false);
             }
