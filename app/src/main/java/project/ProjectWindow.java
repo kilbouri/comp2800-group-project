@@ -18,6 +18,7 @@ public class ProjectWindow extends JFrame {
         super("COMP 2800 Project");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        setResizable(false);
 
         StartMenu startMenu = new StartMenu(this);
         LevelsMenu levelsMenu = new LevelsMenu(this);
