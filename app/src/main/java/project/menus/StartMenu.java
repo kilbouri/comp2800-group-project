@@ -12,13 +12,13 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Start extends JPanel {
+public class StartMenu extends JPanel {
 
     ProjectWindow projectWindow;
     private BufferedImage backgroundImage;
     private int levelsCompleted = 1;
 
-    public Start(ProjectWindow projectWindow) {
+    public StartMenu(ProjectWindow projectWindow) {
         this.projectWindow = projectWindow;
         loadBackgroundImage(); // Load the background image
 

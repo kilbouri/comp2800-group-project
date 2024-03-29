@@ -20,7 +20,7 @@ public class ProjectWindow extends JFrame {
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setResizable(false);
 
-        Start startMenu = new Start(this);
+        StartMenu startMenu = new StartMenu(this);
         LevelsMenu levelsMenu = new LevelsMenu(this);
         CharacterCustomization characterCustomization = new CharacterCustomization(this);
 
