@@ -17,7 +17,7 @@ public class StartMenu extends JPanel {
 
     ProjectWindow projectWindow;
     private BufferedImage backgroundImage;
-    private int levelsCompleted = 1;
+    private int levelsCompleted = 0;
 
     public StartMenu(ProjectWindow projectWindow) {
         this.projectWindow = projectWindow;
@@ -78,7 +78,7 @@ public class StartMenu extends JPanel {
         add(customizeButton, gbc);
         add(quitButton, gbc);
 
-        if (levelsCompleted == 1) {
+        if (levelsCompleted == 0) {
             continueButton.setEnabled(false);
         }
 

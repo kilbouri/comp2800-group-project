@@ -11,7 +11,7 @@ import project.ui.UIConstants;
 
 public class LevelsMenu extends JPanel {
     private int totalLevels;
-    private int levelsCompleted = 1;
+    private int levelsCompleted = 0;
     ProjectWindow projectWindow;
     private BufferedImage backgroundImage;
 
@@ -67,7 +67,7 @@ public class LevelsMenu extends JPanel {
             levelButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
             levelButton.setBorderRadius(10);
             levelButton.setFont(UIConstants.FONT_MEDIUM);
-            if (i >= levelsCompleted) {
+            if (i >= levelsCompleted+1) {
                 levelButton.setEnabled(false);
             }
             final int tmp = i;
