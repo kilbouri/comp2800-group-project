@@ -1,9 +1,7 @@
 package project.menus;
 
 import javax.swing.*;
-
 import project.ProjectWindow;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,7 +65,7 @@ public class CharacterCustomization extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                projectWindow.SwitchMenu("startMenu");
+                projectWindow.switchMenu("startMenu");
             }
         });
 

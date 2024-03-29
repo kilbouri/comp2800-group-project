@@ -1,12 +1,10 @@
 package project;
 
 import java.awt.CardLayout;
-import java.io.IOException;
-
 import javax.swing.*;
-
-import project.menus.CharacterCustomization;
-import project.menus.startMenu;
+import project.levels.Level;
+import project.menus.LevelsMenu;
+import project.menus.*;
 
 public class ProjectWindow extends JFrame {
 
@@ -21,25 +19,36 @@ public class ProjectWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        startMenu startMenu = new startMenu(this);
+        StartMenu startMenu = new StartMenu(this);
+        LevelsMenu levelsMenu = new LevelsMenu(this);
         CharacterCustomization characterCustomization = new CharacterCustomization(this);
 
         container.add(startMenu, "startMenu");
+        container.add(levelsMenu, "levelsMenu");
         container.add(characterCustomization, "characterCustomization");
 
         cardLayout.show(container, "startMenu");
         add(container);
+
         setVisible(true);
-
-        // add(loop);
-
-        // Must be after the window is set visible
-        // loop.loadLevel(Level.Developer2.getLoader());
-        // loop.setAntialiased(true);
-        // loop.start();
+        // startLoop(Level.Developer1);
     }
-
-    public void SwitchMenu(String menuName) {
+    public void startLoop(Level level) {
+        if (container.getParent() != null) {
+            this.remove(container);
+        }
+        add(loop);
+        loop.loadLevel(level.getLoader());
+        loop.setAntialiased(true);
+        loop.start();
+    }
+    public void stopLoop() {
+        //TODO: this will need to be reworked!
+        remove(loop);
+        add(container);
+        cardLayout.show(container, "startMenu");
+    }
+    public void switchMenu(String menuName) {
         cardLayout.show(container, menuName);
     }
 }
