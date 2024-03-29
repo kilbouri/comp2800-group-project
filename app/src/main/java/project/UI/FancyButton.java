@@ -1,4 +1,4 @@
-package project.gameobjects;
+package project.UI;
 
 import javax.swing.JButton;
 import java.awt.Color;
@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 
 public class FancyButton extends JButton {
-    private Color normalColor = new Color(206, 237, 233);
     private Color hoverColor = new Color(176, 207, 203);
     private boolean isHovering = false;
     private int borderRadius = 0;
@@ -51,7 +50,7 @@ public class FancyButton extends JButton {
         } else if (isHovering) {
             g2.setColor(hoverColor);
         } else {
-            g2.setColor(normalColor);
+            g2.setColor(this.getBackground());
         }
 
         g2.fill(roundedRectangle);
@@ -60,14 +59,6 @@ public class FancyButton extends JButton {
         // rectangle
         super.paintComponent(g);
         g2.dispose();
-    }
-
-    public Color getNormalColor() {
-        return normalColor;
-    }
-
-    public void setNormalColor(Color normalColor) {
-        this.normalColor = normalColor;
     }
 
     public Color getHoverColor() {

@@ -3,28 +3,25 @@ package project.menus;
 import javax.swing.*;
 import engine.sprites.SpriteUtils;
 import project.ProjectWindow;
-import project.gameobjects.FancyButton;
-import project.gameobjects.FancyLabel;
+import project.UI.FancyButton;
+import project.UI.FancyLabel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class StartMenu extends JPanel {
+public class Start extends JPanel {
 
     ProjectWindow projectWindow;
     private BufferedImage backgroundImage;
     private int levelsCompleted = 1;
 
-    public StartMenu(ProjectWindow projectWindow) {
+    public Start(ProjectWindow projectWindow) {
         this.projectWindow = projectWindow;
         loadBackgroundImage(); // Load the background image
 
-        InitializeUI();
-    }
-
-    public void InitializeUI() {
         // Create buttons
         FancyButton startGameButton = new FancyButton("Start Game");
         FancyButton continueButton = new FancyButton("Continue");
@@ -44,17 +41,15 @@ public class StartMenu extends JPanel {
         quitButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
         customizeButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
         // button colours
-        startGameButton.setNormalColor(new Color(247, 183, 7));
-        continueButton.setNormalColor(new Color(247, 183, 7));
-        quitButton.setNormalColor(new Color(247, 183, 7));
-        customizeButton.setNormalColor(new Color(247, 183, 7));
+        startGameButton.setBackground(new Color(247, 183, 7));
+        continueButton.setBackground(new Color(247, 183, 7));
+        quitButton.setBackground(new Color(247, 183, 7));
+        customizeButton.setBackground(new Color(247, 183, 7));
 
         startGameButton.setHoverColor(new Color(250, 211, 105));
         continueButton.setHoverColor(new Color(250, 211, 105));
         quitButton.setHoverColor(new Color(250, 211, 105));
         customizeButton.setHoverColor(new Color(250, 211, 105));
-
-
 
         // Set border radius for buttons
         startGameButton.setBorderRadius(10);
@@ -68,7 +63,6 @@ public class StartMenu extends JPanel {
         title.setFont(new Font(Font.DIALOG, Font.BOLD, 100));
         title.setForeground(new Color(95, 36, 219));
         title.setStrokeColor(new Color(255, 255, 255));
-
 
         // Adjust constraints for the buttons
         GridBagConstraints gbc = new GridBagConstraints();

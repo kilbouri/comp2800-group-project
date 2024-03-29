@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import project.ProjectWindow;
-import project.gameobjects.FancyButton;
+import project.UI.FancyButton;
 
 public class LevelsMenu extends JPanel {
     private int totalLevels;
@@ -19,34 +19,14 @@ public class LevelsMenu extends JPanel {
         totalLevels = project.levels.Level.values().length;
         this.setLayout(new GridBagLayout());
         this.loadBackgroundImage(); // Load the background image
-        this.InitializeUI();
-    }
 
-    private void loadBackgroundImage() {
-        try {
-            backgroundImage = SpriteUtils.load("sprites/prod/levelsmenubg.png");
-        } catch (IOException e) {
-            System.err.println("Failed to load background image for LevelsMenu");
-        }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        // Draw the background image
-        if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
-        }
-    }
-
-    public void InitializeUI() {
         setLayout(new BorderLayout()); // Set the main layout to BorderLayout
 
         // Back button panel
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         FancyButton backButton = new FancyButton("<");
         backButton.setPreferredSize(new Dimension(50, 50));
-        backButton.setNormalColor(new Color(247, 183, 7));
+        backButton.setBackground(new Color(247, 183, 7));
         backButton.setHoverColor(new Color(250, 211, 105));
         backButton.setBorderRadius(10);
         backButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
@@ -82,7 +62,7 @@ public class LevelsMenu extends JPanel {
             gbc.gridy = row + 1; // Positions the button in the correct row, below the title
             FancyButton levelButton = new FancyButton("Level " + (i + 1));
             levelButton.setPreferredSize(new Dimension(200, 50));
-            levelButton.setNormalColor(new Color(247, 183, 7));
+            levelButton.setBackground(new Color(247, 183, 7));
             levelButton.setHoverColor(new Color(250, 211, 105));
             levelButton.setBorderRadius(10);
             levelButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
@@ -98,6 +78,23 @@ public class LevelsMenu extends JPanel {
 
         // Add the centerPanel to the main panel
         add(centerPanel, BorderLayout.CENTER);
+
     }
 
+    private void loadBackgroundImage() {
+        try {
+            backgroundImage = SpriteUtils.load("sprites/prod/levelsmenubg.png");
+        } catch (IOException e) {
+            System.err.println("Failed to load background image for LevelsMenu");
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Draw the background image
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+        }
+    }
 }

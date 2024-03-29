@@ -20,7 +20,7 @@ public class ProjectWindow extends JFrame {
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setResizable(false);
 
-        StartMenu startMenu = new StartMenu(this);
+        Start startMenu = new Start(this);
         LevelsMenu levelsMenu = new LevelsMenu(this);
         CharacterCustomization characterCustomization = new CharacterCustomization(this);
 
@@ -30,9 +30,7 @@ public class ProjectWindow extends JFrame {
 
         cardLayout.show(container, "startMenu");
         add(container);
-
         setVisible(true);
-        // startLoop(Level.Developer1);
     }
     public void startLoop(Level level) {
         if (container.getParent() != null) {
@@ -41,6 +39,7 @@ public class ProjectWindow extends JFrame {
         add(loop);
         loop.loadLevel(level.getLoader());
         loop.setAntialiased(true);
+        loop.requestFocus();
         loop.start();
     }
     public void stopLoop() {

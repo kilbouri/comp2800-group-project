@@ -1,4 +1,4 @@
-package project.gameobjects;
+package project.UI;
 import javax.swing.*;
 import java.awt.*;
 
