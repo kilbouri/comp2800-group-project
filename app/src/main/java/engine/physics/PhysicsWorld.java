@@ -13,9 +13,14 @@ import engine.core.GameObject;
  */
 public class PhysicsWorld {
     /**
+     * The number of pixels that "represent" a meter. Chosen by fair dice roll.
+     */
+    public static final int PIXELS_PER_METER = 75;
+
+    /**
      * The global gravity constant.
      */
-    public static final double GRAVITY = 981 * 0.5;
+    public static final double GRAVITY = 9.81 * PIXELS_PER_METER;
 
     private Set<CollisionEvent> currentCollisions = new HashSet<>();
     private Set<CollisionEvent> lastCollisions = new HashSet<>();
