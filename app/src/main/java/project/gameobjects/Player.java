@@ -16,8 +16,10 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class Player extends GameObject {
+    private static final double JUMP_HEIGHT_M = 1.5;
+    private static final double JUMP_HEIGHT_PIXELS = JUMP_HEIGHT_M * PhysicsWorld.PIXELS_PER_METER;
+    private static final double JUMP_STRENGTH = Math.sqrt(2 * PhysicsWorld.GRAVITY * JUMP_HEIGHT_PIXELS);
 
-    private static final double JUMP_STRENGTH = 400;
     private BoxCollider collider;
     private Sprite sprite;
 
@@ -43,9 +45,7 @@ public class Player extends GameObject {
 
     @Override
     public void update(double deltaTime) {
-        if (grounded) {
-            vSpeed = 0;
-        } else {
+        if (!grounded) {
             // Remember, acceleration is per second per second, so we actually DO want
             // this "double application" of deltaTime.
             vSpeed -= PhysicsWorld.GRAVITY * deltaTime;
@@ -89,12 +89,17 @@ public class Player extends GameObject {
         boolean topInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.TOP_EDGE);
         boolean bottomInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.BOTTOM_EDGE);
 
-        if (topInsideOther && !isWallCollision) {
+        boolean isMovingUpwards = vSpeed > 0;
+
+        if (topInsideOther && !isWallCollision && isMovingUpwards) {
             vSpeed = 0;
         }
 
-        if (bottomInsideOther && !isWallCollision) {
+        // if the player is moving upwards and clips a corner, we don't want to kill
+        // their upward velocity (it looks and feels weird)
+        if (bottomInsideOther && !isWallCollision && !isMovingUpwards) {
             grounded = true;
+            vSpeed = 0;
         }
     }
 
