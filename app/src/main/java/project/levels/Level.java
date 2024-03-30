@@ -4,7 +4,8 @@ import engine.core.LevelLoader;
 
 public enum Level {
     Developer1(DeveloperLevel1Loader.class),
-    Developer2(DeveloperLevel2Loader.class);
+    Developer2(DeveloperLevel2Loader.class),
+    ScaledSpriteLevel(ScaledSpriteLevel.class);
 
     private LevelLoader loader;
 
