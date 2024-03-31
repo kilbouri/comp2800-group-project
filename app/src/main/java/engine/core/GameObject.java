@@ -91,6 +91,20 @@ public abstract class GameObject implements Comparable<GameObject> {
     }
 
     /**
+     * Called when this GameObject continues colliding with another GameObject.
+     * It is guaranteed that this method is only called from the second frame
+     * and onward of a collision. Specifically,
+     * {@link #onCollisionEnter(CollisionEvent)} is called on the frame the
+     * collision starts, {@link #onCollisionExit(CollisionEvent)} is called on the
+     * frame the collision ends, and this method is called on every frame in
+     * between.
+     *
+     * @param event
+     */
+    public void onCollisionStay(CollisionEvent event) {
+    }
+
+    /**
      * Called when a collision between this game object and another game object
      * ends.
      *

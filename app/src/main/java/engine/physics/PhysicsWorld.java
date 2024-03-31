@@ -58,8 +58,7 @@ public class PhysicsWorld {
                     // the components on the two game objects just to find the collider.
                     CollisionEvent event = new CollisionEvent(first, firstCollider, second, secondCollider);
 
-                    currentCollisions.add(event); // CollisionEvent implements equals
-                    lastCollisions.remove(event); // and hashCode to enable this
+                    currentCollisions.add(event);
 
                     if (!lastCollisions.contains(event)) {
                         // New collision
@@ -67,9 +66,11 @@ public class PhysicsWorld {
                         second.onCollisionEnter(event);
                     } else {
                         // Collision stay
-                        // gameObject.onCollisionStay(event);
-                        // otherObject.onCollisionStay(event);
+                        first.onCollisionStay(event);
+                        second.onCollisionStay(event);
                     }
+
+                    lastCollisions.remove(event);
                 }
             }
         }
