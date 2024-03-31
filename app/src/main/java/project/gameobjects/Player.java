@@ -111,14 +111,18 @@ public class Player extends GameObject {
 
     @Override
     public void onCollisionExit(CollisionEvent event) {
-        if (event.getOther(this) instanceof Trigger) {
+        GameObject other = event.getOther(this);
+
+        if (other instanceof Trigger) {
             // ignore triggers
             return;
         }
 
         // This probably is going to cause bugs, we might need to do checks on this
-        grounded = false;
-        setGround(null);
+        if (other == ground) {
+            grounded = false;
+            setGround(null);
+        }
     }
 
     private void handleGroundCollision(CollisionEvent event) {
