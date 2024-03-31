@@ -57,7 +57,6 @@ public class StartMenu extends JPanel {
         quitButton.setBorderRadius(UIConstants.BORDER_RADIUS);
         customizeButton.setBorderRadius(UIConstants.BORDER_RADIUS);
 
-
         // Set layout to center the buttons
         setLayout(new GridBagLayout());
         FancyLabel title = new FancyLabel("Fancy Pants");

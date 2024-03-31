@@ -32,6 +32,7 @@ public class ProjectWindow extends JFrame {
         add(container);
         setVisible(true);
     }
+
     public void startLoop(Level level) {
         if (container.getParent() != null) {
             this.remove(container);
@@ -42,12 +43,14 @@ public class ProjectWindow extends JFrame {
         loop.requestFocus();
         loop.start();
     }
+
     public void stopLoop() {
-        //TODO: this will need to be reworked!
+        // TODO: this will need to be reworked!
         remove(loop);
         add(container);
         cardLayout.show(container, "startMenu");
     }
+
     public void switchMenu(String menuName) {
         cardLayout.show(container, menuName);
     }
