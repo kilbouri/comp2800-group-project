@@ -85,7 +85,7 @@ public abstract class GameObject implements Comparable<GameObject> {
     /**
      * Called when this GameObject collides with another GameObject.
      *
-     * @param other the other GameObject involved in the collision
+     * @param other the collision event containing information about the collision.
      */
     public void onCollisionEnter(CollisionEvent event) {
     }
@@ -99,7 +99,7 @@ public abstract class GameObject implements Comparable<GameObject> {
      * frame the collision ends, and this method is called on every frame in
      * between.
      *
-     * @param event
+     * @param event the collision event containing information about the collision.
      */
     public void onCollisionStay(CollisionEvent event) {
     }
@@ -108,7 +108,7 @@ public abstract class GameObject implements Comparable<GameObject> {
      * Called when a collision between this game object and another game object
      * ends.
      *
-     * @param event The collision event containing information about the collision.
+     * @param event the collision event containing information about the collision.
      */
     public void onCollisionExit(CollisionEvent event) {
     }
