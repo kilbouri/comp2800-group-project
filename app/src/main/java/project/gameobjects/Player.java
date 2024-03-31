@@ -33,8 +33,8 @@ public class Player extends GameObject {
 
     private boolean grounded = true;
 
-    private GameObject parent = null;
-    private Point2D.Double parentLastPos = null;
+    private GameObject ground = null;
+    private Point2D.Double groundLastPos = null;
 
     public Player(BufferedImage sprite) {
         this(sprite, 0, 0);
@@ -68,14 +68,14 @@ public class Player extends GameObject {
         hSpeed = MathExtensions.lerp(hSpeed, MOVE_SPEED * dx, deltaTime * ACCEL_RATE);
 
         // Inherit parent speed
-        if (parent != null) {
-            Rectangle2D.Double parentTrans = parent.getTransform();
+        if (ground != null) {
+            Rectangle2D.Double parentTrans = ground.getTransform();
 
-            transform.x += (parentTrans.x - parentLastPos.x);
-            transform.y += (parentTrans.y - parentLastPos.y);
+            transform.x += (parentTrans.x - groundLastPos.x);
+            transform.y += (parentTrans.y - groundLastPos.y);
 
-            parentLastPos.x = parentTrans.x;
-            parentLastPos.y = parentTrans.y;
+            groundLastPos.x = parentTrans.x;
+            groundLastPos.y = parentTrans.y;
         }
 
         transform.x += hSpeed * deltaTime;
@@ -118,7 +118,7 @@ public class Player extends GameObject {
 
         // This probably is going to cause bugs, we might need to do checks on this
         grounded = false;
-        setParent(null);
+        setGround(null);
     }
 
     private void handleGroundCollision(CollisionEvent event) {
@@ -146,23 +146,23 @@ public class Player extends GameObject {
             vSpeed = 0;
 
             // landed on ground, need to parent up
-            setParent(otherCollider.getParentObject());
+            setGround(otherCollider.getParentObject());
         }
     }
 
-    private void setParent(GameObject newParent) {
-        if (newParent == null) {
-            this.parent = null;
-            this.parentLastPos = null;
+    private void setGround(GameObject newGround) {
+        if (newGround == null) {
+            this.ground = null;
+            this.groundLastPos = null;
             return;
         }
 
-        if (parent == newParent) {
+        if (ground == newGround) {
             return;
         }
 
-        Rectangle2D.Double parentTrans = newParent.getTransform();
-        this.parent = newParent;
-        this.parentLastPos = new Point2D.Double(parentTrans.x, parentTrans.y);
+        Rectangle2D.Double parentTrans = newGround.getTransform();
+        this.ground = newGround;
+        this.groundLastPos = new Point2D.Double(parentTrans.x, parentTrans.y);
     }
 }
