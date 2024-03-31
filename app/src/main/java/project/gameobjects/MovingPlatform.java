@@ -2,6 +2,8 @@ package project.gameobjects;
 
 import java.awt.image.BufferedImage;
 
+import engine.core.MathExtensions;
+
 public class MovingPlatform extends Block {
 
     private int startX, endX;
@@ -19,8 +21,8 @@ public class MovingPlatform extends Block {
             int width, int height) {
         super(
                 image,
-                (int) lerp(startX, endX, (tStart % period) / period),
-                (int) lerp(startY, endY, (tStart % period) / period),
+                (int) MathExtensions.lerp(startX, endX, (tStart % period) / period),
+                (int) MathExtensions.lerp(startY, endY, (tStart % period) / period),
                 width, height);
 
         this.startX = startX;
@@ -54,11 +56,7 @@ public class MovingPlatform extends Block {
             timer -= period;
         }
 
-        transform.x = lerp(startX, endX, timer * inversePeriod);
-        transform.y = lerp(startY, endY, timer * inversePeriod);
-    }
-
-    private static double lerp(double a, double b, double t) {
-        return ((1.0 - t) * a) + (t * b);
+        transform.x = MathExtensions.lerp(startX, endX, timer * inversePeriod);
+        transform.y = MathExtensions.lerp(startY, endY, timer * inversePeriod);
     }
 }
