@@ -33,6 +33,12 @@ public class Animation {
         }).get());
     }
 
+    /**
+     * Constructs an animation from the specified frames at the given framerate.
+     * 
+     * @param fps    the playback framerate of the animation
+     * @param frames the frames to display, in order
+     */
     public Animation(double fps, BufferedImage... frames) {
         this.frames = frames;
         this.frameIndex = 0;
