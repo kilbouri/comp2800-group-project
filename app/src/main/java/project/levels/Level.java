@@ -3,7 +3,8 @@ package project.levels;
 import engine.core.LevelLoader;
 
 public enum Level {
-    Tutorial1Loader(Tutorial1Loader.class),
+    Tutorial1(Tutorial1Loader.class),
+    Tutorial2(Tutorial2Loader.class),
     Developer1(DeveloperLevel1Loader.class),
     Developer2(DeveloperLevel2Loader.class),
     ScaledSpriteLevel(ScaledSpriteLevel.class);

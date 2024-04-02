@@ -84,7 +84,7 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(moveRight);
         loop.addGameObject(jump);
 
-        loop.addGameObject(new LevelSwitchTrigger(player, Level.Developer1, 850, 100, 20, groundLevel - 100))
+        loop.addGameObject(new LevelSwitchTrigger(player, Level.Tutorial2, 850, 100, 20, groundLevel - 100))
                 .setDebug(true);
         ;
     }
