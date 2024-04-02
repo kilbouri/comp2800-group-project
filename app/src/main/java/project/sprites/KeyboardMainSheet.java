@@ -73,9 +73,21 @@ public class KeyboardMainSheet extends SpriteSheet {
     }
 
     private static final int NUM_KEYS = Key.values().length;
+    private static KeyboardMainSheet instance;
 
-    public KeyboardMainSheet() throws IOException {
-        super(SpriteUtils.load("sprites/prod/keys/main.png"), 32, 16);
+    public static KeyboardMainSheet getInstance() {
+        if (instance == null) {
+            try {
+                instance = new KeyboardMainSheet();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return instance;
+    }
+
+    private KeyboardMainSheet() throws IOException {
+        super(SpriteUtils.load("sprites/prod/keys/main.png"), 16, 16);
     }
 
     public BufferedImage getKey(Key key) {

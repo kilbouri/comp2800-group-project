@@ -33,10 +33,22 @@ public class KeyboardExtraSheet extends SpriteSheet {
         }
     }
 
+    private static KeyboardExtraSheet instance;
     private static final int NUM_KEYS = Key.values().length;
 
-    public KeyboardExtraSheet() throws IOException {
-        super(SpriteUtils.load("sprites/prod/keys/extras.png"), 16, 16);
+    public static KeyboardExtraSheet getInstance() {
+        if (instance == null) {
+            try {
+                instance = new KeyboardExtraSheet();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return instance;
+    }
+
+    private KeyboardExtraSheet() throws IOException {
+        super(SpriteUtils.load("sprites/prod/keys/extras.png"), 32, 16);
     }
 
     public BufferedImage getKey(Key key) {

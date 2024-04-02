@@ -17,7 +17,7 @@ public abstract class GameObject implements Comparable<GameObject> {
     private int layer;
     private GameLoop associatedLoop;
     private List<Component> components = new ArrayList<>();
-    protected Rectangle2D.Double transform;
+    protected Rectangle2D.Double transform = new Rectangle2D.Double();
 
     /**
      * Sets the layer of this GameObject. Higher layers
