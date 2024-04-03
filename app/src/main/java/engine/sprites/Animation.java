@@ -1,15 +1,14 @@
 package engine.sprites;
 
 import java.awt.image.BufferedImage;
+import java.util.function.Supplier;
 
 public class Animation {
-    private final SpriteSheet sourceSheet;
-    private final int startIndex;
-    private final int numTiles;
+    private BufferedImage[] frames;
     private final double secondsPerFrame;
 
     private double frameTimer;
-    private int currentTileOffset;
+    private int frameIndex;
 
     /**
      * Creates an animation with the specified framerate using the sprites with
@@ -25,14 +24,27 @@ public class Animation {
      * @see SpriteSheet#getTileIndex(int, int)
      */
     public Animation(SpriteSheet sourceSheet, double fps, int startIndex, int endIndex) {
-        this.sourceSheet = sourceSheet;
-        this.startIndex = startIndex;
-        this.numTiles = endIndex - startIndex + 1; // endIndex is inclusive
+        this(fps, ((Supplier<BufferedImage[]>) () -> {
+            BufferedImage[] frames = new BufferedImage[endIndex - startIndex + 1];
+            for (int i = 0; i <= frames.length; i++) {
+                frames[i] = sourceSheet.getTile(startIndex + i);
+            }
+            return frames;
+        }).get());
+    }
+
+    /**
+     * Constructs an animation from the specified frames at the given framerate.
+     * 
+     * @param fps    the playback framerate of the animation
+     * @param frames the frames to display, in order
+     */
+    public Animation(double fps, BufferedImage... frames) {
+        this.frames = frames;
+        this.frameIndex = 0;
 
         this.secondsPerFrame = 1.0 / fps;
         this.frameTimer = secondsPerFrame;
-
-        this.currentTileOffset = 0;
     }
 
     /**
@@ -55,18 +67,18 @@ public class Animation {
      * @return the current animation frame
      */
     public BufferedImage getSprite() {
-        return sourceSheet.getTile(startIndex + currentTileOffset);
+        return frames[frameIndex];
     }
 
     /**
      * Restarts the animation from frame 0
      */
     public void reset() {
-        currentTileOffset = 0;
+        frameIndex = 0;
     }
 
     private void nextFrame() {
-        currentTileOffset += 1;
-        currentTileOffset %= numTiles;
+        frameIndex += 1;
+        frameIndex %= frames.length;
     }
 }
