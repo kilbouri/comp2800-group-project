@@ -35,6 +35,9 @@ public class Player extends GameObject {
     private final SpriteSheet sourceSheet;
     private final Animation idle;
     private final Animation moveRight;
+    private final Animation jumpStart;
+    private final Animation jumpIdle;
+    private final Animation falling;
     private Animation currentAnimation;
 
     private Sprite spriteComponent;
@@ -52,9 +55,13 @@ public class Player extends GameObject {
 
     public Player(PantColor pants, double x, double y) throws IOException {
         // Load spritesheet and animations
+        final double BASE_FPS = 12;
         sourceSheet = new PlayerSpriteSheet(pants);
-        idle = new Animation(sourceSheet, 12, 0, 11);
-        moveRight = new Animation(sourceSheet, 12, 12, 23);
+        idle = new Animation(sourceSheet, BASE_FPS, 0, 11);
+        moveRight = new Animation(sourceSheet, BASE_FPS, 12, 23);
+        jumpStart = new Animation(sourceSheet, BASE_FPS, 24, 27);
+        jumpIdle = new Animation(sourceSheet, BASE_FPS, 28, 33);
+        falling = new Animation(sourceSheet, BASE_FPS * 0.75, 34, 35);
         currentAnimation = idle;
 
         final double scale = 0.5;
@@ -75,6 +82,8 @@ public class Player extends GameObject {
 
     @Override
     public void update(double deltaTime) {
+        double lastFrameVSpeed = vSpeed;
+
         // Remember, acceleration is per second per second, so we actually DO want
         // this "double application" of deltaTime.
         // ! Do not disable gravity when grounded. Otherwise the Player will stop
@@ -103,14 +112,22 @@ public class Player extends GameObject {
         transform.x += hSpeed * deltaTime;
         transform.y -= vSpeed * deltaTime;
 
-        if (dx == 0.0) {
-            currentAnimation = idle;
-        } else if (dx > 0) {
-            currentAnimation = moveRight;
-            spriteComponent.setIsFlippedX(false);
-        } else if (dx < 0) {
-            currentAnimation = moveRight;
-            spriteComponent.setIsFlippedX(true);
+        if (grounded) {
+            // barely moving up or down, select our animation set
+            // from the horizontal animations
+            if (dx == 0.0) {
+                currentAnimation = idle;
+            } else if (dx > 0) {
+                currentAnimation = moveRight;
+                spriteComponent.setIsFlippedX(false);
+            } else if (dx < 0) {
+                currentAnimation = moveRight;
+                spriteComponent.setIsFlippedX(true);
+            }
+        } else {
+            if (vSpeed < 0) {
+                currentAnimation = falling;
+            }
         }
 
         currentAnimation.update(deltaTime);

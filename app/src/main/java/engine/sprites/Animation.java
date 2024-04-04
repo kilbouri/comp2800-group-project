@@ -25,7 +25,7 @@ public class Animation {
      */
     public Animation(SpriteSheet sourceSheet, double fps, int startIndex, int endIndex) {
         this(fps, ((Supplier<BufferedImage[]>) () -> {
-            BufferedImage[] frames = new BufferedImage[endIndex - startIndex];
+            BufferedImage[] frames = new BufferedImage[endIndex - startIndex + 1];
             for (int i = 0; i < frames.length; i++) {
                 frames[i] = sourceSheet.getTile(startIndex + i);
             }
