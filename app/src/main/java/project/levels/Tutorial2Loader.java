@@ -22,12 +22,12 @@ public class Tutorial2Loader implements LevelLoader {
 
         BufferedImage ground = placeholders.getTile(0);
 
-        loop.addGameObject(new Block(ground, 0, groundLevel, 100, 100));
+        loop.addGameObject(new Block(ground, 0, groundLevel, 200, 100));
         loop.addGameObject(new Block(ground, 800, 100, 100, 600));
 
         loop.addGameObject(new MovingPlatform(
                 placeholders.getTile(2),
-                150, groundLevel,
+                250, groundLevel,
                 500, groundLevel,
                 0, 5,
                 100, 32));
@@ -41,7 +41,8 @@ public class Tutorial2Loader implements LevelLoader {
 
         Player player;
         try {
-            player = new Player(PantColor.Blue, 32, groundLevel - placeholders.getTileHeight());
+            player = new Player(PantColor.Blue, 50, groundLevel);
+            player.getTransform().y -= player.getTransform().height;
         } catch (IOException e) {
             e.printStackTrace();
             return;

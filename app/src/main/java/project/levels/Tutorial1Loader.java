@@ -71,7 +71,8 @@ public class Tutorial1Loader implements LevelLoader {
 
         Player player;
         try {
-            player = new Player(PantColor.Blue, 50, groundLevel - placeholders.getTileHeight());
+            player = new Player(PantColor.Blue, 50, groundLevel);
+            player.getTransform().y -= player.getTransform().height;
         } catch (IOException e) {
             e.printStackTrace();
             return;
