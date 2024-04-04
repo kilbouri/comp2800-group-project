@@ -8,6 +8,11 @@ import engine.core.Component;
 
 public class Sprite extends Component {
 
+    protected boolean flipX;
+    protected boolean flipY;
+
+    protected double scale;
+
     protected Point2D.Double offset;
     protected BufferedImage displayImage;
 
@@ -22,6 +27,9 @@ public class Sprite extends Component {
     public Sprite(Point2D.Double offset, BufferedImage sprite) {
         this.offset = offset;
         this.displayImage = sprite;
+        this.flipX = false;
+        this.flipY = false;
+        this.scale = 1.0;
     }
 
     /**
@@ -45,7 +53,24 @@ public class Sprite extends Component {
         double posX = offset.x + getParentObject().getTransform().x;
         double posY = offset.y + getParentObject().getTransform().y;
 
-        graphics.drawImage(displayImage, (int) posX, (int) posY, null);
+        double width = displayImage.getWidth() * scale;
+        double height = displayImage.getHeight() * scale;
+
+        if (flipX) {
+            posX += width;
+            width = -width;
+        }
+
+        if (flipY) {
+            posY += height;
+            height = -height;
+        }
+
+        graphics.drawImage(
+                displayImage,
+                (int) posX, (int) posY,
+                (int) width, (int) height,
+                null);
     }
 
     /**
@@ -75,6 +100,21 @@ public class Sprite extends Component {
      */
     public void setDisplayImage(BufferedImage displayImage) {
         this.displayImage = displayImage;
+    }
+
+    public void setIsFlippedX(boolean flip) {
+        this.flipX = flip;
+    }
+
+    public void setIsFlippedY(boolean flip) {
+        this.flipY = flip;
+    }
+
+    /**
+     * @param scale the new scale for the image
+     */
+    public void setScale(double scale) {
+        this.scale = scale;
     }
 
     @Override

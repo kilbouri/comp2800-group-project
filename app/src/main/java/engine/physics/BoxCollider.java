@@ -23,11 +23,55 @@ public class BoxCollider extends Component {
         }
     }
 
+    private Rectangle2D box;
+
+    /**
+     * Create a new box collider based on the transform of the parent object.
+     * The X, Y, width, and height of the collider match those of the parent
+     * object transform.
+     */
+    public BoxCollider() {
+        this.box = null;
+    }
+
+    /**
+     * Create a new box collider based on the provided rectangle. The rectangle
+     * will be positioned relative to the parent object, and have the width
+     * and height of the provided box.
+     *
+     * @param x      the x-offset from the parent at which the box is positioned
+     * @param y      the y-offset from the parent at which the box is positioned
+     * @param width  the width of the box
+     * @param height the height of the box
+     */
+    public BoxCollider(double x, double y, double width, double height) {
+        this(new Rectangle2D.Double(x, y, width, height));
+    }
+
+    /**
+     * Create a new box collider based on the provided rectangle. The rectangle
+     * will be positioned relative to the parent object, and have the width
+     * and height of the provided box.
+     *
+     * @param box the parent-relative box to use
+     */
+    public BoxCollider(Rectangle2D box) {
+        this.box = box;
+    }
+
     /**
      * @return the Rectangle2D representing the bounds of the box collider
      */
     public Rectangle2D getBox() {
-        return parentObject.getTransform();
+        if (this.box == null) {
+            return parentObject.getTransform();
+        }
+
+        return new Rectangle2D.Double(
+                parentObject.getTransform().x + box.getX(),
+                parentObject.getTransform().y + box.getY(),
+                box.getWidth(),
+                box.getHeight());
     }
 
     /**

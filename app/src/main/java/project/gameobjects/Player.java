@@ -8,6 +8,7 @@ import engine.physics.CollisionEvent;
 import engine.physics.PhysicsWorld;
 import engine.physics.Trigger;
 import engine.sprites.Animation;
+import engine.sprites.Sprite;
 import engine.sprites.SpriteSheet;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
@@ -18,6 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends GameObject {
@@ -36,13 +38,18 @@ public class Player extends GameObject {
     private final Animation moveRight;
     private Animation currentAnimation;
 
+    private Sprite spriteComponent;
     private BoxCollider colliderComponent;
 
     private GameObject ground = null;
     private Point2D.Double groundLastPos = null;
 
     private boolean grounded = false;
-    private boolean flipAnimation = false;
+
+    // The player sprites are much larger than the visible player
+    // itself, so we use this offset to shrink the collider appropriately.
+    private static final double X_OFFSET = 20.0;
+    private static final double Y_OFFSET = 32.0;
 
     public Player(PantColor pants, double x, double y) throws IOException {
         // Load spritesheet and animations
@@ -57,7 +64,13 @@ public class Player extends GameObject {
         this.transform.width = sourceSheet.getTileWidth() * scale;
         this.transform.height = sourceSheet.getTileHeight() * scale;
 
-        this.addComponent(colliderComponent = new BoxCollider());
+        this.addComponent(colliderComponent = new BoxCollider(
+                X_OFFSET, Y_OFFSET,
+                this.transform.width - 2 * X_OFFSET, this.transform.height - Y_OFFSET));
+
+        this.addComponent(spriteComponent = new Sprite(currentAnimation.getSprite()));
+        spriteComponent.setScale(scale);
+
         this.setLayer(10);
     }
 
@@ -91,15 +104,14 @@ public class Player extends GameObject {
         transform.x += hSpeed * deltaTime;
         transform.y -= vSpeed * deltaTime;
 
-        flipAnimation = false;
-
         if (dx == 0.0) {
             currentAnimation = idle;
         } else if (dx > 0) {
             currentAnimation = moveRight;
+            spriteComponent.setIsFlippedX(false);
         } else if (dx < 0) {
             currentAnimation = moveRight;
-            flipAnimation = true;
+            spriteComponent.setIsFlippedX(true);
         }
 
         currentAnimation.update(deltaTime);
@@ -108,17 +120,8 @@ public class Player extends GameObject {
 
     @Override
     public void render(Graphics2D g) {
-        int drawX = (int) transform.x;
-        int drawY = (int) transform.y;
-        int width = (int) transform.width;
-        int height = (int) transform.height;
-
-        if (flipAnimation) {
-            drawX += width;
-            width = -width;
-        }
-
-        g.drawImage(currentAnimation.getSprite(), drawX, drawY, width, height, null);
+        spriteComponent.setDisplayImage(currentAnimation.getSprite());
+        spriteComponent.render(g);
         colliderComponent.drawDebug(g);
     }
 
