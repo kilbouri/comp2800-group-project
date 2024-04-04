@@ -17,13 +17,13 @@ public class MainLoop extends GameLoop {
 
     @Override
     public void beforeRender(Graphics2D graphics) {
-        graphics.setBackground(Color.BLACK);
+        graphics.setBackground(Color.gray);
         graphics.clearRect(0, 0, getWidth(), getHeight());
     }
 
     @Override
     public void afterRender(Graphics2D graphics) {
-        graphics.setColor(Color.CYAN);
+        graphics.setColor(Color.green);
         renderEngineMetrics(graphics);
         renderWASD(graphics);
     }

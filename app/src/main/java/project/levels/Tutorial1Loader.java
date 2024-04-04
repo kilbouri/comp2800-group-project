@@ -2,6 +2,7 @@ package project.levels;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
@@ -15,6 +16,7 @@ import project.gameobjects.LevelSwitchTrigger;
 import project.gameobjects.Player;
 import project.sprites.KeyboardExtraSheet;
 import project.sprites.KeyboardMainSheet;
+import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Tutorial1Loader implements LevelLoader {
     @Override
@@ -68,7 +70,14 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(new Block(groundSprite, 200 + pitWidth, groundLevel - 100, pitWidth, 200));
         loop.addGameObject(new Block(groundSprite, 200 + 3 * pitWidth, groundLevel, 900 - (200 + 3 * pitWidth), 100));
 
-        Player player = new Player(playerSprite, 50, groundLevel - placeholders.getTileHeight());
+        Player player;
+        try {
+            player = new Player(PantColor.Blue, 50, groundLevel - placeholders.getTileHeight());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         Rectangle2D.Double playerTrans = player.getTransform();
 
         AnimatedSprite moveLeft = new AnimatedSprite(aAnim, 0, 0);

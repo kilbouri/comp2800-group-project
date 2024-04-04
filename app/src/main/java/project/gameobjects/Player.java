@@ -7,7 +7,11 @@ import engine.physics.BoxCollider;
 import engine.physics.CollisionEvent;
 import engine.physics.PhysicsWorld;
 import engine.physics.Trigger;
+import engine.sprites.Animation;
 import engine.sprites.Sprite;
+import engine.sprites.SpriteSheet;
+import project.sprites.PlayerSpriteSheet;
+import project.sprites.PlayerSpriteSheet.PantColor;
 
 import static engine.physics.BoxCollider.OverlapFlags;
 
@@ -15,7 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Player extends GameObject {
     private static final double JUMP_HEIGHT_M = 1.7;
@@ -25,29 +29,36 @@ public class Player extends GameObject {
     private static final double MOVE_SPEED = 200;
     private static final double ACCEL_RATE = 50;
 
-    private BoxCollider collider;
-    private Sprite sprite;
-
     protected double vSpeed = 0;
     protected double hSpeed = 0;
 
-    private boolean grounded = true;
+    private final SpriteSheet sourceSheet;
+    private final Animation idle;
+    private final Animation moveRight;
+    private Animation currentAnimation;
+
+    private BoxCollider colliderComponent;
 
     private GameObject ground = null;
     private Point2D.Double groundLastPos = null;
 
-    public Player(BufferedImage sprite) {
-        this(sprite, 0, 0);
-    }
+    private boolean grounded = false;
+    private boolean flipAnimation = false;
 
-    public Player(BufferedImage sprite, double x, double y) {
-        this.addComponent(collider = new BoxCollider());
-        this.addComponent(this.sprite = new Sprite(sprite));
+    public Player(PantColor pants, double x, double y) throws IOException {
+        // Load spritesheet and animations
+        sourceSheet = new PlayerSpriteSheet(pants);
+        idle = new Animation(sourceSheet, 12, 0, 11);
+        moveRight = new Animation(sourceSheet, 12, 12, 23);
+        currentAnimation = idle;
 
-        double w = sprite.getWidth();
-        double h = sprite.getHeight();
+        final double scale = 0.5;
+        this.transform.x = x;
+        this.transform.y = y;
+        this.transform.width = sourceSheet.getTileWidth() * scale;
+        this.transform.height = sourceSheet.getTileHeight() * scale;
 
-        this.transform = new Rectangle2D.Double(x, y, w, h);
+        this.addComponent(colliderComponent = new BoxCollider());
         this.setLayer(10);
     }
 
@@ -81,12 +92,35 @@ public class Player extends GameObject {
         transform.x += hSpeed * deltaTime;
         transform.y -= vSpeed * deltaTime;
 
+        flipAnimation = false;
+
+        if (dx == 0.0) {
+            currentAnimation = idle;
+        } else if (dx > 0) {
+            currentAnimation = moveRight;
+        } else if (dx < 0) {
+            currentAnimation = moveRight;
+            flipAnimation = true;
+        }
+
+        currentAnimation.update(deltaTime);
         super.update(deltaTime);
     }
 
     @Override
     public void render(Graphics2D g) {
-        sprite.render(g);
+        int drawX = (int) transform.x;
+        int drawY = (int) transform.y;
+        int width = (int) transform.width;
+        int height = (int) transform.height;
+
+        if (flipAnimation) {
+            drawX += width;
+            width = -width;
+        }
+
+        g.drawImage(currentAnimation.getSprite(), drawX, drawY, width, height, null);
+        colliderComponent.drawDebug(g);
     }
 
     @Override
@@ -129,9 +163,9 @@ public class Player extends GameObject {
         BoxCollider otherCollider = event.getOtherCollider(this);
         Rectangle2D overlap = event.getOverlap();
 
-        int overlapFlags = this.collider.overlapWith(otherCollider);
+        int overlapFlags = this.colliderComponent.overlapWith(otherCollider);
 
-        collider.resolveCollisionWith(otherCollider);
+        colliderComponent.resolveCollisionWith(otherCollider);
 
         boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
         boolean topInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.TOP_EDGE);

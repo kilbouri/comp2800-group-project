@@ -25,8 +25,8 @@ public class Animation {
      */
     public Animation(SpriteSheet sourceSheet, double fps, int startIndex, int endIndex) {
         this(fps, ((Supplier<BufferedImage[]>) () -> {
-            BufferedImage[] frames = new BufferedImage[endIndex - startIndex + 1];
-            for (int i = 0; i <= frames.length; i++) {
+            BufferedImage[] frames = new BufferedImage[endIndex - startIndex];
+            for (int i = 0; i < frames.length; i++) {
                 frames[i] = sourceSheet.getTile(startIndex + i);
             }
             return frames;
@@ -35,7 +35,7 @@ public class Animation {
 
     /**
      * Constructs an animation from the specified frames at the given framerate.
-     * 
+     *
      * @param fps    the playback framerate of the animation
      * @param frames the frames to display, in order
      */

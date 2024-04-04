@@ -1,5 +1,7 @@
 package engine.physics;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
 import engine.core.Component;
@@ -152,6 +154,11 @@ public class BoxCollider extends Component {
         }
 
         return result;
+    }
+
+    public void drawDebug(Graphics2D g) {
+        g.setColor(Color.green);
+        g.draw(getBox());
     }
 
     private static boolean between(double val, double min, double max) {
