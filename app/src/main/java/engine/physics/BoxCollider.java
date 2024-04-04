@@ -90,7 +90,6 @@ public class BoxCollider extends Component {
      */
     public void resolveCollisionWith(BoxCollider other) {
         final Rectangle2D.Double selfTrans = this.parentObject.getTransform();
-        final Rectangle2D.Double otherTrans = other.parentObject.getTransform();
         final Rectangle2D selfBox = this.getBox();
         final Rectangle2D otherBox = other.getBox();
         final Rectangle2D intersection = selfBox.createIntersection(otherBox);
