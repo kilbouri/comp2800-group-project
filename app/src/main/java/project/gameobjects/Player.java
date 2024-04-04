@@ -151,7 +151,6 @@ public class Player extends GameObject {
     public void render(Graphics2D g) {
         spriteComponent.setDisplayImage(currentAnimation.getSprite());
         spriteComponent.render(g);
-        colliderComponent.drawDebug(g);
     }
 
     @Override
