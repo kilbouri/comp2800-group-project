@@ -34,7 +34,6 @@ public class Tutorial1Loader implements LevelLoader {
          */
 
         BufferedImage groundSprite = placeholders.getTile(0);
-        BufferedImage playerSprite = placeholders.getTile(1);
 
         BufferedImage[] a = {
                 mainKeys.getKey(KeyboardMainSheet.Key.A, false),

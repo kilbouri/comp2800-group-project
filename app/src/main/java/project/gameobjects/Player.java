@@ -8,7 +8,6 @@ import engine.physics.CollisionEvent;
 import engine.physics.PhysicsWorld;
 import engine.physics.Trigger;
 import engine.sprites.Animation;
-import engine.sprites.Sprite;
 import engine.sprites.SpriteSheet;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
