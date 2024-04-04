@@ -9,6 +9,7 @@ public class Animation {
 
     private double frameTimer;
     private int frameIndex;
+    private boolean loop;
 
     /**
      * Creates an animation with the specified framerate using the sprites with
@@ -34,7 +35,9 @@ public class Animation {
     }
 
     /**
-     * Constructs an animation from the specified frames at the given framerate.
+     * Constructs an animation from the specified frames at the given
+     * framerate. The animation loops by default. Use {@link #setLooping(boolean)}
+     * to disable looping.
      *
      * @param fps    the playback framerate of the animation
      * @param frames the frames to display, in order
@@ -42,6 +45,8 @@ public class Animation {
     public Animation(double fps, BufferedImage... frames) {
         this.frames = frames;
         this.frameIndex = 0;
+
+        this.loop = true;
 
         this.secondsPerFrame = 1.0 / fps;
         this.frameTimer = secondsPerFrame;
@@ -62,11 +67,16 @@ public class Animation {
     }
 
     /**
-     * Retrieves the current sprite being shown in the animation
+     * Retrieves the current sprite being shown in the animation.
+     * If {@link #ended()} would return `true`, then `null` is returned.
      *
-     * @return the current animation frame
+     * @return the current animation frame, or null if the animation is completed
      */
     public BufferedImage getSprite() {
+        if (ended()) {
+            return null;
+        }
+
         return frames[frameIndex];
     }
 
@@ -77,8 +87,27 @@ public class Animation {
         frameIndex = 0;
     }
 
+    public void setLooping(boolean looping) {
+        this.loop = looping;
+    }
+
+    public boolean ended() {
+        if (loop) {
+            return false;
+        }
+
+        return frameIndex >= frames.length;
+    }
+
     private void nextFrame() {
+        if (ended()) {
+            return;
+        }
+
         frameIndex += 1;
-        frameIndex %= frames.length;
+
+        if (loop) {
+            frameIndex %= frames.length;
+        }
     }
 }

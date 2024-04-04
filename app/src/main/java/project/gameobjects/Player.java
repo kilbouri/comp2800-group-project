@@ -22,7 +22,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 
 public class Player extends GameObject {
-    private static final double JUMP_HEIGHT_M = 2.7;
+    private static final double JUMP_HEIGHT_M = 1.7;
     private static final double JUMP_HEIGHT_PIXELS = JUMP_HEIGHT_M * PhysicsWorld.PIXELS_PER_METER;
     private static final double JUMP_STRENGTH = Math.sqrt(2 * PhysicsWorld.GRAVITY * JUMP_HEIGHT_PIXELS);
 
@@ -64,6 +64,8 @@ public class Player extends GameObject {
         falling = new Animation(sourceSheet, BASE_FPS * 0.75, 34, 35);
         currentAnimation = idle;
 
+        jumpStart.setLooping(false);
+
         final double scale = 0.5;
         this.transform.x = x;
         this.transform.y = y;
@@ -82,17 +84,19 @@ public class Player extends GameObject {
 
     @Override
     public void update(double deltaTime) {
-        double lastFrameVSpeed = vSpeed;
-
         // Remember, acceleration is per second per second, so we actually DO want
         // this "double application" of deltaTime.
         // ! Do not disable gravity when grounded. Otherwise the Player will stop
         // ! colliding with the ground, and we will do a TON more work for no reason!
         vSpeed -= PhysicsWorld.GRAVITY * deltaTime;
 
+        // Whether or not the player jumped on THIS FRAME
+        boolean jumped = false;
+
         if (grounded && Keyboard.held(KeyEvent.VK_SPACE)) {
             grounded = false;
             vSpeed = JUMP_STRENGTH;
+            jumped = true;
         }
 
         int dx = Keyboard.getAxis(KeyEvent.VK_A, KeyEvent.VK_D);
@@ -112,25 +116,34 @@ public class Player extends GameObject {
         transform.x += hSpeed * deltaTime;
         transform.y -= vSpeed * deltaTime;
 
+        if (dx > 0) {
+            spriteComponent.setIsFlippedX(false);
+        } else if (dx < 0) {
+            spriteComponent.setIsFlippedX(true);
+        }
+
         if (grounded) {
-            // barely moving up or down, select our animation set
-            // from the horizontal animations
             if (dx == 0.0) {
-                currentAnimation = idle;
+                setAnimation(idle);
             } else if (dx > 0) {
-                currentAnimation = moveRight;
-                spriteComponent.setIsFlippedX(false);
+                setAnimation(moveRight);
             } else if (dx < 0) {
-                currentAnimation = moveRight;
-                spriteComponent.setIsFlippedX(true);
+                setAnimation(moveRight);
             }
         } else {
             if (vSpeed < 0) {
-                currentAnimation = falling;
+                setAnimation(falling);
+            } else if (jumped) {
+                setAnimation(jumpStart);
             }
         }
 
         currentAnimation.update(deltaTime);
+
+        if (currentAnimation == jumpStart && jumpStart.ended()) {
+            setAnimation(jumpIdle);
+        }
+
         super.update(deltaTime);
     }
 
@@ -220,5 +233,15 @@ public class Player extends GameObject {
         Rectangle2D.Double parentTrans = newGround.getTransform();
         this.ground = newGround;
         this.groundLastPos = new Point2D.Double(parentTrans.x, parentTrans.y);
+    }
+
+    private void setAnimation(Animation anim) {
+        if (currentAnimation == anim) {
+            // no change required
+            return;
+        }
+
+        anim.reset();
+        currentAnimation = anim;
     }
 }
