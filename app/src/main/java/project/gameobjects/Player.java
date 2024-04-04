@@ -19,11 +19,10 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends GameObject {
-    private static final double JUMP_HEIGHT_M = 1.7;
+    private static final double JUMP_HEIGHT_M = 2.7;
     private static final double JUMP_HEIGHT_PIXELS = JUMP_HEIGHT_M * PhysicsWorld.PIXELS_PER_METER;
     private static final double JUMP_STRENGTH = Math.sqrt(2 * PhysicsWorld.GRAVITY * JUMP_HEIGHT_PIXELS);
 

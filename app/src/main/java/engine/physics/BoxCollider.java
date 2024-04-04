@@ -148,7 +148,7 @@ public class BoxCollider extends Component {
             } else {
                 // Collision from the bottom
                 final double selfBoxYOffset = selfBox.getY() - selfTrans.y;
-                selfTrans.y += otherBox.getMaxY() - selfBoxYOffset;
+                selfTrans.y = otherBox.getMaxY() - selfBoxYOffset;
             }
         }
     }
