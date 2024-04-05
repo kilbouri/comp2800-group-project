@@ -13,6 +13,8 @@ public class ProjectWindow extends JFrame {
     JPanel container = new JPanel(cardLayout);
     public static final int SCREEN_WIDTH = 900;
     public static final int SCREEN_HEIGHT = 600;
+    LevelsMenu levelsMenu;
+    StartMenu startMenu;
 
     public ProjectWindow() {
         super("COMP 2800 Project");
@@ -20,8 +22,8 @@ public class ProjectWindow extends JFrame {
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setResizable(false);
 
-        StartMenu startMenu = new StartMenu(this);
-        LevelsMenu levelsMenu = new LevelsMenu(this);
+        startMenu = new StartMenu(this);
+        levelsMenu = new LevelsMenu(this);
         CharacterCustomization characterCustomization = new CharacterCustomization(this);
 
         container.add(startMenu, "startMenu");
@@ -32,6 +34,7 @@ public class ProjectWindow extends JFrame {
         add(container);
         setVisible(true);
     }
+
     public void startLoop(Level level) {
         if (container.getParent() != null) {
             this.remove(container);
@@ -42,13 +45,18 @@ public class ProjectWindow extends JFrame {
         loop.requestFocus();
         loop.start();
     }
+
     public void stopLoop() {
-        //TODO: this will need to be reworked!
+        // TODO: this will need to be reworked!
         remove(loop);
         add(container);
         cardLayout.show(container, "startMenu");
     }
+
     public void switchMenu(String menuName) {
         cardLayout.show(container, menuName);
+        if (menuName.equals("levelsMenu")) {
+            levelsMenu.requestFocus();
+        }
     }
 }
