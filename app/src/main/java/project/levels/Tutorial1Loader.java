@@ -10,12 +10,11 @@ import java.io.IOException;
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
 import engine.sprites.Animation;
-import engine.sprites.SpriteSheet;
 import engine.sprites.SpriteUtils;
-import project.PlaceholderSpriteSheet;
 import project.gameobjects.AnimatedSprite;
 import project.gameobjects.LevelSwitchTrigger;
 import project.gameobjects.Player;
+import project.gameobjects.blocks.FloatingGround;
 import project.gameobjects.blocks.Ground;
 import project.sprites.KeyboardExtraSheet;
 import project.sprites.KeyboardMainSheet;
@@ -66,8 +65,8 @@ public class Tutorial1Loader implements LevelLoader {
         int x = 0;
         int groundLevel = MAX_GRID_Y - 2;
         loop.addGameObject(new Ground(x += 0, groundLevel - 0, 4, 2));
-        loop.addGameObject(new Ground(x += 8, groundLevel - 2, 4, 4)); // todo: replace these with floaters
-        loop.addGameObject(new Ground(x += 8, groundLevel - 4, 4, 6)); // todo: replace these with floaters
+        loop.addGameObject(new FloatingGround(x += 8, groundLevel - 2, 4));
+        loop.addGameObject(new FloatingGround(x += 8, groundLevel - 4, 4));
         loop.addGameObject(new Ground(x += 8, groundLevel - 6, 5, 8));
 
         Player player;
