@@ -1,9 +1,11 @@
-package project.gameobjects;
+package project.gameobjects.blocks;
 
 import engine.core.GameObject;
 import engine.physics.BoxCollider;
 import engine.sprites.Sprite;
 import engine.sprites.SpriteUtils;
+
+import static project.levels.Level.GRID_SIZE;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -16,23 +18,27 @@ import java.awt.image.BufferedImage;
  */
 public class Block extends GameObject {
 
-    Sprite sprite;
-    BoxCollider boxCollider;
+    private Sprite sprite;
 
     /**
      * Constructs a Ground object with the specified position, image, and tile
      * dimensions.
      *
-     * @param x      The x-coordinate of the ground's position.
-     * @param y      The y-coordinate of the ground's position.
-     * @param image  The image used for rendering the ground.
-     * @param tilesX The number of tiles in the x-direction.
-     * @param tilesY The number of tiles in the y-direction.
+     * @param image      The image used for rendering the block.
+     * @param x          The x-coordinate (in grid-space) of the block's position.
+     * @param y          The y-coordinate (in grid-space) of the block's position.
+     * @param gridWidth  The number of tiles in the x-direction.
+     * @param gridHeight The number of tiles in the y-direction.
      */
-    public Block(BufferedImage image, int x, int y, int width, int height) {
+    protected Block(BufferedImage image, int gridX, int gridY, int gridWidth, int gridHeight) {
+        final int x = GRID_SIZE * gridX;
+        final int y = GRID_SIZE * gridY;
+        final int width = GRID_SIZE * gridWidth;
+        final int height = GRID_SIZE * gridHeight;
+
         this.transform = new Rectangle2D.Double(x, y, width, height);
         this.addComponent(sprite = new Sprite(SpriteUtils.tileToSize(image, width, height)));
-        this.addComponent(boxCollider = new BoxCollider());
+        this.addComponent(new BoxCollider());
     }
 
     @Override
