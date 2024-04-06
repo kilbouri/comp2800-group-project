@@ -1,11 +1,14 @@
 package project.levels;
 
+import java.io.IOException;
+
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
 import project.PlaceholderSpriteSheet;
 import project.gameobjects.Block;
 import project.gameobjects.LevelSwitchTrigger;
 import project.gameobjects.Player;
+import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class DeveloperLevel1Loader implements LevelLoader {
 
@@ -13,9 +16,16 @@ public class DeveloperLevel1Loader implements LevelLoader {
     public void load(GameLoop loop) {
         PlaceholderSpriteSheet placeholders = PlaceholderSpriteSheet.getInstance();
 
-        Player player = new Player(
-                placeholders.getTile(3),
-                100, 500 - placeholders.getTileHeight());
+        Player player;
+        try {
+            player = new Player(PantColor.Blue, 0, 0);
+            player.setPosition(100, 500 - player.getTransform().height - 10);
+        } catch (IOException e) {
+            System.err.print("IOException creating Player: ");
+            e.printStackTrace();
+            return;
+        }
+
         loop.addGameObject(player);
 
         // Ground

@@ -38,7 +38,7 @@ public class ProjectWindow extends JFrame {
         }
         add(loop);
         loop.loadLevel(level.getLoader());
-        loop.setAntialiased(true);
+        loop.setAntialiased(false);
         loop.requestFocus();
         loop.start();
     }

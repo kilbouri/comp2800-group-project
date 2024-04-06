@@ -7,7 +7,11 @@ import engine.physics.BoxCollider;
 import engine.physics.CollisionEvent;
 import engine.physics.PhysicsWorld;
 import engine.physics.Trigger;
+import engine.sprites.Animation;
 import engine.sprites.Sprite;
+import engine.sprites.SpriteSheet;
+import project.sprites.PlayerSpriteSheet;
+import project.sprites.PlayerSpriteSheet.PantColor;
 
 import static engine.physics.BoxCollider.OverlapFlags;
 
@@ -15,7 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Player extends GameObject {
     private static final double JUMP_HEIGHT_M = 1.7;
@@ -25,29 +29,56 @@ public class Player extends GameObject {
     private static final double MOVE_SPEED = 200;
     private static final double ACCEL_RATE = 50;
 
-    private BoxCollider collider;
-    private Sprite sprite;
-
     protected double vSpeed = 0;
     protected double hSpeed = 0;
 
-    private boolean grounded = true;
+    private final SpriteSheet sourceSheet;
+    private final Animation idle;
+    private final Animation moveRight;
+    private final Animation jumpStart;
+    private final Animation jumpIdle;
+    private final Animation falling;
+    private Animation currentAnimation;
+
+    private Sprite spriteComponent;
+    private BoxCollider colliderComponent;
 
     private GameObject ground = null;
     private Point2D.Double groundLastPos = null;
 
-    public Player(BufferedImage sprite) {
-        this(sprite, 0, 0);
-    }
+    private boolean grounded = false;
 
-    public Player(BufferedImage sprite, double x, double y) {
-        this.addComponent(collider = new BoxCollider());
-        this.addComponent(this.sprite = new Sprite(sprite));
+    // The player sprites are much larger than the visible player
+    // itself, so we use this offset to shrink the collider appropriately.
+    private static final double X_OFFSET = 20.0;
+    private static final double Y_OFFSET = 32.0;
 
-        double w = sprite.getWidth();
-        double h = sprite.getHeight();
+    public Player(PantColor pants, double x, double y) throws IOException {
+        // Load spritesheet and animations
+        final double BASE_FPS = 12;
+        sourceSheet = new PlayerSpriteSheet(pants);
+        idle = new Animation(sourceSheet, BASE_FPS, 0, 11);
+        moveRight = new Animation(sourceSheet, BASE_FPS, 12, 23);
+        jumpStart = new Animation(sourceSheet, BASE_FPS, 24, 27);
+        jumpIdle = new Animation(sourceSheet, BASE_FPS, 28, 33);
+        falling = new Animation(sourceSheet, BASE_FPS * 0.75, 34, 35);
+        currentAnimation = idle;
 
-        this.transform = new Rectangle2D.Double(x, y, w, h);
+        jumpStart.setLooping(false);
+
+        final double scale = 0.5;
+        this.transform.x = x;
+        this.transform.y = y;
+        this.transform.width = sourceSheet.getTileWidth() * scale;
+        this.transform.height = sourceSheet.getTileHeight() * scale;
+
+        this.addComponent(colliderComponent = new BoxCollider(
+                X_OFFSET, Y_OFFSET,
+                this.transform.width - 2 * X_OFFSET, this.transform.height - Y_OFFSET));
+
+        this.addComponent(spriteComponent = new Sprite(currentAnimation.getSprite()));
+        spriteComponent.setScale(scale);
+
         this.setLayer(10);
     }
 
@@ -59,9 +90,13 @@ public class Player extends GameObject {
         // ! colliding with the ground, and we will do a TON more work for no reason!
         vSpeed -= PhysicsWorld.GRAVITY * deltaTime;
 
+        // Whether or not the player jumped on THIS FRAME
+        boolean jumped = false;
+
         if (grounded && Keyboard.held(KeyEvent.VK_SPACE)) {
             grounded = false;
             vSpeed = JUMP_STRENGTH;
+            jumped = true;
         }
 
         int dx = Keyboard.getAxis(KeyEvent.VK_A, KeyEvent.VK_D);
@@ -81,12 +116,41 @@ public class Player extends GameObject {
         transform.x += hSpeed * deltaTime;
         transform.y -= vSpeed * deltaTime;
 
+        if (dx > 0) {
+            spriteComponent.setIsFlippedX(false);
+        } else if (dx < 0) {
+            spriteComponent.setIsFlippedX(true);
+        }
+
+        if (grounded) {
+            if (dx == 0.0) {
+                setAnimation(idle);
+            } else if (dx > 0) {
+                setAnimation(moveRight);
+            } else if (dx < 0) {
+                setAnimation(moveRight);
+            }
+        } else {
+            if (vSpeed < 0) {
+                setAnimation(falling);
+            } else if (jumped) {
+                setAnimation(jumpStart);
+            }
+        }
+
+        currentAnimation.update(deltaTime);
+
+        if (currentAnimation == jumpStart && jumpStart.ended()) {
+            setAnimation(jumpIdle);
+        }
+
         super.update(deltaTime);
     }
 
     @Override
     public void render(Graphics2D g) {
-        sprite.render(g);
+        spriteComponent.setDisplayImage(currentAnimation.getSprite());
+        spriteComponent.render(g);
     }
 
     @Override
@@ -129,9 +193,9 @@ public class Player extends GameObject {
         BoxCollider otherCollider = event.getOtherCollider(this);
         Rectangle2D overlap = event.getOverlap();
 
-        int overlapFlags = this.collider.overlapWith(otherCollider);
+        int overlapFlags = this.colliderComponent.overlapWith(otherCollider);
 
-        collider.resolveCollisionWith(otherCollider);
+        colliderComponent.resolveCollisionWith(otherCollider);
 
         boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
         boolean topInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.TOP_EDGE);
@@ -168,5 +232,15 @@ public class Player extends GameObject {
         Rectangle2D.Double parentTrans = newGround.getTransform();
         this.ground = newGround;
         this.groundLastPos = new Point2D.Double(parentTrans.x, parentTrans.y);
+    }
+
+    private void setAnimation(Animation anim) {
+        if (currentAnimation == anim) {
+            // no change required
+            return;
+        }
+
+        anim.reset();
+        currentAnimation = anim;
     }
 }
