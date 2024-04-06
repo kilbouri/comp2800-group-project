@@ -86,7 +86,7 @@ public class StartMenu extends JPanel {
         startGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                projectWindow.switchMenu("levelsMenu");
+                projectWindow.switchMenu(menus.START_MENU);
             }
         });
 
@@ -102,7 +102,7 @@ public class StartMenu extends JPanel {
         customizeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                projectWindow.switchMenu("characterCustomization");
+                projectWindow.switchMenu(menus.CHARACTER_CUSTOMIZATION);
             }
         });
 

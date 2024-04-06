@@ -18,7 +18,6 @@ public class LevelsMenu extends JPanel {
     private int levelsCompleted = 0;
     ProjectWindow projectWindow;
     private BufferedImage backgroundImage;
-    private final ArrayList<Integer> pressedKeys = new ArrayList<>();
     ArrayList<FancyButton> levelButtons = new ArrayList<>();
 
     public LevelsMenu(ProjectWindow projectWindow) {
@@ -38,7 +37,7 @@ public class LevelsMenu extends JPanel {
         backButton.setBorderRadius(10);
         backButton.setFont(UIConstants.FONT_MEDIUM);
         backButton.addActionListener(e -> {
-            projectWindow.switchMenu("startMenu");
+            projectWindow.switchMenu(menus.START_MENU);
         });
         backPanel.add(backButton);
         backPanel.setOpaque(false); // Make the panel transparent
@@ -86,19 +85,21 @@ public class LevelsMenu extends JPanel {
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                pressedKeys.add(e.getKeyCode()); // Add the pressed key to the set
-
-                // Check if both Shift and F are pressed
-                if (pressedKeys.contains(KeyEvent.VK_F) && pressedKeys.contains(KeyEvent.VK_SHIFT)) {
-                    unlockAllLevels();
+                // Check if 'F' is pressed
+                if (e.getKeyCode() == KeyEvent.VK_F) {
+                    // Check if Shift is also pressed
+                    if ((e.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0) {
+                        unlockAllLevels();
+                    }
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                pressedKeys.remove((Integer) e.getKeyCode()); // Remove the released key from the set
+                // Handle key released if needed
             }
         });
+
         // Add the centerPanel to the main panel
         add(centerPanel, BorderLayout.CENTER);
     }

@@ -26,11 +26,11 @@ public class ProjectWindow extends JFrame {
         levelsMenu = new LevelsMenu(this);
         CharacterCustomization characterCustomization = new CharacterCustomization(this);
 
-        container.add(startMenu, "startMenu");
-        container.add(levelsMenu, "levelsMenu");
-        container.add(characterCustomization, "characterCustomization");
+        container.add(startMenu, menus.START_MENU);
+        container.add(levelsMenu, menus.LEVELS_MENU);
+        container.add(characterCustomization, menus.CHARACTER_CUSTOMIZATION);
 
-        cardLayout.show(container, "startMenu");
+        cardLayout.show(container, menus.START_MENU);
         add(container);
         setVisible(true);
     }
@@ -50,12 +50,12 @@ public class ProjectWindow extends JFrame {
         // TODO: this will need to be reworked!
         remove(loop);
         add(container);
-        cardLayout.show(container, "startMenu");
+        cardLayout.show(container, menus.START_MENU);
     }
 
     public void switchMenu(String menuName) {
         cardLayout.show(container, menuName);
-        if (menuName.equals("levelsMenu")) {
+        if (menuName.equals(menus.LEVELS_MENU)) {
             levelsMenu.requestFocus();
         }
     }
