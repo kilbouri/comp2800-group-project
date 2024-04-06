@@ -26,8 +26,6 @@ public class Tutorial1Loader implements LevelLoader {
     private static final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
     private static final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
 
-    private static final BufferedImage groundSprite = placeholders.getTile(0);
-
     @Override
     public void load(GameLoop loop) {
 
@@ -67,14 +65,15 @@ public class Tutorial1Loader implements LevelLoader {
         Animation spaceAnim = new Animation(2, space);
 
         int x = 0;
-        loop.addGameObject(new Ground(x += 0, MAX_GRID_Y - 2, 4, 3));
-        loop.addGameObject(new Ground(x += 8, MAX_GRID_Y - 4, 4, 5)); // todo: replace these with floaters
-        loop.addGameObject(new Ground(x += 8, MAX_GRID_Y - 6, 4, 7)); // todo: replace these with floaters
-        loop.addGameObject(new Ground(x += 8, MAX_GRID_Y - 8, 5, 9));
+        int groundLevel = MAX_GRID_Y - 2;
+        loop.addGameObject(new Ground(x += 0, groundLevel - 0, 4, 2));
+        loop.addGameObject(new Ground(x += 8, groundLevel - 2, 4, 4)); // todo: replace these with floaters
+        loop.addGameObject(new Ground(x += 8, groundLevel - 4, 4, 6)); // todo: replace these with floaters
+        loop.addGameObject(new Ground(x += 8, groundLevel - 6, 5, 8));
 
         Player player;
         try {
-            player = new Player(PantColor.Blue, 2, MAX_GRID_Y - 4);
+            player = new Player(PantColor.Blue, 2, groundLevel - 2);
         } catch (IOException e) {
             e.printStackTrace();
             return;
