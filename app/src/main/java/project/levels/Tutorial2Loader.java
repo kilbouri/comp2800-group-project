@@ -15,23 +15,22 @@ import project.sprites.PlayerSpriteSheet.PantColor;
 public class Tutorial2Loader implements LevelLoader {
     @Override
     public void load(GameLoop loop) {
-        int x = 0;
+        int x = -1;
         int groundLevel = MAX_GRID_Y - 2;
 
-        loop.addGameObject(new Ground(x, groundLevel, 4, 2));
+        loop.addGameObject(new Ground(x, groundLevel, 5, 2));
 
         loop.addGameObject(new MovingPlatform(
-                x += 5, groundLevel,
+                x += 6, groundLevel,
                 x += 7, groundLevel,
                 0.0, 5.0, 4, 1));
 
         loop.addGameObject(new MovingPlatform(
-                x += 5, groundLevel,
+                x += 4, groundLevel,
                 x += 0, 6,
-                4, 5.0,
-                4, 1));
+                4, 5.0, 4, 1));
 
-        loop.addGameObject(new Ground(MAX_GRID_X - 4, 4, 4, MAX_GRID_Y - 4));
+        loop.addGameObject(new Ground(MAX_GRID_X - 6, 4, 6, MAX_GRID_Y - 4));
 
         Player player;
         try {

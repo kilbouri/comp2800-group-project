@@ -53,12 +53,12 @@ public class Tutorial1Loader implements LevelLoader {
         Animation dAnim = new Animation(2, d);
         Animation spaceAnim = new Animation(2, space);
 
-        int x = 0;
+        int x = -1;
         int groundLevel = MAX_GRID_Y - 2;
-        loop.addGameObject(new Ground(x += 0, groundLevel - 0, 5, 2));
+        loop.addGameObject(new Ground(x += 0, groundLevel - 0, 6, 3));
         loop.addGameObject(new FloatingGround(x += 9, groundLevel - 2, 3));
         loop.addGameObject(new FloatingGround(x += 7, groundLevel - 4, 3));
-        loop.addGameObject(new Ground(x += 7, groundLevel - 6, 6, 8));
+        loop.addGameObject(new Ground(x += 7, groundLevel - 6, 7, 9));
 
         Player player;
         try {
