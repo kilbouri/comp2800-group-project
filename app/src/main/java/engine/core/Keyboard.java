@@ -98,4 +98,8 @@ public class Keyboard {
 
         return result;
     }
+
+    public static synchronized void clear() {
+        heldKeys.clear();
+    }
 }

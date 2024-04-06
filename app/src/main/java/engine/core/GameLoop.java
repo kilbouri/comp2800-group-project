@@ -127,6 +127,9 @@ public abstract class GameLoop extends Canvas implements Runnable {
     }
 
     public void loadLevel(LevelLoader loader) {
+        // Reset input so the player has to re-press any held keys
+        Keyboard.clear();
+
         gameObjects.clear();
         physicsWorld = new PhysicsWorld();
 
