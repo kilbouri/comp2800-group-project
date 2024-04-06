@@ -2,11 +2,13 @@ package project.gameobjects.blocks;
 
 import static project.levels.Level.GRID_SIZE;
 
-import java.awt.image.BufferedImage;
-
 import engine.core.MathExtensions;
+import engine.sprites.SpriteSheet;
+import project.PlaceholderSpriteSheet;
 
 public class MovingPlatform extends Block {
+
+    private static final SpriteSheet sourceSheet = PlaceholderSpriteSheet.getInstance();
 
     private int startX, endX;
     private int startY, endY;
@@ -15,13 +17,12 @@ public class MovingPlatform extends Block {
     private double inversePeriod;
 
     public MovingPlatform(
-            BufferedImage image,
             int gridStartX, int gridStartY,
             int gridEndX, int gridEndY,
             double tStart,
             double period,
             int gridWidth, int gridHeight) {
-        super(image, gridStartX, gridStartY, gridWidth, gridHeight);
+        super(sourceSheet.getTile(2), gridStartX, gridStartY, gridWidth, gridHeight);
 
         transform.x = (int) MathExtensions.lerp(gridStartX, gridEndX, (tStart % period) / period);
         transform.y = (int) MathExtensions.lerp(gridStartY, gridEndY, (tStart % period) / period);

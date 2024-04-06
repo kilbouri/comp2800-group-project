@@ -91,9 +91,6 @@ public class Player extends GameObject {
         spriteComponent.setScale(scale);
 
         this.setLayer(10);
-
-        System.err.printf("%f, %f\n", x, y);
-        System.err.printf("%f, %f\n", x, y);
     }
 
     @Override
