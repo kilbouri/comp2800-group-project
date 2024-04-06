@@ -10,10 +10,12 @@ import engine.physics.Trigger;
 import engine.sprites.Animation;
 import engine.sprites.Sprite;
 import engine.sprites.SpriteSheet;
+import project.levels.Level;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
 
 import static engine.physics.BoxCollider.OverlapFlags;
+import static project.levels.Level.GRID_SIZE;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -50,36 +52,48 @@ public class Player extends GameObject {
 
     // The player sprites are much larger than the visible player
     // itself, so we use this offset to shrink the collider appropriately.
-    private static final double X_OFFSET = 20.0;
-    private static final double Y_OFFSET = 32.0;
+    // These values are relative to the original image
+    private static final double X_OFFSET = 32.0;
+    private static final double Y_OFFSET = 64.0;
 
-    public Player(PantColor pants, double x, double y) throws IOException {
+    public Player(PantColor pants, int gridX, int gridY) throws IOException {
+        this(pants, (double) (GRID_SIZE * gridX), GRID_SIZE * gridY);
+    }
+
+    private Player(PantColor pants, double x, double y) throws IOException {
         // Load spritesheet and animations
         final double BASE_FPS = 12;
         sourceSheet = new PlayerSpriteSheet(pants);
         idle = new Animation(sourceSheet, BASE_FPS, 0, 11);
-        moveRight = new Animation(sourceSheet, BASE_FPS, 12, 23);
-        jumpStart = new Animation(sourceSheet, BASE_FPS, 24, 27);
+        moveRight = new Animation(sourceSheet, BASE_FPS, 12, 24);
+        jumpStart = new Animation(sourceSheet, BASE_FPS, 25, 27);
         jumpIdle = new Animation(sourceSheet, BASE_FPS, 28, 33);
         falling = new Animation(sourceSheet, BASE_FPS * 0.75, 34, 35);
         currentAnimation = idle;
 
         jumpStart.setLooping(false);
 
-        final double scale = 0.5;
+        // this scale factor reduces the player down to be exactly 2 tiles tall
+        final double scale = (2.0 * Level.GRID_SIZE) / sourceSheet.getTileHeight();
+
         this.transform.x = x;
         this.transform.y = y;
         this.transform.width = sourceSheet.getTileWidth() * scale;
         this.transform.height = sourceSheet.getTileHeight() * scale;
 
         this.addComponent(colliderComponent = new BoxCollider(
-                X_OFFSET, Y_OFFSET,
-                this.transform.width - 2 * X_OFFSET, this.transform.height - Y_OFFSET));
+                X_OFFSET * scale,
+                Y_OFFSET * scale,
+                this.transform.width - (X_OFFSET * scale * 2),
+                this.transform.height - (Y_OFFSET * scale)));
 
         this.addComponent(spriteComponent = new Sprite(currentAnimation.getSprite()));
         spriteComponent.setScale(scale);
 
         this.setLayer(10);
+
+        System.err.printf("%f, %f\n", x, y);
+        System.err.printf("%f, %f\n", x, y);
     }
 
     @Override
@@ -151,6 +165,7 @@ public class Player extends GameObject {
     public void render(Graphics2D g) {
         spriteComponent.setDisplayImage(currentAnimation.getSprite());
         spriteComponent.render(g);
+        colliderComponent.drawDebug(g);
     }
 
     @Override
