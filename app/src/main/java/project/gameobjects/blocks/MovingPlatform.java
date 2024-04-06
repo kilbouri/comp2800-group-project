@@ -1,4 +1,6 @@
-package project.gameobjects;
+package project.gameobjects.blocks;
+
+import static project.levels.Level.GRID_SIZE;
 
 import java.awt.image.BufferedImage;
 
@@ -14,22 +16,21 @@ public class MovingPlatform extends Block {
 
     public MovingPlatform(
             BufferedImage image,
-            int startX, int startY,
-            int endX, int endY,
+            int gridStartX, int gridStartY,
+            int gridEndX, int gridEndY,
             double tStart,
             double period,
-            int width, int height) {
-        super(
-                image,
-                (int) MathExtensions.lerp(startX, endX, (tStart % period) / period),
-                (int) MathExtensions.lerp(startY, endY, (tStart % period) / period),
-                width, height);
+            int gridWidth, int gridHeight) {
+        super(image, gridStartX, gridStartY, gridWidth, gridHeight);
 
-        this.startX = startX;
-        this.startY = startY;
+        transform.x = (int) MathExtensions.lerp(gridStartX, gridEndX, (tStart % period) / period);
+        transform.y = (int) MathExtensions.lerp(gridStartY, gridEndY, (tStart % period) / period);
 
-        this.endX = endX;
-        this.endY = endY;
+        this.startX = gridStartX * GRID_SIZE;
+        this.startY = gridStartY * GRID_SIZE;
+
+        this.endX = gridEndX * GRID_SIZE;
+        this.endY = gridEndY * GRID_SIZE;
 
         this.inversePeriod = 1.0 / period;
         this.period = period;

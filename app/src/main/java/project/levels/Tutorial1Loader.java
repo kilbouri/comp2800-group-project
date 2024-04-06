@@ -1,5 +1,8 @@
 package project.levels;
 
+import static project.levels.Level.GRID_SIZE;
+import static project.levels.Level.MAX_GRID_Y;
+
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -11,19 +14,22 @@ import engine.sprites.SpriteSheet;
 import engine.sprites.SpriteUtils;
 import project.PlaceholderSpriteSheet;
 import project.gameobjects.AnimatedSprite;
-import project.gameobjects.Block;
 import project.gameobjects.LevelSwitchTrigger;
 import project.gameobjects.Player;
+import project.gameobjects.blocks.Ground;
 import project.sprites.KeyboardExtraSheet;
 import project.sprites.KeyboardMainSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Tutorial1Loader implements LevelLoader {
+    private static final SpriteSheet placeholders = PlaceholderSpriteSheet.getInstance();
+    private static final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
+    private static final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
+
+    private static final BufferedImage groundSprite = placeholders.getTile(0);
+
     @Override
     public void load(GameLoop loop) {
-        final SpriteSheet placeholders = PlaceholderSpriteSheet.getInstance();
-        final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
-        final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
 
         /**
          * @formatter:off
@@ -32,8 +38,6 @@ public class Tutorial1Loader implements LevelLoader {
          * __P_____           _____F_
          * @formatter:on
          */
-
-        BufferedImage groundSprite = placeholders.getTile(0);
 
         BufferedImage[] a = {
                 mainKeys.getKey(KeyboardMainSheet.Key.A, false),
@@ -62,17 +66,15 @@ public class Tutorial1Loader implements LevelLoader {
         Animation dAnim = new Animation(2, d);
         Animation spaceAnim = new Animation(2, space);
 
-        final int groundLevel = 500;
-        final int pitWidth = 175;
-
-        loop.addGameObject(new Block(groundSprite, 0, groundLevel, 200, 100));
-        loop.addGameObject(new Block(groundSprite, 200 + pitWidth, groundLevel - 100, pitWidth, 200));
-        loop.addGameObject(new Block(groundSprite, 200 + 3 * pitWidth, groundLevel, 900 - (200 + 3 * pitWidth), 100));
+        int x = 0;
+        loop.addGameObject(new Ground(x += 0, MAX_GRID_Y - 2, 4, 3));
+        loop.addGameObject(new Ground(x += 8, MAX_GRID_Y - 4, 4, 5)); // todo: replace these with floaters
+        loop.addGameObject(new Ground(x += 8, MAX_GRID_Y - 6, 4, 7)); // todo: replace these with floaters
+        loop.addGameObject(new Ground(x += 8, MAX_GRID_Y - 8, 5, 9));
 
         Player player;
         try {
-            player = new Player(PantColor.Blue, 50, groundLevel);
-            player.getTransform().y -= player.getTransform().height;
+            player = new Player(PantColor.Blue, 2, MAX_GRID_Y - 4);
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -82,7 +84,7 @@ public class Tutorial1Loader implements LevelLoader {
 
         AnimatedSprite moveLeft = new AnimatedSprite(aAnim, 0, 0);
         AnimatedSprite moveRight = new AnimatedSprite(dAnim, 0, 0);
-        AnimatedSprite jump = new AnimatedSprite(spaceAnim, 200 + (pitWidth / 2) - 32, playerTrans.y - 32);
+        AnimatedSprite jump = new AnimatedSprite(spaceAnim, 200 + 125 - 32, playerTrans.y - 32);
 
         moveLeft.getTransform().x = playerTrans.x - aAnim.getSprite().getWidth() - 8;
         moveRight.getTransform().x = playerTrans.x + playerTrans.width + 8;
@@ -93,7 +95,8 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(moveRight);
         loop.addGameObject(jump);
 
-        loop.addGameObject(new LevelSwitchTrigger(player, Level.Tutorial2, 850, 100, 20, groundLevel - 100))
+        loop.addGameObject(
+                new LevelSwitchTrigger(player, Level.Tutorial2, 850, 100, 20, (MAX_GRID_Y - 2) * GRID_SIZE - 100))
                 .setDebug(true);
         ;
     }
