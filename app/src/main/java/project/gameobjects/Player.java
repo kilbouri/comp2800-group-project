@@ -127,6 +127,8 @@ public class Player extends GameObject {
         transform.x += hSpeed * deltaTime;
         transform.y -= vSpeed * deltaTime;
 
+        constrainToScreen();
+
         if (dx > 0) {
             spriteComponent.setIsFlippedX(false);
         } else if (dx < 0) {
@@ -254,5 +256,14 @@ public class Player extends GameObject {
 
         anim.reset();
         currentAnimation = anim;
+    }
+
+    private void constrainToScreen() {
+        Rectangle2D box = colliderComponent.getBox();
+        if (box.getMinX() < 0) {
+            transform.x -= box.getMinX();
+        } else if (box.getMaxX() > Level.SCREEN_WIDTH_PX) {
+            transform.x -= box.getMaxX() - Level.SCREEN_WIDTH_PX;
+        }
     }
 }
