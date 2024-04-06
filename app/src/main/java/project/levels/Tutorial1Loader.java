@@ -22,7 +22,6 @@ import project.sprites.KeyboardMainSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Tutorial1Loader implements LevelLoader {
-    private static final SpriteSheet placeholders = PlaceholderSpriteSheet.getInstance();
     private static final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
     private static final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
 
