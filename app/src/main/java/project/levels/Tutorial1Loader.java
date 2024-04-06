@@ -76,9 +76,6 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(moveRight);
         loop.addGameObject(jump);
 
-        Player v = null;
-        v.getTransform();
-
         LevelExit exit = new LevelExit(Level.Tutorial2, player, x + 2, groundLevel - 8);
         exit.setDebug(true);
         loop.addGameObject(exit);
