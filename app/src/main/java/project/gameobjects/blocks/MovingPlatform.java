@@ -3,12 +3,8 @@ package project.gameobjects.blocks;
 import static project.levels.Level.GRID_SIZE;
 
 import engine.core.MathExtensions;
-import engine.sprites.SpriteSheet;
-import project.PlaceholderSpriteSheet;
 
-public class MovingPlatform extends Block {
-
-    private static final SpriteSheet sourceSheet = PlaceholderSpriteSheet.getInstance();
+public class MovingPlatform extends FloatingGround {
 
     private int startX, endX;
     private int startY, endY;
@@ -19,10 +15,10 @@ public class MovingPlatform extends Block {
     public MovingPlatform(
             int gridStartX, int gridStartY,
             int gridEndX, int gridEndY,
+            int gridWidth,
             double tStart,
-            double period,
-            int gridWidth, int gridHeight) {
-        super(sourceSheet.getTile(2), gridStartX, gridStartY, gridWidth, gridHeight);
+            double period) {
+        super(gridStartX, gridStartY, gridWidth);
 
         transform.x = (int) MathExtensions.lerp(gridStartX, gridEndX, (tStart % period) / period);
         transform.y = (int) MathExtensions.lerp(gridStartY, gridEndY, (tStart % period) / period);

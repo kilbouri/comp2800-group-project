@@ -23,12 +23,12 @@ public class Tutorial2Loader implements LevelLoader {
         loop.addGameObject(new MovingPlatform(
                 x += 6, groundLevel,
                 x += 7, groundLevel,
-                0.0, 5.0, 4, 1));
+                4, 0.0, 5.0));
 
         loop.addGameObject(new MovingPlatform(
                 x += 4, groundLevel,
                 x += 0, 6,
-                4, 5.0, 4, 1));
+                4, 4.0, 5.0));
 
         loop.addGameObject(new Ground(MAX_GRID_X - 6, 4, 6, MAX_GRID_Y - 4));
 
@@ -41,5 +41,7 @@ public class Tutorial2Loader implements LevelLoader {
         }
 
         loop.addGameObject(player);
+
+        System.err.println("Player spawned at " + player.getTransform());
     }
 }
