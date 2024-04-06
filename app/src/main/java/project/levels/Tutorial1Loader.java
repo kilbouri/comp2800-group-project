@@ -13,7 +13,7 @@ import project.gameobjects.AnimatedSprite;
 import project.gameobjects.Player;
 import project.gameobjects.blocks.FloatingGround;
 import project.gameobjects.blocks.Ground;
-import project.gameobjects.blocks.LevelExit;
+import project.gameobjects.triggers.LevelExit;
 import project.sprites.KeyboardExtraSheet;
 import project.sprites.KeyboardMainSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
@@ -76,7 +76,7 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(moveRight);
         loop.addGameObject(jump);
 
-        LevelExit exit = new LevelExit(Level.Tutorial2, player, x + 2, groundLevel - 8);
+        LevelExit exit = new LevelExit(Level.Tutorial2, player, x, groundLevel - 11);
         exit.setDebug(true);
         loop.addGameObject(exit);
     }
