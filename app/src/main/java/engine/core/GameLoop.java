@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import engine.physics.PhysicsWorld;
 
 public abstract class GameLoop extends Canvas implements Runnable {
@@ -23,6 +25,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private BufferStrategy bufferStrategy;
     private Thread gameThread;
     private boolean aaEnabled;
+    private boolean terminate;
 
     private double lastUpdateTime = 0;
     private double lastRenderTime = 0;
@@ -52,10 +55,16 @@ public abstract class GameLoop extends Canvas implements Runnable {
      * or while the canvas is not displayable.
      */
     public void start() {
+        if (terminate) {
+            return;
+        }
+
         createBufferStrategy(2);
         bufferStrategy = getBufferStrategy();
 
         gameThread = new Thread(this, "Game Thread");
+        terminate = false;
+
         gameThread.start();
     }
 
@@ -71,7 +80,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
         double lastNanos = System.nanoTime();
         double fpsSamplingNanoTimer = 0.0;
 
-        while (true) {
+        while (!terminate) {
+            System.err.println("Terminate: " + terminate);
             double nowNanos = System.nanoTime();
             double deltaNanos = nowNanos - lastNanos;
             lastNanos = nowNanos;
@@ -133,7 +143,16 @@ public abstract class GameLoop extends Canvas implements Runnable {
         gameObjects.clear();
         physicsWorld = new PhysicsWorld();
 
-        loader.load(this);
+        try {
+            loader.load(this);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "The engine encountered an unhandled exception while loading a level:\n\n" + e.toString(),
+                    "Level Loading Error", JOptionPane.ERROR_MESSAGE);
+            terminate = true;
+            System.err.println("Setting terminate: " + terminate);
+            return;
+        }
     }
 
     private void doUpdate(final double deltaTime) {

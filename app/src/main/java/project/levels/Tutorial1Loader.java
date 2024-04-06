@@ -4,7 +4,6 @@ import static project.levels.Level.MAX_GRID_Y;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
@@ -24,7 +23,7 @@ public class Tutorial1Loader implements LevelLoader {
     private static final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
 
     @Override
-    public void load(GameLoop loop) {
+    public void load(GameLoop loop) throws Exception {
 
         BufferedImage[] a = {
                 mainKeys.getKey(KeyboardMainSheet.Key.A, false),
@@ -60,13 +59,7 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(new FloatingGround(x += 7, groundLevel - 4, 3));
         loop.addGameObject(new Ground(x += 7, groundLevel - 6, 7, 9));
 
-        Player player;
-        try {
-            player = new Player(PantColor.Blue, 2, groundLevel - 2);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        Player player = new Player(PantColor.Blue, 2, groundLevel - 2);
 
         Rectangle2D.Double playerTrans = player.getTransform();
 
@@ -82,6 +75,9 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(moveLeft);
         loop.addGameObject(moveRight);
         loop.addGameObject(jump);
+
+        Player v = null;
+        v.getTransform();
 
         LevelExit exit = new LevelExit(Level.Tutorial2, player, x + 2, groundLevel - 8);
         exit.setDebug(true);
