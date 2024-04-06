@@ -1,25 +1,52 @@
 package project.menus;
 
-import javax.swing.*;
+import project.BackgroundPanel;
 import project.ProjectWindow;
+import javax.swing.*;
+import engine.sprites.Animation;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import project.sprites.PlayerSpriteSheet;
+import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class CharacterCustomization extends JPanel {
 
-    ImageIcon background;
+    private int currentSheetIndex;
+    private JPanel leftPanel;
     ProjectWindow projectWindow;
+    private PantColor currentSprite;
+    private Animation blueIdle;
+    private Animation goldIdle;
+    private Animation greenIdle;
+    private Animation maroonIdle;
+    private Animation currentAnimation;
 
     public CharacterCustomization(ProjectWindow projectWindow) {
+
         this.projectWindow = projectWindow;
         setLayout(new BorderLayout());
 
-        // background image
-        background = new ImageIcon("fancy pants.png");
+        BackgroundPanel backgroundPanel = new BackgroundPanel();
 
-        // space of where our character will be
-        JLabel characterDisplay = new JLabel("Character display");
+        // character sprite sheets using pantcolor enum
+        // setting the animation variables here
+        try {
+            new PlayerSpriteSheet(PantColor.Blue);
+            blueIdle = new Animation(new PlayerSpriteSheet(PantColor.Blue), 12, 0, 11);
+            new PlayerSpriteSheet(PantColor.Gold);
+            goldIdle = new Animation(new PlayerSpriteSheet(PantColor.Gold), 12, 0, 11);
+            new PlayerSpriteSheet(PantColor.Green);
+            greenIdle = new Animation(new PlayerSpriteSheet(PantColor.Green), 12, 0, 11);
+            new PlayerSpriteSheet(PantColor.Maroon);
+            maroonIdle = new Animation(new PlayerSpriteSheet(PantColor.Maroon), 12, 0, 11);
+            currentSprite = PantColor.Blue;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("files could not be read");
+        }
 
         // change button initialized
         JButton changeButton = new JButton("Change Sprite");
@@ -43,37 +70,9 @@ public class CharacterCustomization extends JPanel {
         saveButton.setPreferredSize(buttonSize);
         backButton.setPreferredSize(buttonSize);
 
-        // Adding action listeners to buttons
-        changeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to change character sprite
-                // You can implement this functionality as needed
-                JOptionPane.showMessageDialog(CharacterCustomization.this, "Sprite Changed");
-            }
-        });
-
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to save character sprite
-                // You can implement this functionality as needed
-                JOptionPane.showMessageDialog(CharacterCustomization.this, "Sprite Saved");
-            }
-        });
-
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                projectWindow.switchMenu("startMenu");
-            }
-        });
-
         // creating panel for the character sprite to be placed in
-        JPanel leftPanel = new JPanel();
+        leftPanel = new LeftPanel();
         leftPanel.setLayout(new BorderLayout());
-        leftPanel.add(characterDisplay);
-        leftPanel.setBackground(Color.pink);
 
         // creating panel for the buttons
         // Set layout to center the buttons
@@ -82,23 +81,90 @@ public class CharacterCustomization extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 0, 10, 0);
-
+        gbc.insets = new Insets(10, 0, 10, 80);
+        // adding buttons to panel
         rightPanel.add(changeButton, gbc);
         rightPanel.add(saveButton, gbc);
+        // setting background to transparent
         rightPanel.add(backButton, gbc);
-        rightPanel.setBackground(Color.pink);
+        rightPanel.setOpaque(false);
         // add right panel to left
         leftPanel.add(rightPanel, BorderLayout.EAST);
-        // add left panel to frame
-        add(leftPanel);
+        // setting background to transparent
+        leftPanel.setOpaque(false);
+        // add left panel to the background panel
+        backgroundPanel.add(leftPanel);
+        // add background panel to the frame
+        add(backgroundPanel);
+
+        // Adding action listeners to buttons
+        // what to do if change button is clicked
+        changeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // getting the ordinal value of the current sprite sheet
+                currentSheetIndex = currentSprite.ordinal();
+                // increment the index
+                currentSheetIndex = (currentSheetIndex + 1) % PlayerSpriteSheet.PantColor.values().length;
+                // updating the current sprite sheet
+                currentSprite = PlayerSpriteSheet.PantColor.values()[currentSheetIndex];
+                // calls leftPanel to be repainted, passing on the current spritesheet and the
+                // animation that needs to be played
+                // send currentanimation to leftpanel to repaint the screen
+                if (currentSprite == PantColor.Blue) {
+                    currentAnimation = blueIdle;
+                } else if (currentSprite == PantColor.Gold) {
+                    currentAnimation = goldIdle;
+                } else if (currentSprite == PantColor.Green) {
+                    currentAnimation = greenIdle;
+                } else if (currentSprite == PantColor.Maroon) {
+                    currentAnimation = maroonIdle;
+                }
+                leftPanel.repaint();
+            }
+        });
+
+        // what to do if save button is clicked
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to save character spriteS
+                JOptionPane.showMessageDialog(CharacterCustomization.this, "Sprite Saved");
+            }
+        });
+
+        // what to do if back button is clicked
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to go back to start menu
+                projectWindow.switchMenu("startMenu");
+            }
+        });
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        // Draw background image
-        g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), null);
-    }
+    // creating the panel that can display the character images
+    class LeftPanel extends JPanel {
+        private long lastNanos;
 
+        public LeftPanel() {
+            lastNanos = System.nanoTime();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            currentAnimation.update(getDeltaTime());
+            g.drawImage(currentAnimation.getSprite(), 300, 200, this);
+            repaint();// causes a loop that repaints the component repeatedly
+        }
+
+        private double getDeltaTime() {
+            long currentNanos = System.nanoTime();
+            long nanosPassed = currentNanos - lastNanos;
+            lastNanos = currentNanos;
+
+            return (double) nanosPassed / 1.0e9;
+        }
+
+    }
 }
