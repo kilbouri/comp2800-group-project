@@ -81,7 +81,6 @@ public abstract class GameLoop extends Canvas implements Runnable {
         double fpsSamplingNanoTimer = 0.0;
 
         while (!terminate) {
-            System.err.println("Terminate: " + terminate);
             double nowNanos = System.nanoTime();
             double deltaNanos = nowNanos - lastNanos;
             lastNanos = nowNanos;
@@ -150,7 +149,6 @@ public abstract class GameLoop extends Canvas implements Runnable {
                     "The engine encountered an unhandled exception while loading a level:\n\n" + e.toString(),
                     "Level Loading Error", JOptionPane.ERROR_MESSAGE);
             terminate = true;
-            System.err.println("Setting terminate: " + terminate);
             return;
         }
     }

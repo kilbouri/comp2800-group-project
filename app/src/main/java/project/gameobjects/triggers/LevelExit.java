@@ -1,0 +1,65 @@
+package project.gameobjects.triggers;
+
+import static project.levels.Level.GRID_SIZE;
+
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import engine.physics.BoxCollider;
+import engine.physics.CollisionEvent;
+import engine.physics.Trigger;
+import engine.sprites.Sprite;
+import engine.sprites.SpriteUtils;
+import project.gameobjects.Player;
+import project.levels.Level;
+
+public class LevelExit extends Trigger {
+    private static final BufferedImage sourceImage = loadSourceImage();
+
+    private static final int GRID_WIDTH = 5;
+    private static final int GRID_HEIGHT = 5;
+
+    private Player player;
+    private Level nextLevel;
+
+    private Sprite spriteComponent;
+
+    public LevelExit(Level nextLevel, Player player, int gridX, int gridY) {
+        super(
+                gridX * GRID_SIZE, gridY * GRID_SIZE,
+                GRID_WIDTH * GRID_SIZE, GRID_HEIGHT * GRID_SIZE,
+                new BoxCollider(new Rectangle2D.Double(70, 130, 15, 30)));
+
+        this.player = player;
+        this.nextLevel = nextLevel;
+
+        addComponent(spriteComponent = new Sprite(sourceImage));
+    }
+
+    @Override
+    public void render(Graphics2D graphics) {
+        super.render(graphics);
+        spriteComponent.render(graphics);
+    }
+
+    @Override
+    public void onCollisionEnter(CollisionEvent event) {
+        if (event.getOther(this) != player) {
+            return;
+        }
+
+        System.err.println("Player " + player + " completed the level, transitioning to " + nextLevel);
+        getGameLoop().loadLevel(nextLevel.getLoader());
+    }
+
+    private static BufferedImage loadSourceImage() {
+        try {
+            return SpriteUtils.load("sprites/prod/world/exit.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
