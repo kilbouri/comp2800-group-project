@@ -19,7 +19,6 @@ import project.sprites.KeyboardExtraSheet.ExtraKey;
 import project.sprites.KeyboardMainSheet;
 import project.sprites.DecorationSpriteSheet.Decoration;
 import project.sprites.KeyboardMainSheet.MainKey;
-import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Tutorial1Loader implements LevelLoader {
     private static final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
@@ -42,7 +41,7 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(new Ground(22, groundLevel - 6, 7, 9));
 
         // Player
-        Player player = loop.addGameObject(new Player(PantColor.Blue, 2, groundLevel - 2));
+        Player player = loop.addGameObject(new Player(2, groundLevel - 2));
 
         // Controls
         loop.addGameObject(new AnimatedSprite(getKeyAnimation(MainKey.A), 1, groundLevel - 3));

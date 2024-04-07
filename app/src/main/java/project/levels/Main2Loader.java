@@ -13,7 +13,6 @@ import project.gameobjects.blocks.MovingPlatform;
 import project.gameobjects.triggers.LevelExit;
 import project.sprites.DecorationSpriteSheet;
 import project.sprites.DecorationSpriteSheet.Decoration;
-import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Main2Loader implements LevelLoader {
     private static final DecorationSpriteSheet decor = DecorationSpriteSheet.getInstance();
@@ -49,7 +48,7 @@ public class Main2Loader implements LevelLoader {
         loop.addGameObject(new Ground(23.5, 7, 7, MAX_GRID_Y - 6, true)).setLayer(-1);
 
         // Player
-        Player player = loop.addGameObject(new Player(PantColor.Blue, 2, groundLevel - 2));
+        Player player = loop.addGameObject(new Player(2, groundLevel - 2));
 
         // Level Exit
         loop.addGameObject(new LevelExit(Level.Main2, player, 23.5, 2));
