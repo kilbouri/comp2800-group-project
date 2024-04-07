@@ -40,8 +40,8 @@ public class LevelExit extends Trigger {
 
     @Override
     public void render(Graphics2D graphics) {
-        super.render(graphics);
         spriteComponent.render(graphics);
+        super.render(graphics);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package project.gameobjects;
 
+import static project.levels.Level.GRID_SIZE;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -10,11 +12,11 @@ public class StaticSprite extends GameObject {
 
     private Sprite spriteRenderer;
 
-    public StaticSprite(BufferedImage image, double x, double y) {
+    public StaticSprite(BufferedImage image, int gridX, int gridY) {
         addComponent(spriteRenderer = new Sprite(image));
 
-        this.transform.x = x;
-        this.transform.y = y;
+        this.transform.x = GRID_SIZE * gridX;
+        this.transform.y = GRID_SIZE * gridY;
         this.transform.width = image.getWidth();
         this.transform.height = image.getHeight();
     }
