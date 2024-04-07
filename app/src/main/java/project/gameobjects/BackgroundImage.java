@@ -10,5 +10,6 @@ public class BackgroundImage extends StaticSprite {
 
     public BackgroundImage(int gridX, int gridY) throws IOException {
         super(SpriteUtils.load(backgroundResource), gridX, gridY);
+        setLayer(-100);
     }
 }

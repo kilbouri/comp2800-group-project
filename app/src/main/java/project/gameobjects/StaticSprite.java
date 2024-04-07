@@ -12,11 +12,11 @@ public class StaticSprite extends GameObject {
 
     private SpriteRenderer spriteRenderer;
 
-    public StaticSprite(BufferedImage image, int gridX, int gridY) {
+    public StaticSprite(BufferedImage image, double gridX, double gridY) {
         addComponent(spriteRenderer = new SpriteRenderer(image));
 
-        this.transform.x = GRID_SIZE * gridX;
-        this.transform.y = GRID_SIZE * gridY;
+        this.transform.x = gridX * GRID_SIZE;
+        this.transform.y = gridY * GRID_SIZE;
         this.transform.width = image.getWidth();
         this.transform.height = image.getHeight();
     }

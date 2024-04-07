@@ -68,7 +68,7 @@ public class SpriteRenderer extends Component {
 
         graphics.drawImage(
                 displayImage,
-                (int) posX, (int) posY,
+                (int) Math.round(posX), (int) Math.round(posY),
                 (int) width, (int) height,
                 null);
     }

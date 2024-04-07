@@ -30,9 +30,9 @@ public class Block extends GameObject {
      * @param gridWidth  The number of tiles in the x-direction.
      * @param gridHeight The number of tiles in the y-direction.
      */
-    protected Block(BufferedImage image, int gridX, int gridY, int gridWidth, int gridHeight) {
-        final int x = GRID_SIZE * gridX;
-        final int y = GRID_SIZE * gridY;
+    protected Block(BufferedImage image, double gridX, double gridY, int gridWidth, int gridHeight) {
+        final double x = gridX * GRID_SIZE;
+        final double y = gridY * GRID_SIZE;
         final int width = GRID_SIZE * gridWidth;
         final int height = GRID_SIZE * gridHeight;
 

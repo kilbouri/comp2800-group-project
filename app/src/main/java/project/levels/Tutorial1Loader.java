@@ -1,6 +1,5 @@
 package project.levels;
 
-import static project.levels.Level.GRID_SIZE;
 import static project.levels.Level.MAX_GRID_Y;
 
 import engine.core.GameLoop;
@@ -48,8 +47,7 @@ public class Tutorial1Loader implements LevelLoader {
         // Controls
         loop.addGameObject(new AnimatedSprite(getKeyAnimation(MainKey.A), 1, groundLevel - 3));
         loop.addGameObject(new AnimatedSprite(getKeyAnimation(MainKey.D), 3, groundLevel - 3));
-        loop.addGameObject(new AnimatedSprite(getKeyAnimation(ExtraKey.Space), 2, groundLevel - 4))
-                .getTransform().x -= 0.5 * GRID_SIZE;
+        loop.addGameObject(new AnimatedSprite(getKeyAnimation(ExtraKey.Space), 1.5, groundLevel - 4));
 
         // Level Exit
         loop.addGameObject(new LevelExit(Level.Tutorial2, player, 22, groundLevel - 11));
@@ -58,17 +56,14 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 4, groundLevel - 1));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Bush2), 0, groundLevel - 1));
 
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9, groundLevel - 3))
-                .getTransform().x += 0.5 * GRID_SIZE;
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10, groundLevel - 3))
-                .getTransform().x += 0.5 * GRID_SIZE;
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9.5, groundLevel - 3));
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10.5, groundLevel - 3));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10, groundLevel - 4));
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Bush1), 7, groundLevel - 8));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.PinkMushroom), 9, groundLevel - 8));
 
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.OrangeMushroom), 16, groundLevel - 5))
-                .getTransform().x -= 0.5 * GRID_SIZE;
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.OrangeMushroom), 15.5, groundLevel - 5));
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Boulder), 26, groundLevel - 7));
     }

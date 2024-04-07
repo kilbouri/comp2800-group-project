@@ -26,7 +26,7 @@ public class LevelExit extends Trigger {
 
     private SpriteRenderer spriteComponent;
 
-    public LevelExit(Level nextLevel, Player player, int gridX, int gridY) {
+    public LevelExit(Level nextLevel, Player player, double gridX, double gridY) {
         super(
                 gridX * GRID_SIZE, gridY * GRID_SIZE,
                 GRID_WIDTH * GRID_SIZE, GRID_HEIGHT * GRID_SIZE,

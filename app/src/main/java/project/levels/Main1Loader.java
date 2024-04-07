@@ -1,6 +1,5 @@
 package project.levels;
 
-import static project.levels.Level.GRID_SIZE;
 import static project.levels.Level.MAX_GRID_Y;
 
 import engine.core.*;
@@ -25,17 +24,13 @@ public class Main1Loader implements LevelLoader {
         // Platforms
         loop.addGameObject(new Ground(-1, groundLevel, 7, 3));
         loop.addGameObject(new MovingPlatform(6, groundLevel - 2, 16, groundLevel - 2, 2, 2.0, 4.0));
-        loop.addGameObject(new FloatingGround(19, groundLevel - 4, 3))
-                .getTransform().x -= 0.5 * GRID_SIZE;
+        loop.addGameObject(new Ground(19.5, groundLevel - 4, 5, MAX_GRID_Y - (groundLevel - 4)));
         loop.addGameObject(new MovingPlatform(16, groundLevel - 6, 5, groundLevel - 6, 2, 2.0, 4.0));
-        loop.addGameObject(new FloatingGround(1, 9, 4))
-                .getTransform().x -= 0.5 * GRID_SIZE;
-        loop.addGameObject(new FloatingGround(8, 7, 4))
-                .getTransform().x -= 0.5 * GRID_SIZE;
-        loop.addGameObject(new FloatingGround(16, 5, 4))
-                .getTransform().x -= 0.5 * GRID_SIZE;
-
-        loop.addGameObject(new Ground(22, 7, 7, MAX_GRID_Y - 6));
+        loop.addGameObject(new FloatingGround(0.5, 9, 4));
+        loop.addGameObject(new FloatingGround(7.5, 7, 4));
+        loop.addGameObject(new FloatingGround(15.5, 5, 4));
+        loop.addGameObject(new Ground(22, 7, 7, MAX_GRID_Y - 6, true))
+                .setLayer(-1);
 
         // Player
         Player player = loop.addGameObject(new Player(PantColor.Blue, 2, groundLevel - 2));
@@ -47,34 +42,22 @@ public class Main1Loader implements LevelLoader {
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 4, groundLevel - 1));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Bush1), 0, groundLevel - 1));
 
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.SmallBush2), 19, groundLevel - 5))
-                .getTransform().x -= 0.5 * GRID_SIZE;
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 20, groundLevel - 5))
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.SmallBush2), 20.5, groundLevel - 5));
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 23, groundLevel - 5))
                 .getRenderer().setIsFlippedX(true);
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 1, 8));
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.PinkMushroom), 3, 8))
-                .getTransform().x -= 0.25 * GRID_SIZE;
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.PinkMushroom), 2.75, 8));
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9, 6));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10, 6));
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9, 5))
-                .getTransform().x += 0.25 * GRID_SIZE;
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9.625, 5.25))
+                .getRenderer().setScale(0.75);
+        ;
 
-        StaticSprite miniOrangeMushroom = new StaticSprite(decor.getDecoration(Decoration.OrangeMushroom), 8, 6);
-        miniOrangeMushroom.getRenderer().setScale(0.75);
-        miniOrangeMushroom.getTransform().y += 0.25 * GRID_SIZE;
-        loop.addGameObject(miniOrangeMushroom);
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.OrangeMushroom), 8, 6.25))
+                .getRenderer().setScale(0.75);
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Stump), 26, 6));
     }
-}
-
-class Main2Loader implements LevelLoader {
-
-    @Override
-    public void load(GameLoop loop) throws Exception {
-        throw new UnsupportedOperationException("Unimplemented method 'load'");
-    }
-
 }

@@ -90,7 +90,7 @@ public class Player extends GameObject {
         this.addComponent(spriteComponent = new SpriteRenderer(currentAnimation.getSprite()));
         spriteComponent.setScale(scale);
 
-        this.setLayer(10);
+        this.setLayer(1000);
     }
 
     @Override
@@ -137,6 +137,7 @@ public class Player extends GameObject {
     public void render(Graphics2D g) {
         spriteComponent.setDisplayImage(currentAnimation.getSprite());
         spriteComponent.render(g);
+        colliderComponent.drawDebug(g);
     }
 
     @Override

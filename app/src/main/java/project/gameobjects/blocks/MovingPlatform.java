@@ -13,8 +13,8 @@ public class MovingPlatform extends FloatingGround {
     private double inversePeriod;
 
     public MovingPlatform(
-            int gridStartX, int gridStartY,
-            int gridEndX, int gridEndY,
+            double gridStartX, double gridStartY,
+            double gridEndX, double gridEndY,
             int gridWidth,
             double tStart,
             double period) {
