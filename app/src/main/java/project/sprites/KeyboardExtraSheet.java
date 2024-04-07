@@ -8,7 +8,7 @@ import engine.sprites.SpriteUtils;
 
 public class KeyboardExtraSheet extends SpriteSheet {
 
-    public static enum Key {
+    public static enum ExtraKey {
         Tab(0),
         Escape(1),
         Print(2),
@@ -28,13 +28,13 @@ public class KeyboardExtraSheet extends SpriteSheet {
 
         protected int index;
 
-        Key(int index) {
+        ExtraKey(int index) {
             this.index = index;
         }
     }
 
     private static KeyboardExtraSheet instance;
-    private static final int NUM_KEYS = Key.values().length;
+    private static final int NUM_KEYS = ExtraKey.values().length;
 
     public static KeyboardExtraSheet getInstance() {
         if (instance == null) {
@@ -51,11 +51,11 @@ public class KeyboardExtraSheet extends SpriteSheet {
         super(SpriteUtils.load("sprites/prod/keys/extras.png"), 32, 16);
     }
 
-    public BufferedImage getKey(Key key) {
+    public BufferedImage getKey(ExtraKey key) {
         return this.getKey(key, false);
     }
 
-    public BufferedImage getKey(Key key, boolean pressed) {
+    public BufferedImage getKey(ExtraKey key, boolean pressed) {
         int index = key.index;
         if (pressed) {
             // pressed variants are in the same order after the unpressed variants

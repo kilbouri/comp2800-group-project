@@ -7,7 +7,7 @@ import engine.sprites.SpriteSheet;
 import engine.sprites.SpriteUtils;
 
 public class KeyboardMainSheet extends SpriteSheet {
-    public static enum Key {
+    public static enum MainKey {
         UpArrow(0),
         DownArrow(1),
         LeftArrow(2),
@@ -67,12 +67,12 @@ public class KeyboardMainSheet extends SpriteSheet {
 
         protected int index;
 
-        Key(int index) {
+        MainKey(int index) {
             this.index = index;
         }
     }
 
-    private static final int NUM_KEYS = Key.values().length;
+    private static final int NUM_KEYS = MainKey.values().length;
     private static KeyboardMainSheet instance;
 
     public static KeyboardMainSheet getInstance() {
@@ -90,11 +90,11 @@ public class KeyboardMainSheet extends SpriteSheet {
         super(SpriteUtils.load("sprites/prod/keys/main.png"), 16, 16);
     }
 
-    public BufferedImage getKey(Key key) {
+    public BufferedImage getKey(MainKey key) {
         return getKey(key, false);
     }
 
-    public BufferedImage getKey(Key key, boolean pressed) {
+    public BufferedImage getKey(MainKey key, boolean pressed) {
         int index = key.index;
         if (pressed) {
             index += NUM_KEYS;
