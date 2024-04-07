@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import java.lang.Thread.State;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -37,6 +38,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
     private Vector<GameObject> gameObjects;
     private PhysicsWorld physicsWorld;
+    private LevelLoader currentLevelLoader;
 
     protected GameLoop(int gameObjectCapacity) {
         // Make sure this canvas can actually hecking have focus
@@ -51,12 +53,17 @@ public abstract class GameLoop extends Canvas implements Runnable {
     }
 
     /**
-     * Begins executing the canvas. It is an exception to call this method twice,
-     * or while the canvas is not displayable.
+     * Begins executing the canvas. It is an exception to call this method while the
+     * canvas is not displayable.
+     *
+     * If this method is called more than once, then a new thread will
+     * only be started if the previous game thread has COMPLETELY stopped.
+     *
+     * @return true if the a new game thread was started, otherwise false
      */
-    public void start() {
-        if (terminate) {
-            return;
+    public boolean start() {
+        if (gameThread != null && gameThread.getState() != State.TERMINATED) {
+            return false;
         }
 
         createBufferStrategy(2);
@@ -66,6 +73,26 @@ public abstract class GameLoop extends Canvas implements Runnable {
         terminate = false;
 
         gameThread.start();
+        return true;
+    }
+
+    /**
+     * Signals to the game thread that it should exit *as soon as possible*.
+     *
+     * @param block if true, this method blocks until the thread exits. The caller
+     *              must take care to not cause deadlock.
+     */
+    public void stop(boolean block) {
+        terminate = true;
+
+        // Wait for thread to exit
+        while (block && gameThread != null) {
+            try {
+                gameThread.join();
+                break;
+            } catch (InterruptedException e) {
+            }
+        }
     }
 
     /**
@@ -136,6 +163,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
     }
 
     public void loadLevel(LevelLoader loader) {
+        this.currentLevelLoader = loader;
+
         // Reset input so the player has to re-press any held keys
         Keyboard.clear();
 
@@ -152,6 +181,10 @@ public abstract class GameLoop extends Canvas implements Runnable {
             terminate = true;
             return;
         }
+    }
+
+    public LevelLoader getCurrentLevelLoader() {
+        return currentLevelLoader;
     }
 
     private void doUpdate(final double deltaTime) {

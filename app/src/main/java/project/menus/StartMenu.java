@@ -9,19 +9,18 @@ import project.ui.FancyLabel;
 import project.ui.UIConstants;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class StartMenu extends JPanel {
+    private static final Level[] allLevels = Level.values();
 
-    ProjectWindow projectWindow;
     private BufferedImage backgroundImage;
     private int levelsCompleted = 0;
 
     public StartMenu(ProjectWindow projectWindow) {
-        this.projectWindow = projectWindow;
+        super(new GridBagLayout());
+
         loadBackgroundImage(); // Load the background image
 
         // Create buttons
@@ -30,36 +29,18 @@ public class StartMenu extends JPanel {
         FancyButton quitButton = new FancyButton("Quit");
         FancyButton customizeButton = new FancyButton("Customize Character");
 
-        // Set preferred size for buttons
-        startGameButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
-        continueButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
-        quitButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
-        customizeButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
+        for (FancyButton b : new FancyButton[] {
+                startGameButton, continueButton,
+                quitButton, customizeButton }) {
 
-        // fixing up button text size
-        startGameButton.setFont(UIConstants.FONT_MEDIUM);
-        continueButton.setFont(UIConstants.FONT_MEDIUM);
-        quitButton.setFont(UIConstants.FONT_MEDIUM);
-        customizeButton.setFont(UIConstants.FONT_MEDIUM);
-        // button colours
-        startGameButton.setBackground(UIConstants.PRIMARY_COLOR);
-        continueButton.setBackground(UIConstants.PRIMARY_COLOR);
-        quitButton.setBackground(UIConstants.PRIMARY_COLOR);
-        customizeButton.setBackground(UIConstants.PRIMARY_COLOR);
-
-        startGameButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
-        continueButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
-        quitButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
-        customizeButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
-
-        // Set border radius for buttons
-        startGameButton.setBorderRadius(UIConstants.BORDER_RADIUS);
-        continueButton.setBorderRadius(UIConstants.BORDER_RADIUS);
-        quitButton.setBorderRadius(UIConstants.BORDER_RADIUS);
-        customizeButton.setBorderRadius(UIConstants.BORDER_RADIUS);
+            b.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
+            b.setFont(UIConstants.FONT_MEDIUM);
+            b.setBackground(UIConstants.PRIMARY_COLOR);
+            b.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
+            b.setBorderRadius(UIConstants.BORDER_RADIUS);
+        }
 
         // Set layout to center the buttons
-        setLayout(new GridBagLayout());
         FancyLabel title = new FancyLabel("Fancy Pants");
         title.setFont(new Font(Font.DIALOG, Font.BOLD, 100));
         title.setForeground(UIConstants.SECONDARY_COLOR);
@@ -83,33 +64,10 @@ public class StartMenu extends JPanel {
         }
 
         // creating the button listeners here
-        startGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                projectWindow.switchMenu(Menus.LEVELS_MENU);
-            }
-        });
-
-        continueButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                projectWindow.startLoop(Level.values()[levelsCompleted]);
-            }
-        });
-
-        customizeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                projectWindow.switchMenu(Menus.CHARACTER_CUSTOMIZATION);
-            }
-        });
-
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        startGameButton.addActionListener((e) -> projectWindow.switchMenu(Menus.LEVELS));
+        continueButton.addActionListener((e) -> projectWindow.loadLevel(allLevels[levelsCompleted]));
+        customizeButton.addActionListener((e) -> projectWindow.switchMenu(Menus.CUSTOMIZATION));
+        quitButton.addActionListener((e) -> System.exit(0));
     }
 
     private void loadBackgroundImage() {
@@ -128,5 +86,4 @@ public class StartMenu extends JPanel {
             g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
         }
     }
-
 }

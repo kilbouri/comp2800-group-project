@@ -5,7 +5,10 @@ import engine.sprites.SpriteUtils;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
+import project.PlayerAttributes;
 import project.ProjectWindow;
+import project.levels.Level;
 import project.ui.FancyButton;
 import project.ui.UIConstants;
 
@@ -14,89 +17,80 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class LevelsMenu extends JPanel {
-    private int totalLevels;
-    private int levelsCompleted = 0;
-    ProjectWindow projectWindow;
+    private static final Level[] allLevels = Level.values();
+
     private BufferedImage backgroundImage;
-    ArrayList<FancyButton> levelButtons = new ArrayList<>();
+
+    private JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+    private ArrayList<FancyButton> levelButtons = new ArrayList<>();
 
     public LevelsMenu(ProjectWindow projectWindow) {
-        this.projectWindow = projectWindow;
-        totalLevels = project.levels.Level.values().length;
-        this.setLayout(new GridBagLayout());
-        this.loadBackgroundImage(); // Load the background image
+        super(new BorderLayout());
 
-        setLayout(new BorderLayout()); // Set the main layout to BorderLayout
+        this.loadBackgroundImage();
 
-        // Back button panel
-        JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         FancyButton backButton = new FancyButton("<");
         backButton.setPreferredSize(UIConstants.BUTTON_SQUARE);
         backButton.setBackground(UIConstants.PRIMARY_COLOR);
         backButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
-        backButton.setBorderRadius(10);
+        backButton.setBorderRadius(UIConstants.BORDER_RADIUS);
         backButton.setFont(UIConstants.FONT_MEDIUM);
-        backButton.addActionListener(e -> {
-            projectWindow.switchMenu(Menus.START_MENU);
-        });
+        backButton.addActionListener((e) -> projectWindow.switchMenu(Menus.START));
+
         backPanel.add(backButton);
-        backPanel.setOpaque(false); // Make the panel transparent
-        // Adding backPanel to the top
+        backPanel.setOpaque(false);
         add(backPanel, BorderLayout.NORTH);
 
         // Central panel for the title and level buttons
         JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setOpaque(false); // Make the panel transparent
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridwidth = GridBagConstraints.REMAINDER; // This makes components span across the row
-        gbc.anchor = GridBagConstraints.CENTER;
+        centerPanel.setOpaque(false);
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(10, 10, 10, 10);
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.anchor = GridBagConstraints.CENTER;
 
         // Create title label
         JLabel titleLabel = new JLabel("Choose a Level");
         titleLabel.setFont(UIConstants.FONT_LARGE);
-        centerPanel.add(titleLabel, gbc);
+        centerPanel.add(titleLabel, constraints);
 
         // Reset for level buttons
-        gbc.gridwidth = 1;
-        int row = 0; // Reset row for the level buttons
-        for (int i = 0; i < totalLevels; i++) {
-            if (i % 3 == 0 && i > 0) {
-                row++;
-            }
-            gbc.gridx = i % 3; // Positions the button in the correct column
-            gbc.gridy = row + 1; // Positions the button in the correct row, below the title
+        constraints.gridwidth = 1;
+        constraints.gridy = 1;
+
+        for (int i = 0; i < allLevels.length; i++) {
+            constraints.gridy += (i % 3 == 0 && i != 0) ? 1 : 0;
+            constraints.gridx = i % 3;
+
             FancyButton levelButton = new FancyButton("Level " + (i + 1));
             levelButton.setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
             levelButton.setBackground(UIConstants.PRIMARY_COLOR);
             levelButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
             levelButton.setBorderRadius(10);
             levelButton.setFont(UIConstants.FONT_MEDIUM);
-            if (i >= levelsCompleted + 1) {
-                levelButton.setEnabled(false);
-            }
-            final int tmp = i;
+
+            final int levelindex = i; // stupid Java, why aren't primitives effectively final?
             levelButton.addActionListener(e -> {
-                projectWindow.startLoop(project.levels.Level.values()[tmp]);
+                projectWindow.loadLevel(allLevels[levelindex]);
             });
+
             levelButtons.add(levelButton);
-            centerPanel.add(levelButton, gbc);
+            centerPanel.add(levelButton, constraints);
         }
+
+        refreshButtonLocks();
+
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                // Check if 'F' is pressed
-                if (e.getKeyCode() == KeyEvent.VK_F) {
-                    // Check if Shift is also pressed
-                    if ((e.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0) {
-                        unlockAllLevels();
-                    }
-                }
-            }
+                boolean fPressed = e.getKeyCode() == KeyEvent.VK_F;
+                boolean shiftHeld = (e.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0;
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-                // Handle key released if needed
+                if (shiftHeld && fPressed) {
+                    unlockAllLevels();
+                }
             }
         });
 
@@ -122,8 +116,15 @@ public class LevelsMenu extends JPanel {
     }
 
     private void unlockAllLevels() {
-        for (int i = 0; i < totalLevels; i++) {
-            levelButtons.get(i).setEnabled(true);
+        System.err.println("Unlocking all levels!");
+        PlayerAttributes.levelsCompleted = PlayerAttributes.ALL_LEVELS_COMPLETE;
+        refreshButtonLocks();
+    }
+
+    public void refreshButtonLocks() {
+        for (int i = 0; i < levelButtons.size(); i++) {
+            // Lock the level if the level is not unlocked yet
+            levelButtons.get(i).setEnabled(i <= PlayerAttributes.levelsCompleted);
         }
     }
 }

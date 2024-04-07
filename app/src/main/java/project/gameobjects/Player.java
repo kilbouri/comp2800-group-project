@@ -1,5 +1,6 @@
 package project.gameobjects;
 
+import engine.core.GameLoop;
 import engine.core.GameObject;
 import engine.core.Keyboard;
 import engine.core.MathExtensions;
@@ -10,13 +11,16 @@ import engine.physics.Trigger;
 import engine.sprites.Animation;
 import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteSheet;
+import project.MainLoop;
 import project.PlayerAttributes;
 import project.levels.Level;
+import project.menus.Menus;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
 
 import static engine.physics.BoxCollider.OverlapFlags;
 import static project.levels.Level.GRID_SIZE;
+import static project.levels.Level.SCREEN_HEIGHT_PX;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -133,6 +137,20 @@ public class Player extends GameObject {
         transform.y -= vSpeed * deltaTime;
 
         constrainToScreen();
+
+        if (transform.y >= SCREEN_HEIGHT_PX + transform.height) {
+            PlayerAttributes.lives -= 1;
+
+            if (PlayerAttributes.lives == 0) {
+                gameOver();
+                return;
+            }
+
+            // reload the level
+            GameLoop loop = getGameLoop();
+            loop.loadLevel(loop.getCurrentLevelLoader());
+        }
+
         updateAnimation(deltaTime, dx, jumped);
 
         super.update(deltaTime);
@@ -273,5 +291,13 @@ public class Player extends GameObject {
         if (currentAnimation == jumpStart && jumpStart.ended()) {
             setAnimation(jumpIdle);
         }
+    }
+
+    private void gameOver() {
+        PlayerAttributes.levelsCompleted = PlayerAttributes.NO_LEVELS_COMPLETE;
+        PlayerAttributes.lives = PlayerAttributes.MAX_LIVES;
+
+        MainLoop loop = (MainLoop) getGameLoop();
+        loop.goToMenu(Menus.START);
     }
 }

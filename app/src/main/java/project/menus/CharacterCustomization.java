@@ -37,7 +37,7 @@ public class CharacterCustomization extends JPanel {
         backButton.setBorderRadius(10);
         backButton.setFont(UIConstants.FONT_MEDIUM);
         backButton.addActionListener(e -> {
-            projectWindow.switchMenu(Menus.START_MENU);
+            projectWindow.switchMenu(Menus.START);
         });
         backPanel.add(backButton);
         backPanel.setOpaque(false); // Make the panel transparent

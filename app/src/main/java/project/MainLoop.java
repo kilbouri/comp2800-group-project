@@ -10,9 +10,12 @@ public class MainLoop extends GameLoop {
     public static final int SCREEN_W = 900;
     public static final int SCREEN_H = 600;
 
-    public MainLoop() {
+    private ProjectWindow window;
+
+    public MainLoop(ProjectWindow window) {
         super(20);
         setSize(SCREEN_W, SCREEN_H);
+        this.window = window;
     }
 
     @Override
@@ -26,5 +29,9 @@ public class MainLoop extends GameLoop {
         graphics.setColor(Color.green);
         renderEngineMetrics(graphics);
         renderWASD(graphics);
+    }
+
+    public void goToMenu(String menuName) {
+        window.switchMenu(menuName);
     }
 }

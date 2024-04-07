@@ -58,5 +58,8 @@ public class Main1Loader implements LevelLoader {
                 .getRenderer().setScale(0.75);
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Stump), 26, 6));
+
+        // UI Overlay
+        loop.addGameObject(new LifeCounterOverlay());
     }
 }
