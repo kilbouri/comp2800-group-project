@@ -34,7 +34,8 @@ public class Player extends GameObject {
     private static final double JUMP_STRENGTH = Math.sqrt(2 * PhysicsWorld.GRAVITY * JUMP_HEIGHT_PIXELS);
 
     private static final double MOVE_SPEED = 200;
-    private static final double ACCEL_RATE = 50;
+    private static final double GROUND_ACCEL_RATE = 40;
+    private static final double AIR_ACCEL_RATE = 1.4;
 
     protected double vSpeed = 0;
     protected double hSpeed = 0;
@@ -120,7 +121,12 @@ public class Player extends GameObject {
         }
 
         int dx = Keyboard.getAxis(KeyEvent.VK_A, KeyEvent.VK_D);
-        hSpeed = MathExtensions.lerp(hSpeed, MOVE_SPEED * dx, deltaTime * ACCEL_RATE);
+
+        if (grounded) {
+            hSpeed = MathExtensions.lerp(hSpeed, MOVE_SPEED * dx, deltaTime * GROUND_ACCEL_RATE);
+        } else if (dx != 0) {
+            hSpeed = MathExtensions.lerp(hSpeed, MOVE_SPEED * dx, deltaTime * AIR_ACCEL_RATE);
+        }
 
         // Inherit parent speed
         if (ground != null) {
