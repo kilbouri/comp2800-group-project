@@ -1,6 +1,5 @@
 package project.levels;
 
-import static project.levels.Level.GRID_SIZE;
 import static project.levels.Level.MAX_GRID_Y;
 
 import engine.core.GameLoop;
