@@ -56,7 +56,7 @@ public class BoxCollider extends Component {
      * @param box the parent-relative box to use
      */
     public BoxCollider(Rectangle2D box) {
-        this.box = box;
+        setBox(box);
     }
 
     /**
@@ -72,6 +72,10 @@ public class BoxCollider extends Component {
                 parentObject.getTransform().y + box.getY(),
                 box.getWidth(),
                 box.getHeight());
+    }
+
+    public void setBox(Rectangle2D newBox) {
+        this.box = newBox.getBounds();
     }
 
     /**

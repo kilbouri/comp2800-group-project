@@ -1,6 +1,8 @@
 package project;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
+
 import javax.swing.*;
 import project.levels.Level;
 import project.menus.LevelsMenu;
@@ -11,15 +13,13 @@ public class ProjectWindow extends JFrame {
     MainLoop loop = new MainLoop();
     CardLayout cardLayout = new CardLayout();
     JPanel container = new JPanel(cardLayout);
-    public static final int SCREEN_WIDTH = 900;
-    public static final int SCREEN_HEIGHT = 600;
     LevelsMenu levelsMenu;
     StartMenu startMenu;
 
     public ProjectWindow() {
         super("COMP 2800 Project");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        getContentPane().setPreferredSize(new Dimension(Level.SCREEN_WIDTH_PX, Level.SCREEN_HEIGHT_PX));
         setResizable(false);
 
         startMenu = new StartMenu(this);
@@ -32,6 +32,7 @@ public class ProjectWindow extends JFrame {
 
         cardLayout.show(container, Menus.START_MENU);
         add(container);
+        pack();
         setVisible(true);
     }
 

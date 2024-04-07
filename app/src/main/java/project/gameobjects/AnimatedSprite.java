@@ -6,8 +6,8 @@ public class AnimatedSprite extends StaticSprite {
 
     private Animation animation;
 
-    public AnimatedSprite(Animation animation, double x, double y) {
-        super(animation.getSprite(), x, y);
+    public AnimatedSprite(Animation animation, double gridX, double gridY) {
+        super(animation.getSprite(), gridX, gridY);
         this.animation = animation;
     }
 

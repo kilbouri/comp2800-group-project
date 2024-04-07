@@ -1,20 +1,22 @@
 package project.gameobjects;
 
+import static project.levels.Level.GRID_SIZE;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import engine.core.GameObject;
-import engine.sprites.Sprite;
+import engine.sprites.SpriteRenderer;
 
 public class StaticSprite extends GameObject {
 
-    private Sprite spriteRenderer;
+    private SpriteRenderer spriteRenderer;
 
-    public StaticSprite(BufferedImage image, double x, double y) {
-        addComponent(spriteRenderer = new Sprite(image));
+    public StaticSprite(BufferedImage image, double gridX, double gridY) {
+        addComponent(spriteRenderer = new SpriteRenderer(image));
 
-        this.transform.x = x;
-        this.transform.y = y;
+        this.transform.x = gridX * GRID_SIZE;
+        this.transform.y = gridY * GRID_SIZE;
         this.transform.width = image.getWidth();
         this.transform.height = image.getHeight();
     }
@@ -28,5 +30,9 @@ public class StaticSprite extends GameObject {
         spriteRenderer.setDisplayImage(image);
         this.transform.width = image.getWidth();
         this.transform.height = image.getHeight();
+    }
+
+    public SpriteRenderer getRenderer() {
+        return spriteRenderer;
     }
 }

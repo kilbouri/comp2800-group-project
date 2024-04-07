@@ -1,100 +1,88 @@
 package project.levels;
 
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import static project.levels.Level.MAX_GRID_Y;
 
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
 import engine.sprites.Animation;
-import engine.sprites.SpriteSheet;
 import engine.sprites.SpriteUtils;
-import project.PlaceholderSpriteSheet;
 import project.gameobjects.AnimatedSprite;
-import project.gameobjects.Block;
-import project.gameobjects.LevelSwitchTrigger;
+import project.gameobjects.BackgroundImage;
 import project.gameobjects.Player;
+import project.gameobjects.StaticSprite;
+import project.gameobjects.blocks.FloatingGround;
+import project.gameobjects.blocks.Ground;
+import project.gameobjects.triggers.LevelExit;
+import project.sprites.DecorationSpriteSheet;
 import project.sprites.KeyboardExtraSheet;
+import project.sprites.KeyboardExtraSheet.ExtraKey;
 import project.sprites.KeyboardMainSheet;
+import project.sprites.DecorationSpriteSheet.Decoration;
+import project.sprites.KeyboardMainSheet.MainKey;
 import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Tutorial1Loader implements LevelLoader {
+    private static final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
+    private static final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
+    private static final DecorationSpriteSheet decor = DecorationSpriteSheet.getInstance();
+
     @Override
-    public void load(GameLoop loop) {
-        final SpriteSheet placeholders = PlaceholderSpriteSheet.getInstance();
-        final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
-        final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
+    public void load(GameLoop loop) throws Exception {
 
-        /**
-         * @formatter:off
-         *            space        F
-         *  a d       _____        F
-         * __P_____           _____F_
-         * @formatter:on
-         */
+        int groundLevel = MAX_GRID_Y - 2;
 
-        BufferedImage groundSprite = placeholders.getTile(0);
+        // Background
+        loop.addGameObject(new BackgroundImage(-1, -4));
 
-        BufferedImage[] a = {
-                mainKeys.getKey(KeyboardMainSheet.Key.A, false),
-                mainKeys.getKey(KeyboardMainSheet.Key.A, true),
-        };
+        // Platforms
+        loop.addGameObject(new Ground(-1, groundLevel, 7, 3));
+        loop.addGameObject(new FloatingGround(8, groundLevel - 2, 4));
+        loop.addGameObject(new FloatingGround(15, groundLevel - 4, 4));
+        loop.addGameObject(new FloatingGround(6, groundLevel - 7, 4));
+        loop.addGameObject(new Ground(22, groundLevel - 6, 7, 9));
 
-        BufferedImage[] d = {
-                mainKeys.getKey(KeyboardMainSheet.Key.D, false),
-                mainKeys.getKey(KeyboardMainSheet.Key.D, true),
-        };
+        // Player
+        Player player = loop.addGameObject(new Player(PantColor.Blue, 2, groundLevel - 2));
 
-        BufferedImage[] space = {
-                extraKeys.getKey(KeyboardExtraSheet.Key.Space, false),
-                extraKeys.getKey(KeyboardExtraSheet.Key.Space, true),
-        };
+        // Controls
+        loop.addGameObject(new AnimatedSprite(getKeyAnimation(MainKey.A), 1, groundLevel - 3));
+        loop.addGameObject(new AnimatedSprite(getKeyAnimation(MainKey.D), 3, groundLevel - 3));
+        loop.addGameObject(new AnimatedSprite(getKeyAnimation(ExtraKey.Space), 1.5, groundLevel - 4));
 
-        // Upscale the sprites to 2x, because they're small
-        for (BufferedImage[] arr : new BufferedImage[][] { a, d, space }) {
-            for (int i = 0; i < arr.length; i++) {
-                BufferedImage img = arr[i];
-                arr[i] = SpriteUtils.scale(img, img.getWidth() * 2, img.getHeight() * 2);
-            }
-        }
+        // Level Exit
+        loop.addGameObject(new LevelExit(Level.Tutorial2, player, 22, groundLevel - 11));
 
-        Animation aAnim = new Animation(2, a);
-        Animation dAnim = new Animation(2, d);
-        Animation spaceAnim = new Animation(2, space);
+        // Decorations
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 4, groundLevel - 1));
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Bush2), 0, groundLevel - 1));
 
-        final int groundLevel = 500;
-        final int pitWidth = 175;
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9.5, groundLevel - 3));
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10.5, groundLevel - 3));
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10, groundLevel - 4));
 
-        loop.addGameObject(new Block(groundSprite, 0, groundLevel, 200, 100));
-        loop.addGameObject(new Block(groundSprite, 200 + pitWidth, groundLevel - 100, pitWidth, 200));
-        loop.addGameObject(new Block(groundSprite, 200 + 3 * pitWidth, groundLevel, 900 - (200 + 3 * pitWidth), 100));
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Bush1), 7, groundLevel - 8));
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.PinkMushroom), 9, groundLevel - 8));
 
-        Player player;
-        try {
-            player = new Player(PantColor.Blue, 50, groundLevel);
-            player.getTransform().y -= player.getTransform().height;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.OrangeMushroom), 15.5, groundLevel - 5));
 
-        Rectangle2D.Double playerTrans = player.getTransform();
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Boulder), 26, groundLevel - 7));
+    }
 
-        AnimatedSprite moveLeft = new AnimatedSprite(aAnim, 0, 0);
-        AnimatedSprite moveRight = new AnimatedSprite(dAnim, 0, 0);
-        AnimatedSprite jump = new AnimatedSprite(spaceAnim, 200 + (pitWidth / 2) - 32, playerTrans.y - 32);
+    private static Animation getKeyAnimation(MainKey key) {
+        final int scaledW = mainKeys.getTileWidth() * 2;
+        final int scaledH = mainKeys.getTileHeight() * 2;
 
-        moveLeft.getTransform().x = playerTrans.x - aAnim.getSprite().getWidth() - 8;
-        moveRight.getTransform().x = playerTrans.x + playerTrans.width + 8;
-        moveLeft.getTransform().y = moveRight.getTransform().y = playerTrans.y - 32;
+        return new Animation(2,
+                SpriteUtils.scale(mainKeys.getKey(key, false), scaledW, scaledH),
+                SpriteUtils.scale(mainKeys.getKey(key, true), scaledW, scaledH));
+    }
 
-        loop.addGameObject(player);
-        loop.addGameObject(moveLeft);
-        loop.addGameObject(moveRight);
-        loop.addGameObject(jump);
+    private static Animation getKeyAnimation(ExtraKey key) {
+        final int scaledW = extraKeys.getTileWidth() * 2;
+        final int scaledH = extraKeys.getTileHeight() * 2;
 
-        loop.addGameObject(new LevelSwitchTrigger(player, Level.Tutorial2, 850, 100, 20, groundLevel - 100))
-                .setDebug(true);
-        ;
+        return new Animation(2,
+                SpriteUtils.scale(extraKeys.getKey(key, false), scaledW, scaledH),
+                SpriteUtils.scale(extraKeys.getKey(key, true), scaledW, scaledH));
     }
 }

@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 import engine.core.Component;
 
-public class Sprite extends Component {
+public class SpriteRenderer extends Component {
 
     protected boolean flipX;
     protected boolean flipY;
@@ -24,7 +24,7 @@ public class Sprite extends Component {
      * @param offset       The initial position of the sprite.
      * @param sprite       The image to be displayed as the sprite.
      */
-    public Sprite(Point2D.Double offset, BufferedImage sprite) {
+    public SpriteRenderer(Point2D.Double offset, BufferedImage sprite) {
         this.offset = offset;
         this.displayImage = sprite;
         this.flipX = false;
@@ -40,7 +40,7 @@ public class Sprite extends Component {
      * @param ParentObject The parent game object to which this sprite belongs.
      * @param sprite       The image to be displayed as the sprite.
      */
-    public Sprite(BufferedImage sprite) {
+    public SpriteRenderer(BufferedImage sprite) {
         this(new Point2D.Double(0, 0), sprite);
     }
 
@@ -68,7 +68,7 @@ public class Sprite extends Component {
 
         graphics.drawImage(
                 displayImage,
-                (int) posX, (int) posY,
+                (int) Math.round(posX), (int) Math.round(posY),
                 (int) width, (int) height,
                 null);
     }
