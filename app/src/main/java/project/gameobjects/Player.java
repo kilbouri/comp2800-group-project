@@ -8,7 +8,7 @@ import engine.physics.CollisionEvent;
 import engine.physics.PhysicsWorld;
 import engine.physics.Trigger;
 import engine.sprites.Animation;
-import engine.sprites.Sprite;
+import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteSheet;
 import project.levels.Level;
 import project.sprites.PlayerSpriteSheet;
@@ -24,8 +24,8 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 
 public class Player extends GameObject {
-    private static final double JUMP_HEIGHT_M = 1.7;
-    private static final double JUMP_HEIGHT_PIXELS = JUMP_HEIGHT_M * PhysicsWorld.PIXELS_PER_METER;
+    private static final double JUMP_HEIGHT_GRID = 2.5;
+    private static final double JUMP_HEIGHT_PIXELS = JUMP_HEIGHT_GRID * GRID_SIZE;
     private static final double JUMP_STRENGTH = Math.sqrt(2 * PhysicsWorld.GRAVITY * JUMP_HEIGHT_PIXELS);
 
     private static final double MOVE_SPEED = 200;
@@ -42,7 +42,7 @@ public class Player extends GameObject {
     private final Animation falling;
     private Animation currentAnimation;
 
-    private Sprite spriteComponent;
+    private SpriteRenderer spriteComponent;
     private BoxCollider colliderComponent;
 
     private GameObject ground = null;
@@ -87,7 +87,7 @@ public class Player extends GameObject {
                 this.transform.width - (X_OFFSET * scale * 2),
                 this.transform.height - (Y_OFFSET * scale)));
 
-        this.addComponent(spriteComponent = new Sprite(currentAnimation.getSprite()));
+        this.addComponent(spriteComponent = new SpriteRenderer(currentAnimation.getSprite()));
         spriteComponent.setScale(scale);
 
         this.setLayer(10);
@@ -137,7 +137,6 @@ public class Player extends GameObject {
     public void render(Graphics2D g) {
         spriteComponent.setDisplayImage(currentAnimation.getSprite());
         spriteComponent.render(g);
-        colliderComponent.drawDebug(g);
     }
 
     @Override

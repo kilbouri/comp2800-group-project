@@ -4,7 +4,9 @@ import engine.core.LevelLoader;
 
 public enum Level {
     Tutorial1(Tutorial1Loader.class),
-    Tutorial2(Tutorial2Loader.class);
+    Tutorial2(Tutorial2Loader.class),
+    Main1(Main1Loader.class),
+    Main2(Main2Loader.class);
 
     private LevelLoader loader;
 

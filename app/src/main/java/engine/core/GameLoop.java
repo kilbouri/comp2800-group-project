@@ -145,6 +145,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
         try {
             loader.load(this);
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this,
                     "The engine encountered an unhandled exception while loading a level:\n\n" + e.toString(),
                     "Level Loading Error", JOptionPane.ERROR_MESSAGE);

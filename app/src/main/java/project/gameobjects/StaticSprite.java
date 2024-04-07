@@ -6,14 +6,14 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import engine.core.GameObject;
-import engine.sprites.Sprite;
+import engine.sprites.SpriteRenderer;
 
 public class StaticSprite extends GameObject {
 
-    private Sprite spriteRenderer;
+    private SpriteRenderer spriteRenderer;
 
     public StaticSprite(BufferedImage image, int gridX, int gridY) {
-        addComponent(spriteRenderer = new Sprite(image));
+        addComponent(spriteRenderer = new SpriteRenderer(image));
 
         this.transform.x = GRID_SIZE * gridX;
         this.transform.y = GRID_SIZE * gridY;
@@ -30,5 +30,9 @@ public class StaticSprite extends GameObject {
         spriteRenderer.setDisplayImage(image);
         this.transform.width = image.getWidth();
         this.transform.height = image.getHeight();
+    }
+
+    public SpriteRenderer getRenderer() {
+        return spriteRenderer;
     }
 }

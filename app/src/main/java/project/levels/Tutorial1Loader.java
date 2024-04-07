@@ -37,8 +37,8 @@ public class Tutorial1Loader implements LevelLoader {
 
         // Platforms
         loop.addGameObject(new Ground(-1, groundLevel, 7, 3));
-        loop.addGameObject(new FloatingGround(8, groundLevel - 2, 3));
-        loop.addGameObject(new FloatingGround(15, groundLevel - 4, 3));
+        loop.addGameObject(new FloatingGround(8, groundLevel - 2, 4));
+        loop.addGameObject(new FloatingGround(15, groundLevel - 4, 4));
         loop.addGameObject(new FloatingGround(6, groundLevel - 7, 4));
         loop.addGameObject(new Ground(22, groundLevel - 6, 7, 9));
 
@@ -59,10 +59,10 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Bush2), 0, groundLevel - 1));
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9, groundLevel - 3))
-                .getTransform().x -= 0.5 * GRID_SIZE;
+                .getTransform().x += 0.5 * GRID_SIZE;
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10, groundLevel - 3))
-                .getTransform().x -= 0.5 * GRID_SIZE;
-        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 9, groundLevel - 4));
+                .getTransform().x += 0.5 * GRID_SIZE;
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 10, groundLevel - 4));
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Bush1), 7, groundLevel - 8));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.PinkMushroom), 9, groundLevel - 8));

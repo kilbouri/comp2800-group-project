@@ -27,15 +27,15 @@ public class Tutorial2Loader implements LevelLoader {
 
         // Ground
         loop.addGameObject(new Ground(-1, groundLevel, 7, 3));
-        loop.addGameObject(new MovingPlatform(8, groundLevel - 2, 13, groundLevel - 2, 3, 0.0, 3));
-        loop.addGameObject(new MovingPlatform(17, groundLevel - 4, 17, groundLevel - 9, 3, 5.0, 4.2));
+        loop.addGameObject(new MovingPlatform(8, groundLevel - 2, 13, groundLevel - 2, 3, 0.0, 2));
+        loop.addGameObject(new MovingPlatform(17, groundLevel - 4, 17, groundLevel - 9, 3, 5.0, 2.8));
         loop.addGameObject(new Ground(22, groundLevel - 11, 7, 14));
 
         // Player
         Player player = loop.addGameObject(new Player(PantColor.Blue, 2, groundLevel - 2));
 
         // Level Exit
-        loop.addGameObject(new LevelExit(Level.Tutorial2, player, 22, groundLevel - 16));
+        loop.addGameObject(new LevelExit(Level.Main1, player, 22, groundLevel - 16));
 
         // Decor
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.SmallBush2), 2, groundLevel - 1));

@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * It extends the Component class and provides methods for updating and
  * rendering the sprite.
  */
-public class TiledSprite extends Sprite {
+public class TiledSprite extends SpriteRenderer {
 
     protected BufferedImage sourceImage;
 

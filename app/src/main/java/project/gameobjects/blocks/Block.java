@@ -2,7 +2,7 @@ package project.gameobjects.blocks;
 
 import engine.core.GameObject;
 import engine.physics.BoxCollider;
-import engine.sprites.Sprite;
+import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteUtils;
 
 import static project.levels.Level.GRID_SIZE;
@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
  */
 public class Block extends GameObject {
 
-    private Sprite sprite;
+    private SpriteRenderer sprite;
 
     /**
      * Constructs a Ground object with the specified position, image, and tile
@@ -37,7 +37,7 @@ public class Block extends GameObject {
         final int height = GRID_SIZE * gridHeight;
 
         this.transform = new Rectangle2D.Double(x, y, width, height);
-        this.addComponent(sprite = new Sprite(SpriteUtils.tileToSize(image, width, height)));
+        this.addComponent(sprite = new SpriteRenderer(SpriteUtils.tileToSize(image, width, height)));
         this.addComponent(new BoxCollider());
     }
 

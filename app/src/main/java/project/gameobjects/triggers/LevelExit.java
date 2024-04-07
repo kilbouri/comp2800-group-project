@@ -10,7 +10,7 @@ import java.io.IOException;
 import engine.physics.BoxCollider;
 import engine.physics.CollisionEvent;
 import engine.physics.Trigger;
-import engine.sprites.Sprite;
+import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteUtils;
 import project.gameobjects.Player;
 import project.levels.Level;
@@ -24,7 +24,7 @@ public class LevelExit extends Trigger {
     private Player player;
     private Level nextLevel;
 
-    private Sprite spriteComponent;
+    private SpriteRenderer spriteComponent;
 
     public LevelExit(Level nextLevel, Player player, int gridX, int gridY) {
         super(
@@ -35,7 +35,7 @@ public class LevelExit extends Trigger {
         this.player = player;
         this.nextLevel = nextLevel;
 
-        addComponent(spriteComponent = new Sprite(sourceImage));
+        addComponent(spriteComponent = new SpriteRenderer(sourceImage));
     }
 
     @Override
