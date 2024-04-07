@@ -17,6 +17,7 @@ import java.util.EnumMap;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
 import project.ui.FancyButton;
+import project.ui.UIConstants;
 
 public class CharacterCustomization extends JPanel {
 
@@ -27,6 +28,21 @@ public class CharacterCustomization extends JPanel {
     public CharacterCustomization(ProjectWindow projectWindow) {
         super(new BorderLayout());
         setOpaque(false);
+
+        JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        FancyButton backButton = new FancyButton("<");
+        backButton.setPreferredSize(UIConstants.BUTTON_SQUARE);
+        backButton.setBackground(UIConstants.PRIMARY_COLOR);
+        backButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
+        backButton.setBorderRadius(10);
+        backButton.setFont(UIConstants.FONT_MEDIUM);
+        backButton.addActionListener(e -> {
+            projectWindow.switchMenu(Menus.START_MENU);
+        });
+        backPanel.add(backButton);
+        backPanel.setOpaque(false); // Make the panel transparent
+        // Adding backPanel to the top
+        add(backPanel, BorderLayout.NORTH);
 
         try {
             backgroundImage = SpriteUtils.load("sprites/prod/playerpreviewbg.png");
@@ -149,8 +165,12 @@ public class CharacterCustomization extends JPanel {
 
             currentAnimation.update(deltaTime);
 
-            // derived from the background image
-            final int playerFeetY = 416;
+            // How I got this particular number is MAGIC!
+            // The magic:
+            // - 416 is the pixel at which the ground starts in the background
+            // - the other number is a magic number I found by trial and error
+            // to account for the north section of the container
+            final int playerFeetY = 416 - 60;
             final int playerFeetX = getWidth() / 2;
 
             final BufferedImage frame = currentAnimation.getSprite();
