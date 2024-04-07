@@ -128,34 +128,7 @@ public class Player extends GameObject {
         transform.y -= vSpeed * deltaTime;
 
         constrainToScreen();
-
-        if (dx > 0) {
-            spriteComponent.setIsFlippedX(false);
-        } else if (dx < 0) {
-            spriteComponent.setIsFlippedX(true);
-        }
-
-        if (grounded) {
-            if (dx == 0.0) {
-                setAnimation(idle);
-            } else if (dx > 0) {
-                setAnimation(moveRight);
-            } else if (dx < 0) {
-                setAnimation(moveRight);
-            }
-        } else {
-            if (vSpeed < 0) {
-                setAnimation(falling);
-            } else if (jumped) {
-                setAnimation(jumpStart);
-            }
-        }
-
-        currentAnimation.update(deltaTime);
-
-        if (currentAnimation == jumpStart && jumpStart.ended()) {
-            setAnimation(jumpIdle);
-        }
+        updateAnimation(deltaTime, dx, jumped);
 
         super.update(deltaTime);
     }
@@ -264,6 +237,36 @@ public class Player extends GameObject {
             transform.x -= box.getMinX();
         } else if (box.getMaxX() > Level.SCREEN_WIDTH_PX) {
             transform.x -= box.getMaxX() - Level.SCREEN_WIDTH_PX;
+        }
+    }
+
+    private void updateAnimation(double deltaTime, int horizAxis, boolean jumped) {
+        if (horizAxis > 0) {
+            spriteComponent.setIsFlippedX(false);
+        } else if (horizAxis < 0) {
+            spriteComponent.setIsFlippedX(true);
+        }
+
+        if (grounded) {
+            if (horizAxis == 0.0) {
+                setAnimation(idle);
+            } else if (horizAxis > 0) {
+                setAnimation(moveRight);
+            } else if (horizAxis < 0) {
+                setAnimation(moveRight);
+            }
+        } else {
+            if (vSpeed < 0) {
+                setAnimation(falling);
+            } else if (jumped) {
+                setAnimation(jumpStart);
+            }
+        }
+
+        currentAnimation.update(deltaTime);
+
+        if (currentAnimation == jumpStart && jumpStart.ended()) {
+            setAnimation(jumpIdle);
         }
     }
 }
