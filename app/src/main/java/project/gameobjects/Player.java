@@ -176,7 +176,7 @@ public class Player extends GameObject {
             return;
         }
 
-        handleGroundCollision(event);
+        handleCollision(event);
     }
 
     @Override
@@ -186,7 +186,7 @@ public class Player extends GameObject {
             return;
         }
 
-        handleGroundCollision(event);
+        handleCollision(event);
     }
 
     @Override
@@ -205,33 +205,37 @@ public class Player extends GameObject {
         }
     }
 
-    private void handleGroundCollision(CollisionEvent event) {
+    private void handleCollision(CollisionEvent event) {
         BoxCollider otherCollider = event.getOtherCollider(this);
         Rectangle2D overlap = event.getOverlap();
 
         int overlapFlags = this.colliderComponent.overlapWith(otherCollider);
 
-        colliderComponent.resolveCollisionWith(otherCollider);
-
-        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
+        boolean isMovingUpwards = vSpeed > 0;
         boolean topInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.TOP_EDGE);
         boolean bottomInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.BOTTOM_EDGE);
 
-        boolean isMovingUpwards = vSpeed > 0;
+        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
+        boolean isRoofCollision = topInsideOther && !isWallCollision;
+        boolean isGroundCollision = bottomInsideOther && !isWallCollision;
 
-        if (topInsideOther && !isWallCollision && isMovingUpwards) {
-            vSpeed = 0;
+        if (isWallCollision) {
+            hSpeed = 0;
+        } else {
+            if (isRoofCollision && isMovingUpwards) {
+                vSpeed = 0;
+            }
+
+            if (isGroundCollision && !isMovingUpwards) {
+                grounded = true;
+                vSpeed = 0;
+
+                // landed on ground, need to parent up
+                setGround(otherCollider.getParentObject());
+            }
         }
 
-        // if the player is moving upwards and clips a corner, we don't want to kill
-        // their upward velocity (it looks and feels weird)
-        if (bottomInsideOther && !isWallCollision && !isMovingUpwards) {
-            grounded = true;
-            vSpeed = 0;
-
-            // landed on ground, need to parent up
-            setGround(otherCollider.getParentObject());
-        }
+        colliderComponent.resolveCollisionWith(otherCollider);
     }
 
     private void setGround(GameObject newGround) {
