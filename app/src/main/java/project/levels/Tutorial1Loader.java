@@ -8,6 +8,7 @@ import engine.core.LevelLoader;
 import engine.sprites.Animation;
 import engine.sprites.SpriteUtils;
 import project.gameobjects.AnimatedSprite;
+import project.gameobjects.BackgroundImage;
 import project.gameobjects.Player;
 import project.gameobjects.StaticSprite;
 import project.gameobjects.blocks.FloatingGround;
@@ -25,7 +26,6 @@ public class Tutorial1Loader implements LevelLoader {
     private static final KeyboardMainSheet mainKeys = KeyboardMainSheet.getInstance();
     private static final KeyboardExtraSheet extraKeys = KeyboardExtraSheet.getInstance();
     private static final DecorationSpriteSheet decor = DecorationSpriteSheet.getInstance();
-    private static final String backgroundResource = "sprites/prod/world/sky.png";
 
     @Override
     public void load(GameLoop loop) throws Exception {
@@ -33,7 +33,7 @@ public class Tutorial1Loader implements LevelLoader {
         int groundLevel = MAX_GRID_Y - 2;
 
         // Background
-        loop.addGameObject(new StaticSprite(SpriteUtils.load(backgroundResource), -1, -4));
+        loop.addGameObject(new BackgroundImage(-1, -4));
 
         // Platforms
         loop.addGameObject(new Ground(-1, groundLevel, 7, 3));

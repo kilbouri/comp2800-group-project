@@ -4,7 +4,7 @@ import static project.levels.Level.MAX_GRID_Y;
 
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
-import engine.sprites.SpriteUtils;
+import project.gameobjects.BackgroundImage;
 import project.gameobjects.Player;
 import project.gameobjects.triggers.LevelExit;
 import project.gameobjects.StaticSprite;
@@ -17,14 +17,13 @@ import project.sprites.PlayerSpriteSheet.PantColor;
 public class Tutorial2Loader implements LevelLoader {
 
     private static final DecorationSpriteSheet decor = DecorationSpriteSheet.getInstance();
-    private static final String backgroundResource = "sprites/prod/world/sky.png";
 
     @Override
     public void load(GameLoop loop) throws Exception {
         int groundLevel = MAX_GRID_Y - 2;
 
         // Background
-        loop.addGameObject(new StaticSprite(SpriteUtils.load(backgroundResource), -1, -4));
+        loop.addGameObject(new BackgroundImage(-1, -4));
 
         // Ground
         loop.addGameObject(new Ground(-1, groundLevel, 7, 3));
