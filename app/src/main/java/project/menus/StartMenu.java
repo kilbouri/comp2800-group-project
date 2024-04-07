@@ -57,7 +57,6 @@ public class StartMenu extends JPanel {
         quitButton.setBorderRadius(UIConstants.BORDER_RADIUS);
         customizeButton.setBorderRadius(UIConstants.BORDER_RADIUS);
 
-
         // Set layout to center the buttons
         setLayout(new GridBagLayout());
         FancyLabel title = new FancyLabel("Fancy Pants");
@@ -86,7 +85,7 @@ public class StartMenu extends JPanel {
         startGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                projectWindow.switchMenu(menus.START_MENU);
+                projectWindow.switchMenu(Menus.LEVELS_MENU);
             }
         });
 
@@ -102,7 +101,7 @@ public class StartMenu extends JPanel {
         customizeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                projectWindow.switchMenu(menus.CHARACTER_CUSTOMIZATION);
+                projectWindow.switchMenu(Menus.CHARACTER_CUSTOMIZATION);
             }
         });
 

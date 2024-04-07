@@ -37,7 +37,7 @@ public class LevelsMenu extends JPanel {
         backButton.setBorderRadius(10);
         backButton.setFont(UIConstants.FONT_MEDIUM);
         backButton.addActionListener(e -> {
-            projectWindow.switchMenu(menus.START_MENU);
+            projectWindow.switchMenu(Menus.START_MENU);
         });
         backPanel.add(backButton);
         backPanel.setOpaque(false); // Make the panel transparent
