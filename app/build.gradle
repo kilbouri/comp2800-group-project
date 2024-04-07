@@ -15,6 +15,12 @@ repositories {
 }
 
 dependencies {
+    // Jackson core library
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
+    // Jackson annotations
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
+    // Jackson databind for JSON serialization/deserialization
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

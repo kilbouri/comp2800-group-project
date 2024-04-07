@@ -2,6 +2,7 @@ package project.menus;
 
 import project.PlayerAttributes;
 import project.ProjectWindow;
+import project.io.Progress;
 
 import javax.swing.*;
 
@@ -70,6 +71,7 @@ public class CustomizeMenu extends JPanel implements Menu {
     protected void updatePantsSelection(PantColor color) {
         preview.setColor(color);
         PlayerAttributes.pantColor = color;
+        Progress.saveProgress();
     }
 
     @Override

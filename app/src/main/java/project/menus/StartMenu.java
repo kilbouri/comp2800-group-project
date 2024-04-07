@@ -2,6 +2,7 @@ package project.menus;
 
 import javax.swing.*;
 import engine.sprites.SpriteUtils;
+import project.PlayerAttributes;
 import project.ProjectWindow;
 import project.levels.Level;
 import project.ui.FancyButton;
@@ -18,7 +19,6 @@ public class StartMenu extends JPanel implements Menu {
     private FancyButton defaultFocusButton;
 
     private BufferedImage backgroundImage;
-    private int levelsCompleted = 0;
 
     public StartMenu(ProjectWindow projectWindow) {
         super(new GridBagLayout());
@@ -63,13 +63,12 @@ public class StartMenu extends JPanel implements Menu {
         add(customizeButton, gbc);
         add(quitButton, gbc);
 
-        if (levelsCompleted == 0) {
+        if (PlayerAttributes.levelsCompleted == 0) {
             continueButton.setEnabled(false);
         }
 
-        // creating the button listeners here
         startGameButton.addActionListener((e) -> projectWindow.switchMenu(Menu.LEVELS));
-        continueButton.addActionListener((e) -> projectWindow.loadLevel(allLevels[levelsCompleted]));
+        continueButton.addActionListener((e) -> projectWindow.loadLevel(allLevels[PlayerAttributes.levelsCompleted]));
         customizeButton.addActionListener((e) -> projectWindow.switchMenu(Menu.CUSTOMIZATION));
         quitButton.addActionListener((e) -> System.exit(0));
     }

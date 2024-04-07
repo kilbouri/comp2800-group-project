@@ -14,6 +14,7 @@ import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteUtils;
 import project.PlayerAttributes;
 import project.gameobjects.Player;
+import project.io.Progress;
 import project.levels.Level;
 
 public class LevelExit extends Trigger {
@@ -55,6 +56,7 @@ public class LevelExit extends Trigger {
                 PlayerAttributes.levelsCompleted,
                 nextLevel.ordinal());
         getGameLoop().loadLevel(nextLevel.getLoader());
+        Progress.saveProgress();
     }
 
     private static BufferedImage loadSourceImage() {

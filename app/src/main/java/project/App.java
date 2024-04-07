@@ -3,6 +3,8 @@ package project;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import project.io.Progress;
+
 public class App {
     public static void main(String[] args) {
         // Use the native system look and feel
@@ -14,6 +16,8 @@ public class App {
             return;
         }
 
+        //Load progress before starting the frame
+        Progress.loadProgress();
         // Invoke the main Swing application
         SwingUtilities.invokeLater(ProjectWindow::new);
     }
