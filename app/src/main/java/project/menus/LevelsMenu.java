@@ -9,11 +9,16 @@ import project.ProjectWindow;
 import project.ui.FancyButton;
 import project.ui.UIConstants;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
 public class LevelsMenu extends JPanel {
     private int totalLevels;
     private int levelsCompleted = 0;
     ProjectWindow projectWindow;
     private BufferedImage backgroundImage;
+    ArrayList<FancyButton> levelButtons = new ArrayList<>();
 
     public LevelsMenu(ProjectWindow projectWindow) {
         this.projectWindow = projectWindow;
@@ -32,7 +37,7 @@ public class LevelsMenu extends JPanel {
         backButton.setBorderRadius(10);
         backButton.setFont(UIConstants.FONT_MEDIUM);
         backButton.addActionListener(e -> {
-            projectWindow.switchMenu("startMenu");
+            projectWindow.switchMenu(Menus.START_MENU);
         });
         backPanel.add(backButton);
         backPanel.setOpaque(false); // Make the panel transparent
@@ -67,19 +72,36 @@ public class LevelsMenu extends JPanel {
             levelButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
             levelButton.setBorderRadius(10);
             levelButton.setFont(UIConstants.FONT_MEDIUM);
-            if (i >= levelsCompleted+1) {
+            if (i >= levelsCompleted + 1) {
                 levelButton.setEnabled(false);
             }
             final int tmp = i;
             levelButton.addActionListener(e -> {
                 projectWindow.startLoop(project.levels.Level.values()[tmp]);
             });
+            levelButtons.add(levelButton);
             centerPanel.add(levelButton, gbc);
         }
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // Check if 'F' is pressed
+                if (e.getKeyCode() == KeyEvent.VK_F) {
+                    // Check if Shift is also pressed
+                    if ((e.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0) {
+                        unlockAllLevels();
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // Handle key released if needed
+            }
+        });
 
         // Add the centerPanel to the main panel
         add(centerPanel, BorderLayout.CENTER);
-
     }
 
     private void loadBackgroundImage() {
@@ -96,6 +118,12 @@ public class LevelsMenu extends JPanel {
         // Draw the background image
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+        }
+    }
+
+    private void unlockAllLevels() {
+        for (int i = 0; i < totalLevels; i++) {
+            levelButtons.get(i).setEnabled(true);
         }
     }
 }
