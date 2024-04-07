@@ -11,6 +11,7 @@ import java.lang.Thread.State;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JOptionPane;
 
@@ -39,6 +40,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private Vector<GameObject> gameObjects;
     private PhysicsWorld physicsWorld;
     private LevelLoader currentLevelLoader;
+
+    private AtomicBoolean suspended = new AtomicBoolean(false);
 
     protected GameLoop(int gameObjectCapacity) {
         // Make sure this canvas can actually hecking have focus
@@ -76,6 +79,15 @@ public abstract class GameLoop extends Canvas implements Runnable {
         return true;
     }
 
+    public void suspend() {
+        suspended.set(true);
+    }
+
+    public void resume() {
+        suspended.set(false);
+        gameThread.interrupt(); // have the thread wake up asap
+    }
+
     /**
      * Signals to the game thread that it should exit *as soon as possible*.
      *
@@ -108,6 +120,16 @@ public abstract class GameLoop extends Canvas implements Runnable {
         double fpsSamplingNanoTimer = 0.0;
 
         while (!terminate) {
+            while (suspended.get()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // carry on, this is deliberate!
+                }
+
+                lastNanos = System.nanoTime();
+            }
+
             double nowNanos = System.nanoTime();
             double deltaNanos = nowNanos - lastNanos;
             lastNanos = nowNanos;

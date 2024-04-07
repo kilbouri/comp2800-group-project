@@ -59,10 +59,12 @@ public class GamePanel extends JLayeredPane implements Menu {
 
     public void pause() {
         pauseMenu.setVisible(true);
+        mainLoop.suspend();
     }
 
     public void unpause() {
         pauseMenu.setVisible(false);
+        mainLoop.resume();
     }
 
     @Override
