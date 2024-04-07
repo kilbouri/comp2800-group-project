@@ -1,5 +1,6 @@
 package project.io;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -7,17 +8,25 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import project.PlayerAttributes;
+import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Progress {
+
+    @JsonProperty("pantColor")
+    private transient PantColor tempPantColor; // transient keyword is not necessary here, but it's used to indicate
+                                               // these fields are not part of the object's persistent state
+
+    @JsonProperty("levelsCompleted")
+    private transient int tempLevelsCompleted;
 
     public static void saveProgress() {
         try {
 
+            Progress progress = new Progress();
+            // Transfer data from PlayerAttributes to temporary fields
+            progress.tempPantColor = PlayerAttributes.pantColor;
+            progress.tempLevelsCompleted = PlayerAttributes.levelsCompleted;
             ObjectMapper mapper = new ObjectMapper();
-            PlayerProgress progress = new PlayerProgress(PlayerAttributes.pantColor, PlayerAttributes.levelsCompleted);
-            if (!Files.exists(Paths.get("playerProgress.json"))) {
-                Files.createFile(Paths.get("playerProgress.json"));
-            }
 
             // Serialize to JSON
             String json = mapper.writeValueAsString(progress);
@@ -32,40 +41,34 @@ public class Progress {
 
     public static void loadProgress() {
         try {
-            if (!Files.exists(Paths.get("playerProgress.json"))) {
-                // if no file exists leave attributes as default and save default progress
-                saveProgress();
-                return;
-            }
             ObjectMapper mapper = new ObjectMapper();
 
-            // Read from file or string
+            // Read JSON from file
             String json = new String(Files.readAllBytes(Paths.get("playerProgress.json")), StandardCharsets.UTF_8);
 
-            // Deserialize from JSON
-            PlayerProgress progress;
-            try {
-                progress = mapper.readValue(json, PlayerProgress.class);
-            } catch (InvalidFormatException e) {
-                // Handle invalid PantColor
-                progress = new PlayerProgress(PlayerAttributes.DEFAULT_PANT_COLOR, 0); // Use default values
-                saveProgress(); // Consider saving the corrected default progress
-            }
-            // Set the player attributes from loaded progress
+            // Deserialize JSON into temporary fields
+            Progress progress = mapper.readValue(json, Progress.class);
 
-            PlayerAttributes.pantColor = progress.getPantColor();
-            if (progress.getLevelsCompleted() < 0 || progress.getLevelsCompleted() > PlayerAttributes.ALL_LEVELS_COMPLETE) {
-                PlayerAttributes.levelsCompleted = 0;
-            } else {
-                PlayerAttributes.levelsCompleted = progress.getLevelsCompleted();
+            // Transfer data from temporary fields to PlayerAttributes
+            PlayerAttributes.pantColor = progress.tempPantColor;
+            PlayerAttributes.levelsCompleted = progress.tempLevelsCompleted;
+
+            // Validation for levelsCompleted
+            if (progress.tempLevelsCompleted < PlayerAttributes.NO_LEVELS_COMPLETE
+                    || progress.tempLevelsCompleted > PlayerAttributes.ALL_LEVELS_COMPLETE) {
+                PlayerAttributes.levelsCompleted = PlayerAttributes.NO_LEVELS_COMPLETE;
             }
+        } catch (InvalidFormatException e) {
+            // Handle invalid PantColor by resetting to default
+            PlayerAttributes.pantColor = PlayerAttributes.DEFAULT_PANT_COLOR;
+            PlayerAttributes.levelsCompleted = PlayerAttributes.NO_LEVELS_COMPLETE;
+            saveProgress(); // Save the corrected default progress
         } catch (Exception e) {
             e.printStackTrace();
-            // Consider setting default values in case of other errors
+            // Reset to default values in case of other errors
             PlayerAttributes.pantColor = PlayerAttributes.DEFAULT_PANT_COLOR;
-            PlayerAttributes.levelsCompleted = 0;
-            saveProgress(); // Optionally save the default progress to recover from the error
+            PlayerAttributes.levelsCompleted = PlayerAttributes.NO_LEVELS_COMPLETE;
+            saveProgress();
         }
-
     }
 }
