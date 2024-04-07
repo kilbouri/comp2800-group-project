@@ -43,10 +43,10 @@ public class GamePanel extends JLayeredPane implements Menu {
         add(mainLoop = new MainLoop(this), JLayeredPane.FRAME_CONTENT_LAYER);
         add(pauseMenu = new PauseMenu(this, window), JLayeredPane.MODAL_LAYER);
 
-        pauseMenu.setBackground(Color.DARK_GRAY);
-
         Dimension pauseSize = pauseMenu.getPreferredSize();
+        pauseMenu.setBackground(Color.DARK_GRAY);
         pauseMenu.setBounds(SCREEN_WIDTH_PX - pauseSize.width - 8, 8, pauseSize.width, pauseSize.height);
+        pauseMenu.setVisible(false);
     }
 
     public MainLoop getLoop() {
