@@ -14,7 +14,7 @@ import engine.sprites.SpriteSheet;
 import project.MainLoop;
 import project.PlayerAttributes;
 import project.levels.Level;
-import project.menus.Menus;
+import project.menus.Menu;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
 
@@ -298,6 +298,6 @@ public class Player extends GameObject {
         PlayerAttributes.lives = PlayerAttributes.MAX_LIVES;
 
         MainLoop loop = (MainLoop) getGameLoop();
-        loop.goToMenu(Menus.START);
+        loop.goToMenu(Menu.START);
     }
 }

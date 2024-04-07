@@ -12,8 +12,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class StartMenu extends JPanel {
+public class StartMenu extends JPanel implements Menu {
     private static final Level[] allLevels = Level.values();
+
+    private FancyButton defaultFocusButton;
 
     private BufferedImage backgroundImage;
     private int levelsCompleted = 0;
@@ -28,6 +30,8 @@ public class StartMenu extends JPanel {
         FancyButton continueButton = new FancyButton("Continue");
         FancyButton quitButton = new FancyButton("Quit");
         FancyButton customizeButton = new FancyButton("Customize Character");
+
+        defaultFocusButton = startGameButton;
 
         for (FancyButton b : new FancyButton[] {
                 startGameButton, continueButton,
@@ -64,9 +68,9 @@ public class StartMenu extends JPanel {
         }
 
         // creating the button listeners here
-        startGameButton.addActionListener((e) -> projectWindow.switchMenu(Menus.LEVELS));
+        startGameButton.addActionListener((e) -> projectWindow.switchMenu(Menu.LEVELS));
         continueButton.addActionListener((e) -> projectWindow.loadLevel(allLevels[levelsCompleted]));
-        customizeButton.addActionListener((e) -> projectWindow.switchMenu(Menus.CUSTOMIZATION));
+        customizeButton.addActionListener((e) -> projectWindow.switchMenu(Menu.CUSTOMIZATION));
         quitButton.addActionListener((e) -> System.exit(0));
     }
 
@@ -85,5 +89,14 @@ public class StartMenu extends JPanel {
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
         }
+    }
+
+    @Override
+    public void onShown() {
+        defaultFocusButton.requestFocus();
+    }
+
+    @Override
+    public void onHidden() {
     }
 }

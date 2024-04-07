@@ -16,7 +16,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-public class LevelsMenu extends JPanel {
+public class LevelsMenu extends JPanel implements Menu {
     private static final Level[] allLevels = Level.values();
 
     private BufferedImage backgroundImage;
@@ -36,7 +36,7 @@ public class LevelsMenu extends JPanel {
         backButton.setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
         backButton.setBorderRadius(UIConstants.BORDER_RADIUS);
         backButton.setFont(UIConstants.FONT_MEDIUM);
-        backButton.addActionListener((e) -> projectWindow.switchMenu(Menus.START));
+        backButton.addActionListener((e) -> projectWindow.switchMenu(Menu.START));
 
         backPanel.add(backButton);
         backPanel.setOpaque(false);
@@ -121,10 +121,20 @@ public class LevelsMenu extends JPanel {
         refreshButtonLocks();
     }
 
-    public void refreshButtonLocks() {
+    private void refreshButtonLocks() {
         for (int i = 0; i < levelButtons.size(); i++) {
             // Lock the level if the level is not unlocked yet
             levelButtons.get(i).setEnabled(i <= PlayerAttributes.levelsCompleted);
         }
+    }
+
+    @Override
+    public void onShown() {
+        refreshButtonLocks();
+        this.requestFocus();
+    }
+
+    @Override
+    public void onHidden() {
     }
 }

@@ -2,6 +2,7 @@ package project;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.Map;
 
 import javax.swing.*;
 import project.levels.Level;
@@ -13,10 +14,18 @@ public class ProjectWindow extends JFrame {
     private CardLayout cardLayout = new CardLayout();
     private JPanel container = new JPanel(cardLayout);
 
-    private MainLoop loop = new MainLoop(this);
     private LevelsMenu levelsMenu = new LevelsMenu(this);
     private StartMenu startMenu = new StartMenu(this);
-    private CharacterCustomization customizationMenu = new CharacterCustomization(this);
+    private CustomizeMenu customizeMenu = new CustomizeMenu(this);
+    private GamePanel gamePanel = new GamePanel(this);
+
+    private Map<String, Menu> menus = Map.of(
+            Menu.START, startMenu,
+            Menu.LEVELS, levelsMenu,
+            Menu.CUSTOMIZATION, customizeMenu,
+            Menu.GAME, gamePanel);
+
+    private Menu currentMenu = null;
 
     public ProjectWindow() {
         super("COMP 2800 Project");
@@ -24,44 +33,32 @@ public class ProjectWindow extends JFrame {
         getContentPane().setPreferredSize(new Dimension(Level.SCREEN_WIDTH_PX, Level.SCREEN_HEIGHT_PX));
         setResizable(false);
 
-        container.add(startMenu, Menus.START);
-        container.add(levelsMenu, Menus.LEVELS);
-        container.add(customizationMenu, Menus.CUSTOMIZATION);
-        container.add(loop, Menus.GAME);
+        container.add(startMenu, Menu.START);
+        container.add(levelsMenu, Menu.LEVELS);
+        container.add(customizeMenu, Menu.CUSTOMIZATION);
+        container.add(gamePanel, Menu.GAME);
+
         add(container);
 
-        switchMenu(Menus.START);
+        switchMenu(Menu.START);
 
         pack();
         setVisible(true);
     }
 
     public void switchMenu(String menuName) {
-        loop.stop(false);
-        cardLayout.show(container, menuName);
-
-        switch (menuName) {
-            case Menus.START:
-                startMenu.requestFocus();
-                break;
-
-            case Menus.LEVELS:
-                levelsMenu.refreshButtonLocks();
-                levelsMenu.requestFocus();
-                break;
-
-            case Menus.GAME:
-                loop.stop(true); // ensure loop is ded
-                loop.start();
-                loop.requestFocus();
-                break;
+        if (currentMenu != null) {
+            currentMenu.onHidden();
+            currentMenu = null;
         }
 
-        repaint();
+        currentMenu = menus.get(menuName);
+        cardLayout.show(container, menuName);
+        currentMenu.onShown();
     }
 
     public void loadLevel(Level level) {
-        loop.loadLevel(level.getLoader());
-        switchMenu(Menus.GAME);
+        gamePanel.getLoop().loadLevel(level.getLoader());
+        switchMenu(Menu.GAME);
     }
 }

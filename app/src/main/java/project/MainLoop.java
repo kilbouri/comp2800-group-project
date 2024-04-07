@@ -2,20 +2,39 @@ package project;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 import engine.core.GameLoop;
+import engine.core.Keyboard;
+import project.menus.GamePanel;
 
 public class MainLoop extends GameLoop {
 
     public static final int SCREEN_W = 900;
     public static final int SCREEN_H = 600;
 
-    private ProjectWindow window;
+    private boolean paused = false;
+    private boolean escapePressedLastFrame = false;
 
-    public MainLoop(ProjectWindow window) {
+    private GamePanel parentPanel;
+
+    public MainLoop(GamePanel parentPanel) {
         super(20);
         setSize(SCREEN_W, SCREEN_H);
-        this.window = window;
+        this.parentPanel = parentPanel;
+    }
+
+    @Override
+    public void update(double deltaTime) {
+        if (Keyboard.held(KeyEvent.VK_ESCAPE)) {
+            if (!escapePressedLastFrame) {
+                paused = !paused;
+            }
+
+            escapePressedLastFrame = true;
+        } else {
+            escapePressedLastFrame = false;
+        }
     }
 
     @Override
@@ -32,6 +51,6 @@ public class MainLoop extends GameLoop {
     }
 
     public void goToMenu(String menuName) {
-        window.switchMenu(menuName);
+        parentPanel.switchMenu(menuName);
     }
 }
