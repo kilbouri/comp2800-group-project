@@ -13,7 +13,6 @@ public class MainLoop extends GameLoop {
     public static final int SCREEN_W = 900;
     public static final int SCREEN_H = 600;
 
-    private boolean paused = false;
     private boolean escapePressedLastFrame = false;
 
     private GamePanel parentPanel;
@@ -28,7 +27,7 @@ public class MainLoop extends GameLoop {
     public void update(double deltaTime) {
         if (Keyboard.held(KeyEvent.VK_ESCAPE)) {
             if (!escapePressedLastFrame) {
-                paused = !paused;
+                parentPanel.pause();
             }
 
             escapePressedLastFrame = true;

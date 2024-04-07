@@ -134,7 +134,7 @@ public class CustomizeMenu extends JPanel implements Menu {
 
             Graphics2D graphics = (Graphics2D) g.create();
             try {
-                graphics.setColor(new Color(0, 0, 0, 100));
+                graphics.setColor(UIConstants.OVERLAY_BACKGROUND_COLOR);
                 graphics.fill(rect);
             } finally {
                 graphics.dispose();

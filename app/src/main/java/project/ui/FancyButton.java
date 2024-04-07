@@ -16,9 +16,17 @@ public class FancyButton extends JButton {
 
     public FancyButton(String text) {
         super(text);
+
         setFocusPainted(false);
         setContentAreaFilled(false);
         setBorderPainted(true);
+
+        setPreferredSize(UIConstants.BUTTON_RECTANGLE_SIZE);
+        setFont(UIConstants.FONT_MEDIUM);
+        setBackground(UIConstants.PRIMARY_COLOR);
+        setHoverColor(UIConstants.PRIMARY_VARIANT_COLOR);
+        setBorderRadius(UIConstants.BORDER_RADIUS);
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
