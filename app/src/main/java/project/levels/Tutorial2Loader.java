@@ -39,7 +39,9 @@ public class Tutorial2Loader implements LevelLoader {
         loop.addGameObject(new LevelExit(Level.Tutorial2, player, 22, groundLevel - 16));
 
         // Decor
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.SmallBush2), 2, groundLevel - 1));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 4, groundLevel - 1));
 
+        loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 26, groundLevel - 12));
     }
 }
