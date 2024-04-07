@@ -6,8 +6,8 @@ import engine.core.MathExtensions;
 
 public class MovingPlatform extends FloatingGround {
 
-    private int startX, endX;
-    private int startY, endY;
+    private double startX, endX;
+    private double startY, endY;
     private double period;
     private double timer;
     private double inversePeriod;
@@ -20,14 +20,14 @@ public class MovingPlatform extends FloatingGround {
             double period) {
         super(gridStartX, gridStartY, gridWidth);
 
-        transform.x = (int) MathExtensions.lerp(gridStartX, gridEndX, (tStart % period) / period);
-        transform.y = (int) MathExtensions.lerp(gridStartY, gridEndY, (tStart % period) / period);
-
         this.startX = gridStartX * GRID_SIZE;
         this.startY = gridStartY * GRID_SIZE;
 
         this.endX = gridEndX * GRID_SIZE;
         this.endY = gridEndY * GRID_SIZE;
+
+        transform.x = (int) MathExtensions.lerp(startX, endX, (tStart % period) / period);
+        transform.y = (int) MathExtensions.lerp(startY, endY, (tStart % period) / period);
 
         this.inversePeriod = 1.0 / period;
         this.period = period;
@@ -41,7 +41,7 @@ public class MovingPlatform extends FloatingGround {
         timer += deltaTime;
 
         if (timer >= period) {
-            int temp;
+            double temp;
 
             temp = startX;
             startX = endX;
@@ -54,7 +54,12 @@ public class MovingPlatform extends FloatingGround {
             timer -= period;
         }
 
-        transform.x = MathExtensions.lerp(startX, endX, timer * inversePeriod);
-        transform.y = MathExtensions.lerp(startY, endY, timer * inversePeriod);
+        if (startX != endX) {
+            transform.x = MathExtensions.lerp(startX, endX, timer * inversePeriod);
+        }
+
+        if (startY != endY) {
+            transform.y = MathExtensions.lerp(startY, endY, timer * inversePeriod);
+        }
     }
 }
