@@ -1,12 +1,16 @@
 package project.ui;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+
 public class UIConstants {
     // Color palette
     public static final Color PRIMARY_COLOR = new Color(247, 183, 7);
     public static final Color PRIMARY_VARIANT_COLOR = new Color(250, 211, 105);
     public static final Color SECONDARY_COLOR = new Color(95, 36, 219);
+    public static final Color OVERLAY_BACKGROUND_COLOR = new Color(0, 0, 0, 128);
+
     // Typography standards
     public static final int FONT_SIZE_SMALL = 12;
     public static final int FONT_SIZE_MEDIUM = 16;
@@ -22,5 +26,6 @@ public class UIConstants {
     public static final Dimension BUTTON_SQUARE = new Dimension(50, 50);
 
     // Prevent instantiation
-    private UIConstants() {}
+    private UIConstants() {
+    }
 }

@@ -5,6 +5,7 @@ import static project.levels.Level.MAX_GRID_Y;
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
 import project.gameobjects.BackgroundImage;
+import project.gameobjects.LifeCounterOverlay;
 import project.gameobjects.Player;
 import project.gameobjects.triggers.LevelExit;
 import project.gameobjects.StaticSprite;
@@ -26,8 +27,8 @@ public class Tutorial2Loader implements LevelLoader {
 
         // Ground
         loop.addGameObject(new Ground(-1, groundLevel, 7, 3));
-        loop.addGameObject(new MovingPlatform(8, groundLevel - 2, 13, groundLevel - 2, 3, 0.0, 2));
-        loop.addGameObject(new MovingPlatform(17, groundLevel - 4, 17, groundLevel - 10, 3, 5.0, 3));
+        loop.addGameObject(new MovingPlatform(8, groundLevel - 2, 13, groundLevel - 2, 3, 1.0, 3));
+        loop.addGameObject(new MovingPlatform(17, groundLevel - 3, 17, groundLevel - 10, 3, 5.0, 3));
         loop.addGameObject(new Ground(22, groundLevel - 11, 7, 14));
 
         // Player
@@ -41,5 +42,8 @@ public class Tutorial2Loader implements LevelLoader {
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.ArrowSign), 4, groundLevel - 1));
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Crate), 26, groundLevel - 12));
+
+        // UI Overlay
+        loop.addGameObject(new LifeCounterOverlay());
     }
 }

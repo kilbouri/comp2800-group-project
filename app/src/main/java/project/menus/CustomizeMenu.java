@@ -19,13 +19,13 @@ import project.sprites.PlayerSpriteSheet.PantColor;
 import project.ui.FancyButton;
 import project.ui.UIConstants;
 
-public class CharacterCustomization extends JPanel {
+public class CustomizeMenu extends JPanel implements Menu {
 
     private BufferedImage backgroundImage;
 
     private PlayerPreview preview;
 
-    public CharacterCustomization(ProjectWindow projectWindow) {
+    public CustomizeMenu(ProjectWindow projectWindow) {
         super(new BorderLayout());
         setOpaque(false);
 
@@ -37,7 +37,7 @@ public class CharacterCustomization extends JPanel {
         backButton.setBorderRadius(10);
         backButton.setFont(UIConstants.FONT_MEDIUM);
         backButton.addActionListener(e -> {
-            projectWindow.switchMenu(Menus.START_MENU);
+            projectWindow.switchMenu(Menu.START);
         });
         backPanel.add(backButton);
         backPanel.setOpaque(false); // Make the panel transparent
@@ -89,7 +89,7 @@ public class CharacterCustomization extends JPanel {
         private static final int PANT_COLOR_SAMPLE_Y = 169;
         private static final int NUM_COLS = 10;
 
-        public PantColorSelector(PantColor selected, CharacterCustomization rootMenu) throws IOException {
+        public PantColorSelector(PantColor selected, CustomizeMenu rootMenu) throws IOException {
             super(new GridBagLayout());
             setOpaque(false);
 
@@ -134,7 +134,7 @@ public class CharacterCustomization extends JPanel {
 
             Graphics2D graphics = (Graphics2D) g.create();
             try {
-                graphics.setColor(new Color(0, 0, 0, 100));
+                graphics.setColor(UIConstants.OVERLAY_BACKGROUND_COLOR);
                 graphics.fill(rect);
             } finally {
                 graphics.dispose();
@@ -202,5 +202,14 @@ public class CharacterCustomization extends JPanel {
 
             return NANOS_TO_SECONDS * nanosPassed;
         }
+    }
+
+    @Override
+    public void onShown() {
+        this.requestFocus();
+    }
+
+    @Override
+    public void onHidden() {
     }
 }

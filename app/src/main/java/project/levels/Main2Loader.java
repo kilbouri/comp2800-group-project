@@ -5,6 +5,7 @@ import static project.levels.Level.MAX_GRID_Y;
 import engine.core.GameLoop;
 import engine.core.LevelLoader;
 import project.gameobjects.BackgroundImage;
+import project.gameobjects.LifeCounterOverlay;
 import project.gameobjects.Player;
 import project.gameobjects.StaticSprite;
 import project.gameobjects.blocks.FloatingGround;
@@ -67,5 +68,8 @@ public class Main2Loader implements LevelLoader {
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.PinkMushroom), 15, groundLevel - 6));
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.OrangeMushroom), 15.5, groundLevel - 5.75))
                 .getRenderer().setScale(0.75);
+
+        // UI Overlay
+        loop.addGameObject(new LifeCounterOverlay());
     }
 }

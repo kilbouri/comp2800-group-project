@@ -1,5 +1,6 @@
 package project.gameobjects;
 
+import engine.core.GameLoop;
 import engine.core.GameObject;
 import engine.core.Keyboard;
 import engine.core.MathExtensions;
@@ -10,13 +11,16 @@ import engine.physics.Trigger;
 import engine.sprites.Animation;
 import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteSheet;
+import project.MainLoop;
 import project.PlayerAttributes;
 import project.levels.Level;
+import project.menus.Menu;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
 
 import static engine.physics.BoxCollider.OverlapFlags;
 import static project.levels.Level.GRID_SIZE;
+import static project.levels.Level.SCREEN_HEIGHT_PX;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -30,7 +34,8 @@ public class Player extends GameObject {
     private static final double JUMP_STRENGTH = Math.sqrt(2 * PhysicsWorld.GRAVITY * JUMP_HEIGHT_PIXELS);
 
     private static final double MOVE_SPEED = 200;
-    private static final double ACCEL_RATE = 50;
+    private static final double GROUND_ACCEL_RATE = 40;
+    private static final double AIR_ACCEL_RATE = 1.4;
 
     protected double vSpeed = 0;
     protected double hSpeed = 0;
@@ -116,7 +121,12 @@ public class Player extends GameObject {
         }
 
         int dx = Keyboard.getAxis(KeyEvent.VK_A, KeyEvent.VK_D);
-        hSpeed = MathExtensions.lerp(hSpeed, MOVE_SPEED * dx, deltaTime * ACCEL_RATE);
+
+        if (grounded) {
+            hSpeed = MathExtensions.lerp(hSpeed, MOVE_SPEED * dx, deltaTime * GROUND_ACCEL_RATE);
+        } else if (dx != 0) {
+            hSpeed = MathExtensions.lerp(hSpeed, MOVE_SPEED * dx, deltaTime * AIR_ACCEL_RATE);
+        }
 
         // Inherit parent speed
         if (ground != null) {
@@ -133,6 +143,20 @@ public class Player extends GameObject {
         transform.y -= vSpeed * deltaTime;
 
         constrainToScreen();
+
+        if (transform.y >= SCREEN_HEIGHT_PX + transform.height) {
+            PlayerAttributes.lives -= 1;
+
+            if (PlayerAttributes.lives == 0) {
+                gameOver();
+                return;
+            }
+
+            // reload the level
+            GameLoop loop = getGameLoop();
+            loop.loadLevel(loop.getCurrentLevelLoader());
+        }
+
         updateAnimation(deltaTime, dx, jumped);
 
         super.update(deltaTime);
@@ -152,7 +176,7 @@ public class Player extends GameObject {
             return;
         }
 
-        handleGroundCollision(event);
+        handleCollision(event);
     }
 
     @Override
@@ -162,7 +186,7 @@ public class Player extends GameObject {
             return;
         }
 
-        handleGroundCollision(event);
+        handleCollision(event);
     }
 
     @Override
@@ -181,33 +205,37 @@ public class Player extends GameObject {
         }
     }
 
-    private void handleGroundCollision(CollisionEvent event) {
+    private void handleCollision(CollisionEvent event) {
         BoxCollider otherCollider = event.getOtherCollider(this);
         Rectangle2D overlap = event.getOverlap();
 
         int overlapFlags = this.colliderComponent.overlapWith(otherCollider);
 
-        colliderComponent.resolveCollisionWith(otherCollider);
-
-        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
+        boolean isMovingUpwards = vSpeed > 0;
         boolean topInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.TOP_EDGE);
         boolean bottomInsideOther = OverlapFlags.checkEdge(overlapFlags, OverlapFlags.BOTTOM_EDGE);
 
-        boolean isMovingUpwards = vSpeed > 0;
+        boolean isWallCollision = overlap.getHeight() >= overlap.getWidth();
+        boolean isRoofCollision = topInsideOther && !isWallCollision;
+        boolean isGroundCollision = bottomInsideOther && !isWallCollision;
 
-        if (topInsideOther && !isWallCollision && isMovingUpwards) {
-            vSpeed = 0;
+        if (isWallCollision) {
+            hSpeed = 0;
+        } else {
+            if (isRoofCollision && isMovingUpwards) {
+                vSpeed = 0;
+            }
+
+            if (isGroundCollision && !isMovingUpwards) {
+                grounded = true;
+                vSpeed = 0;
+
+                // landed on ground, need to parent up
+                setGround(otherCollider.getParentObject());
+            }
         }
 
-        // if the player is moving upwards and clips a corner, we don't want to kill
-        // their upward velocity (it looks and feels weird)
-        if (bottomInsideOther && !isWallCollision && !isMovingUpwards) {
-            grounded = true;
-            vSpeed = 0;
-
-            // landed on ground, need to parent up
-            setGround(otherCollider.getParentObject());
-        }
+        colliderComponent.resolveCollisionWith(otherCollider);
     }
 
     private void setGround(GameObject newGround) {
@@ -273,5 +301,13 @@ public class Player extends GameObject {
         if (currentAnimation == jumpStart && jumpStart.ended()) {
             setAnimation(jumpIdle);
         }
+    }
+
+    private void gameOver() {
+        PlayerAttributes.levelsCompleted = PlayerAttributes.NO_LEVELS_COMPLETE;
+        PlayerAttributes.lives = PlayerAttributes.MAX_LIVES;
+
+        MainLoop loop = (MainLoop) getGameLoop();
+        loop.goToMenu(Menu.START);
     }
 }

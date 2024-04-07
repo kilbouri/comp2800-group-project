@@ -8,6 +8,7 @@ import engine.sprites.Animation;
 import engine.sprites.SpriteUtils;
 import project.gameobjects.AnimatedSprite;
 import project.gameobjects.BackgroundImage;
+import project.gameobjects.LifeCounterOverlay;
 import project.gameobjects.Player;
 import project.gameobjects.StaticSprite;
 import project.gameobjects.blocks.FloatingGround;
@@ -65,6 +66,9 @@ public class Tutorial1Loader implements LevelLoader {
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.OrangeMushroom), 15.5, groundLevel - 5));
 
         loop.addGameObject(new StaticSprite(decor.getDecoration(Decoration.Boulder), 26, groundLevel - 7));
+
+        // UI Overlay
+        loop.addGameObject(new LifeCounterOverlay());
     }
 
     private static Animation getKeyAnimation(MainKey key) {

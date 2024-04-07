@@ -12,6 +12,7 @@ import engine.physics.CollisionEvent;
 import engine.physics.Trigger;
 import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteUtils;
+import project.PlayerAttributes;
 import project.gameobjects.Player;
 import project.levels.Level;
 
@@ -50,7 +51,9 @@ public class LevelExit extends Trigger {
             return;
         }
 
-        System.err.println("Player " + player + " completed the level, transitioning to " + nextLevel);
+        PlayerAttributes.levelsCompleted = Math.max(
+                PlayerAttributes.levelsCompleted,
+                nextLevel.ordinal());
         getGameLoop().loadLevel(nextLevel.getLoader());
     }
 
