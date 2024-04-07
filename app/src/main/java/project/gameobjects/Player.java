@@ -10,6 +10,7 @@ import engine.physics.Trigger;
 import engine.sprites.Animation;
 import engine.sprites.SpriteRenderer;
 import engine.sprites.SpriteSheet;
+import project.PlayerAttributes;
 import project.levels.Level;
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
@@ -55,6 +56,10 @@ public class Player extends GameObject {
     // These values are relative to the original image
     private static final double X_OFFSET = 32.0;
     private static final double Y_OFFSET = 64.0;
+
+    public Player(int gridX, int gridY) throws IOException {
+        this(PlayerAttributes.pantColor, gridX, gridY);
+    }
 
     public Player(PantColor pants, int gridX, int gridY) throws IOException {
         this(pants, (double) (GRID_SIZE * gridX), GRID_SIZE * gridY);

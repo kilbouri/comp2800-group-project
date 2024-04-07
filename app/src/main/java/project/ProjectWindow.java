@@ -24,11 +24,15 @@ public class ProjectWindow extends JFrame {
 
         startMenu = new StartMenu(this);
         levelsMenu = new LevelsMenu(this);
+
         CharacterCustomization characterCustomization = new CharacterCustomization(this);
 
         container.add(startMenu, Menus.START_MENU);
         container.add(levelsMenu, Menus.LEVELS_MENU);
-        container.add(characterCustomization, Menus.CHARACTER_CUSTOMIZATION);
+
+        if (characterCustomization != null) {
+            container.add(characterCustomization, Menus.CHARACTER_CUSTOMIZATION);
+        }
 
         cardLayout.show(container, Menus.START_MENU);
         add(container);

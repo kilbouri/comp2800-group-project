@@ -3,6 +3,7 @@ package project.menus;
 import javax.swing.*;
 import engine.sprites.SpriteUtils;
 import project.ProjectWindow;
+import project.levels.Level;
 import project.ui.FancyButton;
 import project.ui.FancyLabel;
 import project.ui.UIConstants;
@@ -92,9 +93,7 @@ public class StartMenu extends JPanel {
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final int tmp = levelsCompleted;
-                projectWindow.startLoop(project.levels.Level.values()[tmp]);
-
+                projectWindow.startLoop(Level.values()[levelsCompleted]);
             }
         });
 

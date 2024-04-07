@@ -1,161 +1,178 @@
 package project.menus;
 
-import project.BackgroundPanel;
+import project.PlayerAttributes;
 import project.ProjectWindow;
+
 import javax.swing.*;
+
 import engine.sprites.Animation;
+import engine.sprites.SpriteUtils;
+
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.EnumMap;
+
 import project.sprites.PlayerSpriteSheet;
 import project.sprites.PlayerSpriteSheet.PantColor;
+import project.ui.FancyButton;
 
 public class CharacterCustomization extends JPanel {
 
-    private int currentSheetIndex;
-    private JPanel leftPanel;
-    ProjectWindow projectWindow;
-    private PantColor currentSprite;
-    private Animation blueIdle;
-    private Animation goldIdle;
-    private Animation greenIdle;
-    private Animation maroonIdle;
-    private Animation currentAnimation;
+    private BufferedImage backgroundImage;
+
+    private PlayerPreview preview;
 
     public CharacterCustomization(ProjectWindow projectWindow) {
+        super(new BorderLayout());
+        setOpaque(false);
 
-        this.projectWindow = projectWindow;
-        setLayout(new BorderLayout());
-
-        BackgroundPanel backgroundPanel = new BackgroundPanel();
-
-        // character sprite sheets using pantcolor enum
-        // setting the animation variables here
         try {
-            new PlayerSpriteSheet(PantColor.Blue);
-            blueIdle = new Animation(new PlayerSpriteSheet(PantColor.Blue), 12, 0, 11);
-            new PlayerSpriteSheet(PantColor.Gold);
-            goldIdle = new Animation(new PlayerSpriteSheet(PantColor.Gold), 12, 0, 11);
-            new PlayerSpriteSheet(PantColor.Green);
-            greenIdle = new Animation(new PlayerSpriteSheet(PantColor.Green), 12, 0, 11);
-            new PlayerSpriteSheet(PantColor.Maroon);
-            maroonIdle = new Animation(new PlayerSpriteSheet(PantColor.Maroon), 12, 0, 11);
-            currentSprite = PantColor.Blue;
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.out.println("files could not be read");
+            backgroundImage = SpriteUtils.load("sprites/prod/playerpreviewbg.png");
+        } catch (IOException e) {
+            System.err.println("Error loading CharacterCustomizer background image");
+            e.printStackTrace();
         }
 
-        // change button initialized
-        JButton changeButton = new JButton("Change Sprite");
-        changeButton.setFont(new Font("Futura", Font.ITALIC, 15));
-        changeButton.setBackground(new Color(206, 237, 233));
+        try {
+            add(preview = new PlayerPreview(PlayerAttributes.pantColor), BorderLayout.CENTER);
+        } catch (IOException e) {
+            System.err.println("Error creating PlayerPreview");
+            e.printStackTrace();
+        }
 
-        // save button
-        JButton saveButton = new JButton("Save Sprite");
-        saveButton.setFont(new Font("Futura", Font.ITALIC, 15));
-        saveButton.setForeground(Color.BLACK); // Set text color
-        saveButton.setBackground(new Color(206, 237, 233));
+        try {
+            add(new PantColorSelector(PlayerAttributes.pantColor, this), BorderLayout.SOUTH);
+        } catch (IOException e) {
+            System.err.println("Error creating PantColorSelector");
+            e.printStackTrace();
+        }
 
-        // back button
-        JButton backButton = new JButton("Back to start menu");
-        backButton.setFont(new Font("Futura", Font.ITALIC, 15));
-        backButton.setBackground(new Color(206, 237, 233));
-
-        // setting size of buttons
-        Dimension buttonSize = new Dimension(200, 50); // Width: 200, Height: 50
-        changeButton.setPreferredSize(buttonSize);
-        saveButton.setPreferredSize(buttonSize);
-        backButton.setPreferredSize(buttonSize);
-
-        // creating panel for the character sprite to be placed in
-        leftPanel = new LeftPanel();
-        leftPanel.setLayout(new BorderLayout());
-
-        // creating panel for the buttons
-        // Set layout to center the buttons
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 0, 10, 80);
-        // adding buttons to panel
-        rightPanel.add(changeButton, gbc);
-        rightPanel.add(saveButton, gbc);
-        // setting background to transparent
-        rightPanel.add(backButton, gbc);
-        rightPanel.setOpaque(false);
-        // add right panel to left
-        leftPanel.add(rightPanel, BorderLayout.EAST);
-        // setting background to transparent
-        leftPanel.setOpaque(false);
-        // add left panel to the background panel
-        backgroundPanel.add(leftPanel);
-        // add background panel to the frame
-        add(backgroundPanel);
-
-        // Adding action listeners to buttons
-        // what to do if change button is clicked
-        changeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // getting the ordinal value of the current sprite sheet
-                currentSheetIndex = currentSprite.ordinal();
-                // increment the index
-                currentSheetIndex = (currentSheetIndex + 1) % PlayerSpriteSheet.PantColor.values().length;
-                // updating the current sprite sheet
-                currentSprite = PlayerSpriteSheet.PantColor.values()[currentSheetIndex];
-                // calls leftPanel to be repainted, passing on the current spritesheet and the
-                // animation that needs to be played
-                // send currentanimation to leftpanel to repaint the screen
-                if (currentSprite == PantColor.Blue) {
-                    currentAnimation = blueIdle;
-                } else if (currentSprite == PantColor.Gold) {
-                    currentAnimation = goldIdle;
-                } else if (currentSprite == PantColor.Green) {
-                    currentAnimation = greenIdle;
-                } else if (currentSprite == PantColor.Maroon) {
-                    currentAnimation = maroonIdle;
-                }
-                leftPanel.repaint();
-            }
-        });
-
-        // what to do if save button is clicked
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to save character spriteS
-                JOptionPane.showMessageDialog(CharacterCustomization.this, "Sprite Saved");
-            }
-        });
-
-        // what to do if back button is clicked
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to go back to start menu
-                projectWindow.switchMenu("startMenu");
-            }
-        });
     }
 
-    // creating the panel that can display the character images
-    class LeftPanel extends JPanel {
-        private long lastNanos;
+    protected void updatePantsSelection(PantColor color) {
+        preview.setColor(color);
+        PlayerAttributes.pantColor = color;
+    }
 
-        public LeftPanel() {
-            lastNanos = System.nanoTime();
+    @Override
+    protected void paintComponent(Graphics g) {
+        double scale = (double) getHeight() / backgroundImage.getHeight();
+
+        int imgWidth = (int) Math.ceil(scale * backgroundImage.getWidth());
+        int imgHeight = (int) Math.ceil(scale * backgroundImage.getHeight());
+
+        g.drawImage(backgroundImage, 0, 0, imgWidth, imgHeight, null);
+        super.paintComponent(g);
+    }
+
+    static class PantColorSelector extends JPanel {
+        private static final PantColor[] pantColors = PantColor.values();
+        private static final int PANT_COLOR_SAMPLE_X = 69;
+        private static final int PANT_COLOR_SAMPLE_Y = 169;
+        private static final int NUM_COLS = 10;
+
+        public PantColorSelector(PantColor selected, CharacterCustomization rootMenu) throws IOException {
+            super(new GridBagLayout());
+            setOpaque(false);
+
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.insets = new Insets(8, 8, 8, 8);
+
+            for (int i = 0; i < pantColors.length; i++) {
+                constraints.gridx = i % NUM_COLS;
+                constraints.gridy = i / NUM_COLS;
+
+                PlayerSpriteSheet playerSheet = new PlayerSpriteSheet(pantColors[i]);
+                BufferedImage topLeftTile = playerSheet.getTile(0);
+                Color color = new Color(topLeftTile.getRGB(PANT_COLOR_SAMPLE_X, PANT_COLOR_SAMPLE_Y));
+
+                FancyButton button = new FancyButton("");
+                button.setBorderRadius(8);
+                button.setMinimumSize(new Dimension(64, 64));
+                button.setPreferredSize(new Dimension(64, 64));
+                button.setSize(new Dimension(64, 64));
+                button.setBackground(color);
+                button.setHoverColor(color.darker());
+
+                // You'd think Java could copy primitives into lambdas... nope!
+                final int[] intptr = { i };
+                button.addActionListener((e) -> {
+                    rootMenu.updatePantsSelection(pantColors[intptr[0]]);
+                });
+
+                add(button, constraints);
+            }
         }
 
         @Override
         protected void paintComponent(Graphics g) {
-            currentAnimation.update(getDeltaTime());
-            g.drawImage(currentAnimation.getSprite(), 300, 200, this);
-            repaint();// causes a loop that repaints the component repeatedly
+            final int radius = 16;
+            final RoundRectangle2D.Double rect = new RoundRectangle2D.Double(
+                    0, 0,
+                    getWidth() + radius, getHeight() + radius,
+                    radius, radius);
+            super.paintComponent(g);
+
+            Graphics2D graphics = (Graphics2D) g.create();
+            try {
+                graphics.setColor(new Color(0, 0, 0, 100));
+                graphics.fill(rect);
+            } finally {
+                graphics.dispose();
+            }
+        }
+    }
+
+    static class PlayerPreview extends JPanel {
+        private static final EnumMap<PantColor, Animation> IDLE_ANIMATIONS = new EnumMap<>(PantColor.class);
+        private static final double NANOS_TO_SECONDS = 1.0 / 1e9;
+
+        private long lastNanos;
+        private Animation currentAnimation;
+
+        public PlayerPreview(PantColor color) throws IOException {
+            this.lastNanos = System.nanoTime();
+            setOpaque(false);
+            setColor(color);
+        }
+
+        public void setColor(PantColor newColor) {
+            this.currentAnimation = getAnimationFor(newColor);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            final double deltaTime = getDeltaTime();
+
+            currentAnimation.update(deltaTime);
+
+            // derived from the background image
+            final int playerFeetY = 416;
+            final int playerFeetX = getWidth() / 2;
+
+            final BufferedImage frame = currentAnimation.getSprite();
+            final int imageX = playerFeetX - (frame.getWidth() / 2);
+            final int imageY = playerFeetY - frame.getHeight();
+
+            g.drawImage(currentAnimation.getSprite(), imageX, imageY, null);
+
+            repaint(); // redraw as soon as possible (basically, use the event loop to create an
+                       // infinite loop)
+        }
+
+        private static Animation getAnimationFor(PantColor pantColor) {
+            if (!IDLE_ANIMATIONS.containsKey(pantColor)) {
+                try {
+                    IDLE_ANIMATIONS.put(pantColor, new Animation(new PlayerSpriteSheet(pantColor), 12, 0, 11));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return IDLE_ANIMATIONS.get(pantColor);
         }
 
         private double getDeltaTime() {
@@ -163,8 +180,7 @@ public class CharacterCustomization extends JPanel {
             long nanosPassed = currentNanos - lastNanos;
             lastNanos = currentNanos;
 
-            return (double) nanosPassed / 1.0e9;
+            return NANOS_TO_SECONDS * nanosPassed;
         }
-
     }
 }

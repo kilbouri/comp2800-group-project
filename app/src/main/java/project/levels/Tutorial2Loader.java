@@ -12,7 +12,6 @@ import project.gameobjects.blocks.Ground;
 import project.gameobjects.blocks.MovingPlatform;
 import project.sprites.DecorationSpriteSheet;
 import project.sprites.DecorationSpriteSheet.Decoration;
-import project.sprites.PlayerSpriteSheet.PantColor;
 
 public class Tutorial2Loader implements LevelLoader {
 
@@ -32,7 +31,7 @@ public class Tutorial2Loader implements LevelLoader {
         loop.addGameObject(new Ground(22, groundLevel - 11, 7, 14));
 
         // Player
-        Player player = loop.addGameObject(new Player(PantColor.Blue, 2, groundLevel - 2));
+        Player player = loop.addGameObject(new Player(2, groundLevel - 2));
 
         // Level Exit
         loop.addGameObject(new LevelExit(Level.Main1, player, 22, groundLevel - 16));
