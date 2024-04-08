@@ -30,7 +30,6 @@ public class Progress {
 
             // Serialize to JSON
             String json = mapper.writeValueAsString(progress);
-            System.out.println("Serialized JSON:\n" + json);
 
             // Optionally, write to file
             Files.write(Paths.get("playerProgress.json"), json.getBytes(StandardCharsets.UTF_8));

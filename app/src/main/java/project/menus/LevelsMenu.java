@@ -24,6 +24,7 @@ public class LevelsMenu extends JPanel implements Menu {
     private JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
     private ArrayList<FancyButton> levelButtons = new ArrayList<>();
+    private final boolean DEBUG = false;
 
     public LevelsMenu(ProjectWindow projectWindow) {
         super(new BorderLayout());
@@ -81,18 +82,20 @@ public class LevelsMenu extends JPanel implements Menu {
         }
 
         refreshButtonLocks();
+        if (DEBUG) {
+            // Debugging: unlock all levels with Shift + F
+            this.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    boolean fPressed = e.getKeyCode() == KeyEvent.VK_F;
+                    boolean shiftHeld = (e.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0;
 
-        this.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                boolean fPressed = e.getKeyCode() == KeyEvent.VK_F;
-                boolean shiftHeld = (e.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0;
-
-                if (shiftHeld && fPressed) {
-                    unlockAllLevels();
+                    if (shiftHeld && fPressed) {
+                        unlockAllLevels();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         // Add the centerPanel to the main panel
         add(centerPanel, BorderLayout.CENTER);
