@@ -15,9 +15,6 @@ public class SpriteUtils {
         final URL sourceUrl = SpriteUtils.class
                 .getClassLoader()
                 .getResource(resourceName);
-
-        System.err.println("Loading " + sourceUrl);
-
         return ImageIO.read(sourceUrl);
     }
 

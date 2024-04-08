@@ -1,6 +1,5 @@
 package project;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
@@ -38,15 +37,10 @@ public class MainLoop extends GameLoop {
 
     @Override
     public void beforeRender(Graphics2D graphics) {
-        graphics.setBackground(Color.gray);
-        graphics.clearRect(0, 0, getWidth(), getHeight());
     }
 
     @Override
     public void afterRender(Graphics2D graphics) {
-        graphics.setColor(Color.green);
-        renderEngineMetrics(graphics);
-        renderWASD(graphics);
     }
 
     public void goToMenu(String menuName) {
