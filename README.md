@@ -1,6 +1,14 @@
 # COMP 2800 Group Project
 
-Asif, when you have time, please fill this in :)
+A Java AWT platforming game, similar to Mario and Fancy Pants. Some notable things:
+
+- Custom AWT Canvas rendering engine
+- Physics-based player movement
+- Animations for player and some world objects
+- Moving platforms
+- Multiple levels
+- Progress is persisted between runs
+- Player pant color is selectable
 
 # Build & Run
 
