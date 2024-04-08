@@ -15,8 +15,10 @@ public class App {
             e.printStackTrace();
             return;
         }
-
-        //Load progress before starting the frame
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Progress.saveProgress();
+        }));
+        // Load progress before starting the frame
         Progress.loadProgress();
         // Invoke the main Swing application
         SwingUtilities.invokeLater(ProjectWindow::new);

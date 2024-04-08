@@ -56,7 +56,6 @@ public class LevelExit extends Trigger {
                 PlayerAttributes.levelsCompleted,
                 nextLevel.ordinal());
         getGameLoop().loadLevel(nextLevel.getLoader());
-        Progress.saveProgress();
     }
 
     private static BufferedImage loadSourceImage() {
