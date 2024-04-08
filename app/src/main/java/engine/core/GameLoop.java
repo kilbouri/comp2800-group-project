@@ -27,7 +27,6 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private BufferStrategy bufferStrategy;
     private Thread gameThread;
     private boolean aaEnabled;
-    private boolean terminate;
 
     private double lastUpdateTime = 0;
     private double lastRenderTime = 0;
@@ -41,6 +40,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
     private PhysicsWorld physicsWorld;
     private LevelLoader currentLevelLoader;
 
+    private AtomicBoolean terminated = new AtomicBoolean(false);
     private AtomicBoolean suspended = new AtomicBoolean(false);
 
     protected GameLoop(int gameObjectCapacity) {
@@ -73,7 +73,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
         bufferStrategy = getBufferStrategy();
 
         gameThread = new Thread(this, "Game Thread");
-        terminate = false;
+        terminated.set(false);
 
         gameThread.start();
         return true;
@@ -85,7 +85,10 @@ public abstract class GameLoop extends Canvas implements Runnable {
 
     public void resume() {
         suspended.set(false);
-        gameThread.interrupt(); // have the thread wake up asap
+
+        if (gameThread != null) {
+            gameThread.interrupt(); // have the thread wake up asap
+        }
     }
 
     /**
@@ -95,7 +98,8 @@ public abstract class GameLoop extends Canvas implements Runnable {
      *              must take care to not cause deadlock.
      */
     public void stop(boolean block) {
-        terminate = true;
+        terminated.set(true);
+        resume();
 
         // Wait for thread to exit
         while (block && gameThread != null) {
@@ -119,7 +123,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
         double lastNanos = System.nanoTime();
         double fpsSamplingNanoTimer = 0.0;
 
-        while (!terminate) {
+        while (!terminated.get()) {
             while (suspended.get()) {
                 try {
                     Thread.sleep(100);
@@ -128,6 +132,11 @@ public abstract class GameLoop extends Canvas implements Runnable {
                 }
 
                 lastNanos = System.nanoTime();
+            }
+
+            // Did we break out of suspension due to termination?
+            if (terminated.get()) {
+                break;
             }
 
             double nowNanos = System.nanoTime();
@@ -200,7 +209,7 @@ public abstract class GameLoop extends Canvas implements Runnable {
             JOptionPane.showMessageDialog(this,
                     "The engine encountered an unhandled exception while loading a level:\n\n" + e.toString(),
                     "Level Loading Error", JOptionPane.ERROR_MESSAGE);
-            terminate = true;
+            terminated.set(true);
             return;
         }
     }

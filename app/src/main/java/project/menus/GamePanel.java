@@ -80,5 +80,6 @@ public class GamePanel extends JLayeredPane implements Menu {
     public void onHidden() {
         // request the loop stop, but don't wait for it
         getLoop().stop(false);
+        pauseMenu.setVisible(false);
     }
 }
