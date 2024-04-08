@@ -20,7 +20,7 @@ public class StartMenu extends JPanel implements Menu {
     private static final Level[] allLevels = Level.values();
 
     private FancyButton defaultFocusButton;
-    FancyButton continueButton;
+    private FancyButton continueButton;
 
     private BufferedImage backgroundImage;
 
@@ -67,7 +67,7 @@ public class StartMenu extends JPanel implements Menu {
         add(customizeButton, gbc);
         add(quitButton, gbc);
 
-        if (PlayerAttributes.levelsCompleted == 0) {
+        if (PlayerAttributes.levelsCompleted == PlayerAttributes.NO_LEVELS_COMPLETE) {
             continueButton.setEnabled(false);
         }
 
