@@ -2,6 +2,7 @@ package project.menus;
 
 import project.PlayerAttributes;
 import project.ProjectWindow;
+import project.io.Progress;
 
 import javax.swing.*;
 

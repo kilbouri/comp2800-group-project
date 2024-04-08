@@ -1,7 +1,11 @@
 package project.menus;
 
 import javax.swing.*;
+
+import com.fasterxml.jackson.databind.introspect.ClassIntrospector;
+
 import engine.sprites.SpriteUtils;
+import project.PlayerAttributes;
 import project.ProjectWindow;
 import project.levels.Level;
 import project.ui.FancyButton;
@@ -16,9 +20,9 @@ public class StartMenu extends JPanel implements Menu {
     private static final Level[] allLevels = Level.values();
 
     private FancyButton defaultFocusButton;
+    private FancyButton continueButton;
 
     private BufferedImage backgroundImage;
-    private int levelsCompleted = 0;
 
     public StartMenu(ProjectWindow projectWindow) {
         super(new GridBagLayout());
@@ -27,9 +31,9 @@ public class StartMenu extends JPanel implements Menu {
 
         // Create buttons
         FancyButton startGameButton = new FancyButton("Start Game");
-        FancyButton continueButton = new FancyButton("Continue");
         FancyButton quitButton = new FancyButton("Quit");
         FancyButton customizeButton = new FancyButton("Customize Character");
+        continueButton = new FancyButton("Continue");
 
         defaultFocusButton = startGameButton;
 
@@ -63,13 +67,12 @@ public class StartMenu extends JPanel implements Menu {
         add(customizeButton, gbc);
         add(quitButton, gbc);
 
-        if (levelsCompleted == 0) {
+        if (PlayerAttributes.levelsCompleted == PlayerAttributes.NO_LEVELS_COMPLETE) {
             continueButton.setEnabled(false);
         }
 
-        // creating the button listeners here
         startGameButton.addActionListener((e) -> projectWindow.switchMenu(Menu.LEVELS));
-        continueButton.addActionListener((e) -> projectWindow.loadLevel(allLevels[levelsCompleted]));
+        continueButton.addActionListener((e) -> projectWindow.loadLevel(allLevels[PlayerAttributes.levelsCompleted]));
         customizeButton.addActionListener((e) -> projectWindow.switchMenu(Menu.CUSTOMIZATION));
         quitButton.addActionListener((e) -> System.exit(0));
     }
@@ -93,6 +96,10 @@ public class StartMenu extends JPanel implements Menu {
 
     @Override
     public void onShown() {
+        if (PlayerAttributes.levelsCompleted != PlayerAttributes.NO_LEVELS_COMPLETE && continueButton != null
+                && !continueButton.isEnabled()) {
+            continueButton.setEnabled(true);
+        }
         defaultFocusButton.requestFocus();
     }
 
