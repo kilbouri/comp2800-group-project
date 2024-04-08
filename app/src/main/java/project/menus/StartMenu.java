@@ -1,6 +1,9 @@
 package project.menus;
 
 import javax.swing.*;
+
+import com.fasterxml.jackson.databind.introspect.ClassIntrospector;
+
 import engine.sprites.SpriteUtils;
 import project.PlayerAttributes;
 import project.ProjectWindow;
@@ -17,6 +20,7 @@ public class StartMenu extends JPanel implements Menu {
     private static final Level[] allLevels = Level.values();
 
     private FancyButton defaultFocusButton;
+    FancyButton continueButton;
 
     private BufferedImage backgroundImage;
 
@@ -27,9 +31,9 @@ public class StartMenu extends JPanel implements Menu {
 
         // Create buttons
         FancyButton startGameButton = new FancyButton("Start Game");
-        FancyButton continueButton = new FancyButton("Continue");
         FancyButton quitButton = new FancyButton("Quit");
         FancyButton customizeButton = new FancyButton("Customize Character");
+        continueButton = new FancyButton("Continue");
 
         defaultFocusButton = startGameButton;
 
@@ -92,6 +96,10 @@ public class StartMenu extends JPanel implements Menu {
 
     @Override
     public void onShown() {
+        if (PlayerAttributes.levelsCompleted != PlayerAttributes.NO_LEVELS_COMPLETE && continueButton != null
+                && !continueButton.isEnabled()) {
+            continueButton.setEnabled(true);
+        }
         defaultFocusButton.requestFocus();
     }
 
